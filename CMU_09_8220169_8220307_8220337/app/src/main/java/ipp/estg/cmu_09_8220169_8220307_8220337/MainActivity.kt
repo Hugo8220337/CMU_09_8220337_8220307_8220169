@@ -13,7 +13,8 @@ import androidx.navigation.compose.rememberNavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.HomeScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.OnboardingScreen
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.StartScreen
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.WorkoutScreen
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.StartScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.LoginScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.RegisterScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
@@ -59,6 +60,12 @@ fun MyApp(navController: NavHostController) {
         }
         composable(Screen.Home.route) {
             HomeScreen(navController)
+        }
+        composable(Screen.Workout.route + "/{bodyparts}") { backStackEntry ->
+            // Converte os parámetros numa lista
+            val bodyParts = backStackEntry.arguments?.getString("bodyparts")?.split(",") ?: emptyList()
+
+            WorkoutScreen(navController, bodyParts)
         }
     }
 }

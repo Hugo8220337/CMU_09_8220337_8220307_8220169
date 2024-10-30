@@ -13,6 +13,8 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.repositories.ExerciseDbA
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.repositories.QuotesApiRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.EXERCICE_DB_API_BASE_URL
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.QUOTES_API_BASE_URL
+import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -38,9 +40,14 @@ class AppModuleImpl(
         appContext.getSharedPreferences(SETTINGS_PREFERENCES_FILE, Context.MODE_PRIVATE)
     }
 
+    private val client = OkHttpClient.Builder()
+        .protocols(listOf(Protocol.HTTP_1_1))
+        .build()
+
     private val exerciseDbApi: ExerciseDbApi by lazy {
         Retrofit.Builder()
             .baseUrl(EXERCICE_DB_API_BASE_URL)
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ExerciseDbApi::class.java)
@@ -49,6 +56,7 @@ class AppModuleImpl(
     private val quotesApi: QuotesApi by lazy {
         Retrofit.Builder()
             .baseUrl(QUOTES_API_BASE_URL)
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(QuotesApi::class.java)

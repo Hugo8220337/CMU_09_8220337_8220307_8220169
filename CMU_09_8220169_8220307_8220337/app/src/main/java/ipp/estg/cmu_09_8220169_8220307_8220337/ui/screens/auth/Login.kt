@@ -123,6 +123,7 @@ private fun Form(navController: NavController) {
             textModifier = Modifier.align(Alignment.CenterHorizontally),
             fontWeight = FontWeight.Normal,
             textSize = 30,
+            textColor = MaterialTheme.colorScheme.surface,
             buttonColors = ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.primary),
             onClick = {
                 navController.navigate(Screen.Home.route)
