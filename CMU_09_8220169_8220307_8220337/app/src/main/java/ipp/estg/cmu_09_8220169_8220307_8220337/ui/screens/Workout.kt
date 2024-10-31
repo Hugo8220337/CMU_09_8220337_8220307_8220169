@@ -46,7 +46,7 @@ fun WorkoutScreen(navController: NavController, bodyParts: List<String>) {
     }
 
     // Generate workout on the first composition
-    LaunchedEffect(Unit) {
+    LaunchedEffect(true) { // o true faz com que seja só executado uma única vez
         workoutViewModel.generateWorkout(bodyParts)
     }
 
