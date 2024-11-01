@@ -1,6 +1,13 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.room
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.ExerciseItem
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Workout
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.WorkoutExerciseCrossRef
+
 
 /**
  * suspend functions permitem executar sem bloquear o programa
@@ -8,24 +15,22 @@ import androidx.room.Dao
 @Dao
 interface Dao {
 
-//    @Query("SELECT * FROM pokemonentity")
-//    suspend fun getAllPokemons(): List<PokemonEntity>
-//
-//    @Query("Select * from pokemonentity where name LIKE :query")
-//    suspend fun searchPokemon(query:String): List<PokemonEntity>
-//
-//    @Query("SELECT * FROM pokemonentity LIMIT :limit OFFSET :offset")
-//    suspend fun getPokemonsWithLimitAndOffset(limit: Int, offset: Int): List<PokemonEntity>
-//
-//
-//    //    @Insert(onConflict = OnConflictStrategy.REPLACE) // @Upsert faz o mesmo
-//    @Upsert
-//    suspend fun insert(pokemons: List<PokemonEntity>): List<Long>
-//
-//    @Delete
-//    suspend fun delete(pokemons: List<PokemonEntity>): Int
-//
-//    @Query("DELETE FROM pokemonentity")
-//    suspend fun deleteAll()
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertExerciseItem(exercise: ExerciseItem): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertExerciseItems(exercises: List<ExerciseItem>) : List<Long>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertWorkout(workout: Workout) : Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertWorkoutExerciseCrossRef(crossRef: WorkoutExerciseCrossRef) : Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertWorkoutExerciseCrossRefs(crossRefs: List<WorkoutExerciseCrossRef>) : List<Long>
+
+    @Query("SELECT * FROM workout")
+    suspend fun getWorkoutsWithExercises(): List<Workout>
 
 }

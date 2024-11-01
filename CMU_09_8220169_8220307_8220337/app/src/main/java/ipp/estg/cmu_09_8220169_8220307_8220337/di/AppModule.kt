@@ -11,6 +11,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.ExerciseDbApi
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.QuotesApi
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.repositories.ExerciseDbApiRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.repositories.QuotesApiRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.room.repositories.WorkoutLocalRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.EXERCICE_DB_API_BASE_URL
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.QUOTES_API_BASE_URL
 import okhttp3.OkHttpClient
@@ -22,6 +23,7 @@ interface AppModule {
     val settingsPreferencesRepository: SettingsPreferencesRepository
     val exerciseDbApiRepository: ExerciseDbApiRepository
     val quotesApiRepository: QuotesApiRepository
+    val workoutLocalRepository: WorkoutLocalRepository
 
 //    val darkModeEnabled: StateFlow<Boolean>
 //    fun setDarkMode(enabled: Boolean)
@@ -71,7 +73,6 @@ class AppModuleImpl(
     }
 
 
-
     override val settingsPreferencesRepository by lazy {
         SettingsPreferencesRepository(settingsPreferences)
     }
@@ -85,6 +86,9 @@ class AppModuleImpl(
         QuotesApiRepository(quotesApi)
     }
 
+    override val workoutLocalRepository by lazy {
+        WorkoutLocalRepository(localDatabase.dao)
+    }
 
 
 //    private val _darkModeEnabled =

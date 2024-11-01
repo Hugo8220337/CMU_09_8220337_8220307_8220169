@@ -41,10 +41,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun WorkoutGeneratorScreen(navController: NavController) {
-    val coroutineScope = rememberCoroutineScope()
-
     val selectedParts = remember { mutableStateListOf<String>() }
-    val bodyParts = listOf(
+    val bodyParts = listOf( //TODO adaptar para ir buscar à cache, que vem da api
         "back",
         "cardio",
         "chest",
