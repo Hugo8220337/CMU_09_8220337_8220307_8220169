@@ -18,6 +18,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.StartScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.LoginScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.RegisterScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Converter
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -62,10 +63,14 @@ fun MyApp(navController: NavHostController) {
             HomeScreen(navController)
         }
         composable(Screen.Workout.route + "/{bodyparts}") { backStackEntry ->
-            // Converte os parámetros numa lista
-            val bodyParts = backStackEntry.arguments?.getString("bodyparts")?.split(",") ?: emptyList()
+            val converter = Converter()
 
-            WorkoutScreen(navController, bodyParts)
+            // Converte os parámetros numa lista
+            val bodyParts = backStackEntry.arguments?.getString("bodyparts")
+
+            val bodyPartsList = converter.toStringList(bodyParts!!)
+
+            WorkoutScreen(navController, bodyPartsList)
         }
     }
 }

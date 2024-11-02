@@ -7,6 +7,7 @@ import java.time.LocalDate
 @Entity(tableName = "workout")
 class Workout(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Long = 0,
+    val trainedBodyParts: String, // isto é uma lista de body parts, vai-se usar o converter para guardar em String
     val dateOfWorkout: String = LocalDate.now().toString()
 )

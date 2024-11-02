@@ -36,6 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.BuildConfig
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Converter
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.WorkoutViewModel
 import kotlinx.coroutines.launch
 
@@ -112,8 +113,9 @@ fun WorkoutGeneratorScreen(navController: NavController) {
         // Botão para gerar treino
         Button(
             onClick = {
-                val selectedPartsString = selectedParts.joinToString(",")
-                navController.navigate("${Screen.Workout.route}/$selectedPartsString")  // vai para o ecrã com o treino
+                val converter = Converter()
+                val selectedPartsAsString = converter.fromStringList(selectedParts)
+                navController.navigate("${Screen.Workout.route}/$selectedPartsAsString")  // vai para o ecrã com o treino
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -121,7 +123,7 @@ fun WorkoutGeneratorScreen(navController: NavController) {
                 .fillMaxWidth(0.8f),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(12.dp),
-            enabled = if(selectedParts.isEmpty()) false else true
+            enabled = !selectedParts.isEmpty()
         ) {
             Text(
                 "Generate Workout",
