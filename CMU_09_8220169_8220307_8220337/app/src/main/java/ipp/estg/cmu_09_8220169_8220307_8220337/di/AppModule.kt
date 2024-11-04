@@ -7,12 +7,14 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.LOCAL_DB_NAME
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.SETTINGS_PREFERENCES_FILE
 import ipp.estg.cmu_09_8220169_8220307_8220337.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.SettingsPreferencesRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.UserPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.ExerciseDbApi
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.QuotesApi
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.repositories.ExerciseDbApiRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.repositories.QuotesApiRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.EXERCICE_DB_API_BASE_URL
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.QUOTES_API_BASE_URL
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.USER_PREFERENCES_FILE
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -20,6 +22,7 @@ interface AppModule {
     val settingsPreferencesRepository: SettingsPreferencesRepository
     val exerciseDbApiRepository: ExerciseDbApiRepository
     val quotesApiRepository: QuotesApiRepository
+    val userPreferencesRepository: UserPreferencesRepository
 
 //    val darkModeEnabled: StateFlow<Boolean>
 //    fun setDarkMode(enabled: Boolean)
@@ -36,6 +39,10 @@ class AppModuleImpl(
 
     private val settingsPreferences: SharedPreferences by lazy {
         appContext.getSharedPreferences(SETTINGS_PREFERENCES_FILE, Context.MODE_PRIVATE)
+    }
+
+    private val userPreferences: SharedPreferences by lazy {
+        appContext.getSharedPreferences(USER_PREFERENCES_FILE, Context.MODE_PRIVATE)
     }
 
     private val exerciseDbApi: ExerciseDbApi by lazy {
@@ -66,6 +73,10 @@ class AppModuleImpl(
 
     override val settingsPreferencesRepository by lazy {
         SettingsPreferencesRepository(settingsPreferences)
+    }
+
+    override val userPreferencesRepository by lazy {
+        UserPreferencesRepository(userPreferences)
     }
 
 
