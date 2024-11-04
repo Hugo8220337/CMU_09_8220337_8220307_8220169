@@ -7,9 +7,10 @@ object Constants {
     // preferences
     const val USER_PREFERENCES_FILE = "userPreferences"
     const val SETTINGS_PREFERENCES_FILE = "settingsPreferences"
+    const val DAILY_TASKS_PREFERENCES_FILE = "dailyTasksPreferences"
 
     // URLs
-    const val EXERCICE_DB_API_BASE_URL = "https://v2.exercisedb.io/"
+    const val EXERCICE_DB_API_BASE_URL = "https://exercisedb.p.rapidapi.com/"
     const val QUOTES_API_BASE_URL = "https://quotes-inspirational-quotes-motivational-quotes.p.rapidapi.com/"
 
 }

@@ -1,7 +1,6 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs
 
 import android.Manifest
-import android.graphics.Bitmap
 import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -51,9 +50,10 @@ import androidx.compose.ui.unit.dp
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.checkCameraPermission
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.launchCamera
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.requestCameraPermission
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 
 @Composable
-fun MainContent() {
+fun MainContent(homeViewModel: HomeViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -69,17 +69,25 @@ fun MainContent() {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Daily Task Checklist
-        TaskChecklist()
+        TaskChecklist(homeViewModel)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // Daily Photo Section
-        DailyPhotoSection()
+        DailyPhotoSection(homeViewModel)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Motivational Quote or Reminder
+        // Motivational Quote
         MotivationalQuote()
+
+        homeViewModel.getError()?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+
     }
 }
 
@@ -103,7 +111,8 @@ private fun ProgressSection() {
 }
 
 @Composable
-private fun TaskChecklist() {
+private fun TaskChecklist(homeViewModel: HomeViewModel) {
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -120,31 +129,57 @@ private fun TaskChecklist() {
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            listOf(
+
+            // Lista de tarefas com acesso ao estado persistente
+            TaskItemCard(
                 "Drink 4L of Water",
+                homeViewModel::getTaskGallonOfWater,
+                homeViewModel::setTaskGallonOfWater
+            )
+            TaskItemCard(
                 "Complete 2 Workouts",
+                homeViewModel::getTaskTwoWorkouts,
+                homeViewModel::setTaskTwoWorkouts
+            )
+            TaskItemCard(
                 "Follow Diet",
+                homeViewModel::getTaskFollowDiet,
+                homeViewModel::setTaskFollowDiet
+            )
+            TaskItemCard(
                 "Read 10 Pages",
-                "Take Progress Photo"
-            ).forEach { task ->
-                TaskItemCard(task)
-            }
+                homeViewModel::getTaskReadTenPages,
+                homeViewModel::setTaskReadTenPages
+            )
         }
     }
 }
 
 
 @Composable
-private fun TaskItemCard(task: String) {
-    var isChecked by remember { mutableStateOf(false) }
-    val backgroundColor = if (isChecked) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
-    val textColor = if (isChecked) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
+private fun TaskItemCard(
+    task: String,
+    isTaskCompleted: () -> Boolean,
+    setTaskCompleted: (Boolean) -> Unit
+) {
+    var isChecked by remember { mutableStateOf(isTaskCompleted()) }
+
+    // Atualizar as preferências ao clicar
+    fun toggleChecked() {
+        isChecked = !isChecked
+        setTaskCompleted(isChecked)
+    }
+
+    val backgroundColor =
+        if (isChecked) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+    val textColor =
+        if (isChecked) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clickable { isChecked = !isChecked },
+            .clickable { toggleChecked() },
         colors = CardDefaults.cardColors(containerColor = backgroundColor),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.elevatedCardElevation()
@@ -157,7 +192,9 @@ private fun TaskItemCard(task: String) {
         ) {
             Checkbox(
                 checked = isChecked,
-                onCheckedChange = { isChecked = it },
+                onCheckedChange = {
+                    toggleChecked()
+                },
                 colors = CheckboxDefaults.colors(MaterialTheme.colorScheme.primary)
             )
 
@@ -188,15 +225,14 @@ private fun TaskItemCard(task: String) {
 }
 
 @Composable
-fun DailyPhotoSection() {
+fun DailyPhotoSection(homeViewModel: HomeViewModel) {
     val context = LocalContext.current
-    var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var hasCameraPermission by remember { mutableStateOf(false) }
 
     // Reusing permission and camera launch functions
     val cameraLauncher = launchCamera { bitmap ->
         if (bitmap != null) {
-            imageBitmap = bitmap
+            homeViewModel.updateProgressPicture(bitmap)
         }
     }
 
@@ -205,7 +241,7 @@ fun DailyPhotoSection() {
         if (granted) {
             cameraLauncher.launch()
         } else {
-            // Handle permission denied, show message if needed
+            // TODO Handle permission denied, show message if needed
         }
     }
 
@@ -231,8 +267,8 @@ fun DailyPhotoSection() {
                     }
                 }
         ) {
-            if (imageBitmap != null) {
-                Image(bitmap = imageBitmap!!.asImageBitmap(), contentDescription = "Captured Photo")
+            if (homeViewModel.getProgressPicture() != null) {
+                Image(bitmap = homeViewModel.getProgressPicture()!!.asImageBitmap(), contentDescription = "Captured Photo")
             } else {
                 Text(text = "Upload Photo", color = Color.White)
             }

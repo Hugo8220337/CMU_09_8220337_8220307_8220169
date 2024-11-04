@@ -3,7 +3,9 @@ package ipp.estg.cmu_09_8220169_8220307_8220337.preferences
 import android.content.SharedPreferences
 import ipp.estg.cmu_09_8220169_8220307_8220337.Hard75Application
 
-class SettingsPreferencesRepository(private val settingsPreferences: SharedPreferences) {
+class SettingsPreferencesRepository(
+    private val settingsPreferences: SharedPreferences
+) {
     private val NOTIFICATIONS_PREFERENCE = "notifications"
     private val DARK_MODE_PREFERENCE = "darkMode"
     private val LANGUAGE_PREFERENCE = "language"

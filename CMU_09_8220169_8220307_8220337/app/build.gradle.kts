@@ -24,7 +24,7 @@ android {
 
         // Load the values from .properties file
         val properties = Properties()
-        properties.load(project.rootProject.file("local.properties").inputStream())
+        properties.load(project.rootProject.file("gradle.properties").inputStream())
 
         // Configure gradle.properties variables
         buildConfigField("String", "EXERCICEDB_API_KEY", "\"${properties.getProperty("EXERCICEDB_API_KEY")}\"")
@@ -100,7 +100,9 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.2") // Use the latest version
 
     // load images from url
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt.coil3:coil-compose:3.0.0-rc02")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.0-rc02")
+    implementation("io.coil-kt.coil3:coil-gif:3.0.0-rc02") // suport with gifs
 
     // The view calendar library for Android
     implementation("com.kizitonwose.calendar:view:2.6.0")

@@ -158,6 +158,7 @@ private fun Form(navController: NavController) {
                 .padding(vertical = 10.dp),
             textModifier = Modifier.align(Alignment.CenterHorizontally),
             fontWeight = FontWeight.Normal,
+            textColor = MaterialTheme.colorScheme.surface,
             textSize = 30,
             buttonColors = ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.primary),
             onClick = {
