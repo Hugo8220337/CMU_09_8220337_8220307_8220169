@@ -35,6 +35,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.navigation.menuWithLeftNavigation.MenuWithLeftNavigation
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.navigation.menuWithLeftNavigation.NavigationItem
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.ProfileScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.ProgressScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.SettingsScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.MainContent
@@ -98,6 +99,14 @@ fun HomeScreen(navController: NavController) {
             unselectedIcon = Icons.Outlined.Settings,
             content = {
                 SettingsScreen(navController)
+            }
+        ),
+        NavigationItem(
+            title = "Profile",
+            selectedIcon = Icons.Filled.Face,
+            unselectedIcon = Icons.Outlined.Face,
+            content = {
+                ProfileScreen(navController)
             }
         ),
     )
