@@ -8,6 +8,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.LOCAL_DB_NAME
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.SETTINGS_PREFERENCES_FILE
 import ipp.estg.cmu_09_8220169_8220307_8220337.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.SettingsPreferencesRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.UserPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.ExerciseDbApi
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.QuotesApi
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.repositories.ExerciseDbApiRepository
@@ -17,6 +18,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.room.repositories.WorkoutLocalRep
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.DAILY_TASKS_PREFERENCES_FILE
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.EXERCICE_DB_API_BASE_URL
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.QUOTES_API_BASE_URL
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.USER_PREFERENCES_FILE
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import retrofit2.Retrofit
@@ -27,6 +29,7 @@ interface AppModule {
     val dailyTasksPreferencesRepository: DailyTasksRepository
     val exerciseDbApiRepository: ExerciseDbApiRepository
     val quotesApiRepository: QuotesApiRepository
+    val userPreferencesRepository: UserPreferencesRepository
     val workoutLocalRepository: WorkoutLocalRepository
     val dailyTasksLocalRepository: DailyTasksLocalRepository
 
@@ -45,6 +48,10 @@ class AppModuleImpl(
 
     private val settingsPreferences: SharedPreferences by lazy {
         appContext.getSharedPreferences(SETTINGS_PREFERENCES_FILE, Context.MODE_PRIVATE)
+    }
+
+    private val userPreferences: SharedPreferences by lazy {
+        appContext.getSharedPreferences(USER_PREFERENCES_FILE, Context.MODE_PRIVATE)
     }
 
     private val dailyTasksPreferences: SharedPreferences by lazy {
@@ -88,6 +95,10 @@ class AppModuleImpl(
         SettingsPreferencesRepository(settingsPreferences)
     }
 
+    override val userPreferencesRepository by lazy {
+        UserPreferencesRepository(userPreferences)
+    }
+    
     override val dailyTasksPreferencesRepository by lazy {
         DailyTasksRepository(dailyTasksPreferences)
     }
