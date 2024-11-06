@@ -48,8 +48,6 @@ fun CMU_09_8220169_8220307_8220337Theme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    // Observe the StateFlow for dark mode changes
-    val localDarkTheme = Hard75Application.appModule.settingsPreferencesRepository.getDarkModePreference()
 
 
     // Determine the color scheme based on dynamic color and dark mode state
@@ -57,7 +55,7 @@ fun CMU_09_8220169_8220307_8220337Theme(
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
 //            if (darkTheme || localDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-            if (darkTheme || localDarkTheme) DarkColorScheme else LightColorScheme
+            if (darkTheme) DarkColorScheme else LightColorScheme
 
         }
 

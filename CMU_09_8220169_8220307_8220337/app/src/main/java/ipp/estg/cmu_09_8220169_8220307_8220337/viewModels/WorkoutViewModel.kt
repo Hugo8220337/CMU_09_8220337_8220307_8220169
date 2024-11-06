@@ -8,6 +8,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ipp.estg.cmu_09_8220169_8220307_8220337.Hard75Application
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExerciseItem
+import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.repositories.ExerciseDbApiRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.room.repositories.WorkoutLocalRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Resource
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -16,8 +18,9 @@ class WorkoutViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val exerciseDbApiRepository = Hard75Application.appModule.exerciseDbApiRepository
-    private val workoutLocalRepository = Hard75Application.appModule.workoutLocalRepository // cache
+    private val exerciseDbApiRepository = ExerciseDbApiRepository(Hard75Application.appModule.exerciseDbApi)
+    private val workoutLocalRepository = WorkoutLocalRepository(Hard75Application.appModule.workoutDao); // cache
+
 
     var state by mutableStateOf(ScreenState())
         private set

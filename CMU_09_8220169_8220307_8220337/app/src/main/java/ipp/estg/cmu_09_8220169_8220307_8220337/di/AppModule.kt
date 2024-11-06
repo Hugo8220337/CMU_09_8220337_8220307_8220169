@@ -3,18 +3,13 @@ package ipp.estg.cmu_09_8220169_8220307_8220337.di
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.DailyTasksRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.LOCAL_DB_NAME
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.SETTINGS_PREFERENCES_FILE
 import ipp.estg.cmu_09_8220169_8220307_8220337.room.LocalDatabase
-import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.SettingsPreferencesRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.UserPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.ExerciseDbApi
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.QuotesApi
-import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.repositories.ExerciseDbApiRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.repositories.QuotesApiRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.repositories.DailyTasksLocalRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.repositories.WorkoutLocalRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.DailyTaskCompletionDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.WorkoutDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.DAILY_TASKS_PREFERENCES_FILE
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.EXERCICE_DB_API_BASE_URL
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.QUOTES_API_BASE_URL
@@ -25,16 +20,17 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 interface AppModule {
-    val settingsPreferencesRepository: SettingsPreferencesRepository
-    val dailyTasksPreferencesRepository: DailyTasksRepository
-    val exerciseDbApiRepository: ExerciseDbApiRepository
-    val quotesApiRepository: QuotesApiRepository
-    val userPreferencesRepository: UserPreferencesRepository
-    val workoutLocalRepository: WorkoutLocalRepository
-    val dailyTasksLocalRepository: DailyTasksLocalRepository
+    val settingsPreferences: SharedPreferences
+    val userPreferences: SharedPreferences
+    val dailyTasksPreferences: SharedPreferences
 
-//    val darkModeEnabled: StateFlow<Boolean>
-//    fun setDarkMode(enabled: Boolean)
+    // Retrofit API
+    val exerciseDbApi: ExerciseDbApi
+    val quotesApi: QuotesApi
+
+    // Room DAOs
+    val workoutDao: WorkoutDao
+    val dailyTasksCompletionDao: DailyTaskCompletionDao
 }
 
 /**
@@ -46,40 +42,12 @@ class AppModuleImpl(
     private val appContext: Context
 ) : AppModule {
 
-    private val settingsPreferences: SharedPreferences by lazy {
-        appContext.getSharedPreferences(SETTINGS_PREFERENCES_FILE, Context.MODE_PRIVATE)
-    }
-
-    private val userPreferences: SharedPreferences by lazy {
-        appContext.getSharedPreferences(USER_PREFERENCES_FILE, Context.MODE_PRIVATE)
-    }
-
-    private val dailyTasksPreferences: SharedPreferences by lazy {
-        appContext.getSharedPreferences(DAILY_TASKS_PREFERENCES_FILE, Context.MODE_PRIVATE)
-    }
-
+    // útil para fazer chamadas HTTP
     private val client = OkHttpClient.Builder()
         .protocols(listOf(Protocol.HTTP_1_1))
         .build()
 
-    private val exerciseDbApi: ExerciseDbApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(EXERCICE_DB_API_BASE_URL)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ExerciseDbApi::class.java)
-    }
-
-    private val quotesApi: QuotesApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(QUOTES_API_BASE_URL)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(QuotesApi::class.java)
-    }
-
+    // Instanciar a base de dados local no Room
     private val localDatabase by lazy {
         Room.databaseBuilder(
             appContext,
@@ -88,47 +56,40 @@ class AppModuleImpl(
             .build()
     }
 
-
-    // override das propriedades do AppModule
-
-    override val settingsPreferencesRepository by lazy {
-        SettingsPreferencesRepository(settingsPreferences)
+    override val settingsPreferences: SharedPreferences by lazy {
+        appContext.getSharedPreferences(SETTINGS_PREFERENCES_FILE, Context.MODE_PRIVATE)
     }
 
-    override val userPreferencesRepository by lazy {
-        UserPreferencesRepository(userPreferences)
-    }
-    
-    override val dailyTasksPreferencesRepository by lazy {
-        DailyTasksRepository(dailyTasksPreferences)
+    override val userPreferences: SharedPreferences by lazy {
+        appContext.getSharedPreferences(USER_PREFERENCES_FILE, Context.MODE_PRIVATE)
     }
 
-
-    override val exerciseDbApiRepository by lazy {
-        ExerciseDbApiRepository(exerciseDbApi)
+    override val dailyTasksPreferences: SharedPreferences by lazy {
+        appContext.getSharedPreferences(DAILY_TASKS_PREFERENCES_FILE, Context.MODE_PRIVATE)
     }
 
-    override val quotesApiRepository by lazy {
-        QuotesApiRepository(quotesApi)
+    override val exerciseDbApi: ExerciseDbApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(EXERCICE_DB_API_BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ExerciseDbApi::class.java)
     }
 
-    override val workoutLocalRepository by lazy {
-        WorkoutLocalRepository(localDatabase.workoutDao)
+    override val quotesApi: QuotesApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(QUOTES_API_BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(QuotesApi::class.java)
     }
 
-    override val dailyTasksLocalRepository by lazy {
-        DailyTasksLocalRepository(localDatabase.dailyTaskCompletionDao, dailyTasksPreferencesRepository)
-    }
 
 
-//    private val _darkModeEnabled =
-//        MutableStateFlow(settingsPreferences.getBoolean("darkMode", false))
+    override val workoutDao = localDatabase.workoutDao
 
-//    override val darkModeEnabled: StateFlow<Boolean> get() = _darkModeEnabled
-//
-//    override fun setDarkMode(enabled: Boolean) {
-//        settingsPreferences.edit().putBoolean("darkMode", enabled).apply()
-//        _darkModeEnabled.value = enabled // Update the StateFlow
-//    }
+    override val dailyTasksCompletionDao = localDatabase.dailyTaskCompletionDao
 
 }

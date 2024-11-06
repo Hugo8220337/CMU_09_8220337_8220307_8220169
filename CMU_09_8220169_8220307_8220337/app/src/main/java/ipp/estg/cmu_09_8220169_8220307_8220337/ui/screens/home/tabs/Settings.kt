@@ -1,6 +1,5 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs
 
-import android.content.SharedPreferences
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,12 +12,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.Hard75Application
+import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.SettingsPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.SuperUsefulDropDownMenuBox
 
 @Composable
 fun SettingsScreen(navController: NavController) {
 
-    val settingsPreferencesRepo = Hard75Application.appModule.settingsPreferencesRepository
+    val settingsPreferencesRepo = SettingsPreferencesRepository(Hard75Application.appModule.settingsPreferences)
 
     var notificationsEnabled by remember { mutableStateOf( settingsPreferencesRepo.getNotificationsPreference()) }
     var darkModeEnabled by remember { mutableStateOf(settingsPreferencesRepo.getDarkModePreference()) }

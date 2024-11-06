@@ -7,12 +7,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import coil3.Bitmap
 import ipp.estg.cmu_09_8220169_8220307_8220337.Hard75Application
+import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.DailyTasksRepository
 
 class HomeViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    val dailyTasksRepository = Hard75Application.appModule.dailyTasksPreferencesRepository
+    val dailyTasksRepository = DailyTasksRepository(Hard75Application.appModule.dailyTasksPreferences)
 
     private var state by mutableStateOf(ScreenState())
 
