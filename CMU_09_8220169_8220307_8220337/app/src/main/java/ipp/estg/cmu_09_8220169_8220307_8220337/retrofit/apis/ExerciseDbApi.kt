@@ -1,4 +1,4 @@
-package ipp.estg.cmu_09_8220169_8220307_8220337.retrofit
+package ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.apis
 
 import ipp.estg.cmu_09_8220169_8220307_8220337.BuildConfig
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.BodyParts
@@ -12,7 +12,7 @@ import retrofit2.http.Query
 interface ExerciseDbApi {
 
     @GET("exercises/bodyPartList")
-    suspend fun getBodyParts(): BodyParts
+    suspend fun getBodyParts(): Call<BodyParts>
 
     @GET("exercises/bodyPart/{bodyPart}")
     fun getExercisesByBodyPart(
@@ -24,5 +24,5 @@ interface ExerciseDbApi {
 
     // se calhar não vai ser preciso este
     @GET("exercises/name/{exerciseName}")
-    suspend fun getExercisesByName(@Path("exerciseName") exerciseName: String): Exercises
+    suspend fun getExercisesByName(@Path("exerciseName") exerciseName: String): Call<Exercises>
 }

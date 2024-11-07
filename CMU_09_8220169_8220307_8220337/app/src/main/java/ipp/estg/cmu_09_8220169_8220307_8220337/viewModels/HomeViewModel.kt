@@ -5,56 +5,75 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import coil3.Bitmap
-import ipp.estg.cmu_09_8220169_8220307_8220337.Hard75Application
-import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.DailyTasksRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.DailyTasks
+import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.SettingsPreferencesRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.room.LocalDatabase
+import ipp.estg.cmu_09_8220169_8220307_8220337.room.repositories.DailyTasksLocalRepository
+import kotlinx.coroutines.launch
 
 class HomeViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    val dailyTasksRepository = DailyTasksRepository(Hard75Application.appModule.dailyTasksPreferences)
+    val settingsPreferencesRepository: SettingsPreferencesRepository = SettingsPreferencesRepository(application)
 
-    private var state by mutableStateOf(ScreenState())
+    var state: ScreenState by mutableStateOf(ScreenState())
+    val dailyTasksLocalRepository: DailyTasksLocalRepository
+    var tasksLiveData: LiveData<DailyTasks>
 
 
-    fun getTaskGallonOfWater(): Boolean {
-        return dailyTasksRepository.getGallonOfWater()
+    init {
+        val dbDao = LocalDatabase.getDatabase(application).dailyTaskCompletionDao
+        dailyTasksLocalRepository = DailyTasksLocalRepository( dbDao )
+
+        tasksLiveData = dailyTasksLocalRepository.getTodayTasks()
     }
 
-    fun setTaskGallonOfWater(enabled: Boolean) {
-        dailyTasksRepository.setGallonOfWater(enabled)
+//    private fun getTodaysTasks() {
+//
+//
+//        try {
+//            // Recupera as tarefas de hoje do repositório local (Room)
+////            dailyTasksLocalRepository.getTodayTasks().observeForever { todayTasks ->
+////                // Posta o valor para `tasksLiveData`
+////                tasksLiveData.postValue(todayTasks)
+////            }
+//
+//        } catch (e: Exception) {
+//            state = state.copy(error = e.message)
+//        } finally {
+//            state = state.copy(isLoading = false)
+//        }
+//
+//
+//    }
+
+    fun getTodaysTask():LiveData<DailyTasks>{
+        return dailyTasksLocalRepository.getTodayTasks();
     }
 
-    fun getTaskTwoWorkouts(): Boolean {
-        return dailyTasksRepository.getTwoWorkouts()
+    fun setTasksValue(dailyTasks: DailyTasks) {
+        //tasksLiveData.postValue(dailyTasks)
+
+        // insert on room
+        viewModelScope.launch {
+            dailyTasksLocalRepository.insertTasks(
+                dailyTasks.gallonOfWater,
+                dailyTasks.twoWorkouts,
+                dailyTasks.followDiet,
+                dailyTasks.readTenPages,
+                dailyTasks.takeProgressPicture
+            )
+        }
     }
 
-    fun setTaskTwoWorkouts(enabled: Boolean) {
-        dailyTasksRepository.setTwoWorkouts(enabled)
-    }
-
-    fun getTaskFollowDiet(): Boolean {
-        return dailyTasksRepository.getFollowDiet()
-    }
-
-    fun setTaskFollowDiet(enabled: Boolean) {
-        dailyTasksRepository.setFollowDiet(enabled)
-    }
-
-    fun getTaskReadTenPages(): Boolean {
-        return dailyTasksRepository.getReadTenPages()
-    }
-
-    fun setTaskReadTenPages(enabled: Boolean) {
-        dailyTasksRepository.setReadTenPages(enabled)
-    }
 
     // Função para atualizar a imagem
     fun updateProgressPicture(bitmap: Bitmap) {
         state = state.copy(imageBitmap = bitmap)
-
-        dailyTasksRepository.setTakeProgressPicture(true)
     }
 
     fun getProgressPicture(): Bitmap? {

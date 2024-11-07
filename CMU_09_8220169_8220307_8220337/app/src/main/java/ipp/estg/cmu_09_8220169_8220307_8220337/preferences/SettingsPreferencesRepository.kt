@@ -1,14 +1,18 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.preferences
 
+import android.content.Context
 import android.content.SharedPreferences
-import ipp.estg.cmu_09_8220169_8220307_8220337.Hard75Application
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.SETTINGS_PREFERENCES_FILE
 
 class SettingsPreferencesRepository(
-    private val settingsPreferences: SharedPreferences
+    context: Context
 ) {
     private val NOTIFICATIONS_PREFERENCE = "notifications"
     private val DARK_MODE_PREFERENCE = "darkMode"
     private val LANGUAGE_PREFERENCE = "language"
+
+    private val settingsPreferences: SharedPreferences =
+        context.getSharedPreferences(SETTINGS_PREFERENCES_FILE, Context.MODE_PRIVATE)
 
 
     fun getDarkModePreference(): Boolean {

@@ -1,21 +1,28 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.preferences
 
+import android.content.Context
 import android.content.SharedPreferences
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.USER_PREFERENCES_FILE
 
-class UserPreferencesRepository (private val userPreferences: SharedPreferences) {
-    companion object {
-        private const val USERNAME_PREFERENCE = "username"
-        private const val FIRST_NAME_PREFERENCE = "firstName"
-        private const val LAST_NAME_PREFERENCE = "lastName"
-        private const val EMAIL_PREFERENCE = "email"
-        private const val AGE_PREFERENCE = "age"
-        private const val WEIGHT_PREFERENCE = "weight"
-        private const val PROFILE_IMAGE_URI_PREFERENCE = "profileImageUri"
-    }
+class UserPreferencesRepository(
+    context: Context
+) {
+    private val USERNAME_PREFERENCE = "username"
+    private val FIRST_NAME_PREFERENCE = "firstName"
+    private val LAST_NAME_PREFERENCE = "lastName"
+    private val EMAIL_PREFERENCE = "email"
+    private val AGE_PREFERENCE = "age"
+    private val WEIGHT_PREFERENCE = "weight"
+    private val PROFILE_IMAGE_URI_PREFERENCE = "profileImageUri"
+
+
+    private val userPreferences: SharedPreferences = context.getSharedPreferences(
+        USER_PREFERENCES_FILE, Context.MODE_PRIVATE)
 
     // Username
     fun getUsername(): String {
-        return userPreferences.getString(USERNAME_PREFERENCE, "") ?: "" // If null, return empty string
+        return userPreferences.getString(USERNAME_PREFERENCE, "")
+            ?: "" // If null, return empty string
     }
 
     fun setUsername(username: String) {
@@ -24,7 +31,8 @@ class UserPreferencesRepository (private val userPreferences: SharedPreferences)
 
     // First Name
     fun getFirstName(): String {
-        return userPreferences.getString(FIRST_NAME_PREFERENCE, "") ?: "" // If null, return empty string
+        return userPreferences.getString(FIRST_NAME_PREFERENCE, "")
+            ?: "" // If null, return empty string
     }
 
     fun setFirstName(firstName: String) {

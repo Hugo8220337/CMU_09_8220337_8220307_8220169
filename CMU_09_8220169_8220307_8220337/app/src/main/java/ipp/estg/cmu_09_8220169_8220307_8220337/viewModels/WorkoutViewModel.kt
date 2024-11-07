@@ -6,9 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import ipp.estg.cmu_09_8220169_8220307_8220337.Hard75Application
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExerciseItem
+import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.RemoteApis
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.repositories.ExerciseDbApiRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.room.repositories.WorkoutLocalRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Resource
 import kotlinx.coroutines.launch
@@ -18,12 +19,20 @@ class WorkoutViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val exerciseDbApiRepository = ExerciseDbApiRepository(Hard75Application.appModule.exerciseDbApi)
-    private val workoutLocalRepository = WorkoutLocalRepository(Hard75Application.appModule.workoutDao); // cache
+    private val exerciseDbApiRepository = ExerciseDbApiRepository(
+        RemoteApis.getExerciseDbApi()
+    )
+
+    private val workoutLocalRepository: WorkoutLocalRepository
 
 
     var state by mutableStateOf(ScreenState())
         private set
+
+    init {
+        val workoutDao = LocalDatabase.getDatabase(application).workoutDao
+        workoutLocalRepository = WorkoutLocalRepository(workoutDao)
+    }
 
     fun generateWorkout(bodyParts: List<String>) {
         state = state.copy(isGeneratingWorkout = true)

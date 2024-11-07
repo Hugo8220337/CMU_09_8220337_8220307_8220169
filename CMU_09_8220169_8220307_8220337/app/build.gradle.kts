@@ -118,4 +118,7 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.1.0-alpha04")
     implementation("androidx.camera:camera-view:1.0.0-alpha21")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
+
+    // To use LiveData with Compose
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.5")
 }

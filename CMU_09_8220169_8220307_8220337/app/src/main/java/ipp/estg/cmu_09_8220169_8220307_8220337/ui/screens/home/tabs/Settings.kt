@@ -11,14 +11,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import ipp.estg.cmu_09_8220169_8220307_8220337.Hard75Application
-import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.SettingsPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.SuperUsefulDropDownMenuBox
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 
 @Composable
-fun SettingsScreen(navController: NavController) {
+fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
 
-    val settingsPreferencesRepo = SettingsPreferencesRepository(Hard75Application.appModule.settingsPreferences)
+    val settingsPreferencesRepo = homeViewModel.settingsPreferencesRepository
 
     var notificationsEnabled by remember { mutableStateOf( settingsPreferencesRepo.getNotificationsPreference()) }
     var darkModeEnabled by remember { mutableStateOf(settingsPreferencesRepo.getDarkModePreference()) }

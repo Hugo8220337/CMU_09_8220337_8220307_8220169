@@ -1,8 +1,7 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.repositories
 
-import androidx.lifecycle.LiveData
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.Exercises
-import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.ExerciseDbApi
+import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.apis.ExerciseDbApi
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Resource
 import retrofit2.Call
 import retrofit2.Callback

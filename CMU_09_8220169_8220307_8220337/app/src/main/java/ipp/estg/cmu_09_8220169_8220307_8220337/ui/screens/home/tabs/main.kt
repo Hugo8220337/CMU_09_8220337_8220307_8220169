@@ -36,6 +36,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -47,6 +48,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.checkCameraPermission
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.launchCamera
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.requestCameraPermission
@@ -113,6 +115,10 @@ private fun ProgressSection() {
 @Composable
 private fun TaskChecklist(homeViewModel: HomeViewModel) {
 
+    val tasks by homeViewModel.tasksLiveData.observeAsState()
+    val t1 = tasks?.followDiet?:false
+
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -132,24 +138,40 @@ private fun TaskChecklist(homeViewModel: HomeViewModel) {
 
             // Lista de tarefas com acesso ao estado persistente
             TaskItemCard(
-                "Drink 4L of Water",
-                homeViewModel::getTaskGallonOfWater,
-                homeViewModel::setTaskGallonOfWater
+                task = "Drink 4L of Water",
+                isTaskCompleted = tasks?.gallonOfWater ?: false,
+                onTaskToggle = { isCompleted ->
+                    homeViewModel.setTasksValue(
+                        tasks?.copy(gallonOfWater = isCompleted) ?: DailyTasks(gallonOfWater = isCompleted)
+                    )
+                }
             )
             TaskItemCard(
-                "Complete 2 Workouts",
-                homeViewModel::getTaskTwoWorkouts,
-                homeViewModel::setTaskTwoWorkouts
+                task = "Complete 2 Workouts",
+                isTaskCompleted = tasks?.twoWorkouts ?: false,
+                onTaskToggle = { isCompleted ->
+                    homeViewModel.setTasksValue(
+                        tasks?.copy(twoWorkouts = isCompleted) ?: DailyTasks(twoWorkouts = isCompleted)
+                    )
+                }
             )
             TaskItemCard(
-                "Follow Diet",
-                homeViewModel::getTaskFollowDiet,
-                homeViewModel::setTaskFollowDiet
+                task = "Follow Diet",
+                isTaskCompleted = tasks?.followDiet ?: false,
+                onTaskToggle = { isCompleted ->
+                    homeViewModel.setTasksValue(
+                        tasks?.copy(followDiet = isCompleted) ?: DailyTasks(followDiet = isCompleted)
+                    )
+                }
             )
             TaskItemCard(
-                "Read 10 Pages",
-                homeViewModel::getTaskReadTenPages,
-                homeViewModel::setTaskReadTenPages
+                task = "Read 10 Pages",
+                isTaskCompleted = tasks?.readTenPages ?: false,
+                onTaskToggle = { isCompleted ->
+                    homeViewModel.setTasksValue(
+                        tasks?.copy(readTenPages = isCompleted) ?: DailyTasks(readTenPages = isCompleted)
+                    )
+                }
             )
         }
     }
@@ -159,27 +181,21 @@ private fun TaskChecklist(homeViewModel: HomeViewModel) {
 @Composable
 private fun TaskItemCard(
     task: String,
-    isTaskCompleted: () -> Boolean,
-    setTaskCompleted: (Boolean) -> Unit
+    isTaskCompleted: Boolean,
+    onTaskToggle: (Boolean) -> Unit
 ) {
-    var isChecked by remember { mutableStateOf(isTaskCompleted()) }
-
-    // Atualizar as preferências ao clicar
-    fun toggleChecked() {
-        isChecked = !isChecked
-        setTaskCompleted(isChecked)
-    }
-
     val backgroundColor =
-        if (isChecked) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+        if (isTaskCompleted) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
     val textColor =
-        if (isChecked) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
+        if (isTaskCompleted) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clickable { toggleChecked() },
+            .clickable {
+                onTaskToggle(!isTaskCompleted)
+            },
         colors = CardDefaults.cardColors(containerColor = backgroundColor),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.elevatedCardElevation()
@@ -191,9 +207,9 @@ private fun TaskItemCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
-                checked = isChecked,
+                checked = isTaskCompleted,
                 onCheckedChange = {
-                    toggleChecked()
+                    onTaskToggle(!isTaskCompleted)
                 },
                 colors = CheckboxDefaults.colors(MaterialTheme.colorScheme.primary)
             )
@@ -268,7 +284,10 @@ fun DailyPhotoSection(homeViewModel: HomeViewModel) {
                 }
         ) {
             if (homeViewModel.getProgressPicture() != null) {
-                Image(bitmap = homeViewModel.getProgressPicture()!!.asImageBitmap(), contentDescription = "Captured Photo")
+                Image(
+                    bitmap = homeViewModel.getProgressPicture()!!.asImageBitmap(),
+                    contentDescription = "Captured Photo"
+                )
             } else {
                 Text(text = "Upload Photo", color = Color.White)
             }
