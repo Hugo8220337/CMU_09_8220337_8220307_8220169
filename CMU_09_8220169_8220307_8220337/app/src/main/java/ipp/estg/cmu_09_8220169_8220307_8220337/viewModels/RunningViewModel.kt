@@ -5,6 +5,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.BatteryManager
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -18,8 +19,11 @@ class RunningViewModel(
     private val sensorManager: SensorManager  by lazy {
         application.getSystemService(Application.SENSOR_SERVICE) as SensorManager
     }
+    private var sensor: Sensor? = null // Step counter sensor
 
-    private var sensor: Sensor? = null
+    private val batteryManager: BatteryManager by lazy {
+        application.getSystemService(Application.BATTERY_SERVICE) as BatteryManager
+    }
 
 
     val stepCounter = mutableIntStateOf(0)
@@ -36,6 +40,10 @@ class RunningViewModel(
             // Log.d("RunningViewModel", "Step counter sensor not available.")
         }
 
+    }
+
+    fun getBatteryLevel(): Int {
+        return batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -59,4 +67,5 @@ class RunningViewModel(
         // Unregister sensor listener when ViewModel is cleared
         sensorManager.unregisterListener(this)
     }
+    
 }

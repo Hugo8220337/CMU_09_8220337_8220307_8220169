@@ -1,17 +1,19 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.DirectionsRun
+import androidx.compose.material.icons.automirrored.outlined.DirectionsRun
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.DirectionsRun
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material.icons.outlined.DirectionsRun
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material.icons.outlined.Home
@@ -45,6 +47,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.WorkoutGener
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -67,7 +70,7 @@ fun HomeScreen(navController: NavController) {
             unselectedIcon = Icons.Outlined.DateRange,
             badgeCount = 45,
             content = {
-                ProgressScreen(navController)
+                ProgressScreen()
             }
         ),
         NavigationItem(
@@ -81,8 +84,8 @@ fun HomeScreen(navController: NavController) {
         ),
         NavigationItem(
             title = stringResource(id = R.string.running),
-            selectedIcon = Icons.Filled.DirectionsRun,
-            unselectedIcon = Icons.Outlined.DirectionsRun,
+            selectedIcon = Icons.AutoMirrored.Filled.DirectionsRun,
+            unselectedIcon = Icons.AutoMirrored.Outlined.DirectionsRun,
             badgeCount = 45,
             content = {
                 RunningWorkoutScreen(
@@ -163,6 +166,7 @@ fun HomeScreen(navController: NavController) {
 
 
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Preview(showBackground = true)
 @Composable
 fun PreviewMainScreen() {

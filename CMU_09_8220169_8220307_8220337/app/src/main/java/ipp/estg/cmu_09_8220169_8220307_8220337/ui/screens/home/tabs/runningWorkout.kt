@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
@@ -48,7 +49,7 @@ fun RunningWorkoutScreen(
 ) {
     val runningViewModel: RunningViewModel = viewModel()
 
-    val stepCount = runningViewModel.stepCounter
+    val batteryLevel = runningViewModel.getBatteryLevel()
     val pedometerPermission = rememberPermissionState(permission = android.Manifest.permission.ACTIVITY_RECOGNITION)
 
 
@@ -66,63 +67,88 @@ fun RunningWorkoutScreen(
             .padding(16.dp)
     ) {
 
-        // Map Section Placeholder
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)
-                .background(Color.LightGray, shape = RoundedCornerShape(12.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Map View (Your Route)", color = Color.Gray, style = MaterialTheme.typography.bodyMedium)
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        when {
-            pedometerPermission.status.isGranted -> {
-                // Run Details Section
-                RunDetailsSection(distance, time, pace, stepCount.value)
-            }
-            pedometerPermission.status.shouldShowRationale -> {
-                pedometerPermission.launchPermissionRequest()
-            }
-            else -> {
-                Text("Permission denied. Cannot track steps.", color = MaterialTheme.colorScheme.error)
-            }
-        }
-
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Controls: Start, Pause, Stop
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            ControlButton(
-                text = if (runningViewModel.isRunning) "Pause" else "Start",
-                color = if (runningViewModel.isRunning) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
-                onClick = {
-                    runningViewModel.isRunning = !runningViewModel.isRunning
-                }
+        if(batteryLevel > 40) {
+            MainContent(
+                runningViewModel = runningViewModel,
+                pedometerPermission = pedometerPermission,
+                distance = distance,
+                time = time,
+                pace = pace
             )
-            ControlButton(
-                text = "Stop",
-                color = MaterialTheme.colorScheme.error,
-                onClick = {
-                    runningViewModel.isRunning = false
-                    runningViewModel.stepCounter.value = 0
-                }
-            )
+        } else {
+            Text(text = "Battery level is too low for this functionality.", color = MaterialTheme.colorScheme.error)
         }
+
+    }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun MainContent(
+    runningViewModel: RunningViewModel,
+    pedometerPermission: PermissionState,
+    distance: String,
+    time: String,
+    pace: String
+) {
+    val stepCount = runningViewModel.stepCounter
+
+    // Map Section Placeholder
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(250.dp)
+            .background(Color.LightGray, shape = RoundedCornerShape(12.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        Text("Map View (Your Route)", color = Color.Gray, style = MaterialTheme.typography.bodyMedium)
+    }
+
+    Spacer(modifier = Modifier.height(24.dp))
+
+    when {
+        pedometerPermission.status.isGranted -> {
+            // Run Details Section
+            RunDetailsSection(distance, time, pace, stepCount.value)
+        }
+        pedometerPermission.status.shouldShowRationale -> {
+            pedometerPermission.launchPermissionRequest()
+        }
+        else -> {
+            Text("Permission denied. Cannot track steps.", color = MaterialTheme.colorScheme.error)
+        }
+    }
+
+
+    Spacer(modifier = Modifier.height(32.dp))
+
+    // Controls: Start, Pause, Stop
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ControlButton(
+            text = if (runningViewModel.isRunning) "Pause" else "Start",
+            color = if (runningViewModel.isRunning) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
+            onClick = {
+                runningViewModel.isRunning = !runningViewModel.isRunning
+            }
+        )
+        ControlButton(
+            text = "Stop",
+            color = MaterialTheme.colorScheme.error,
+            onClick = {
+                runningViewModel.isRunning = false
+                runningViewModel.stepCounter.value = 0
+            }
+        )
     }
 }
 
 @Composable
-fun RunDetailsSection(distance: String, time: String, pace: String, steps: Int) {
+private fun RunDetailsSection(distance: String, time: String, pace: String, steps: Int) {
     Card(
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
@@ -154,7 +180,7 @@ fun RunDetailsSection(distance: String, time: String, pace: String, steps: Int) 
 }
 
 @Composable
-fun RunDetailItem(label: String, value: String) {
+private fun RunDetailItem(label: String, value: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -174,7 +200,7 @@ fun RunDetailItem(label: String, value: String) {
 }
 
 @Composable
-fun ControlButton(text: String, color: Color, onClick: () -> Unit) {
+private fun ControlButton(text: String, color: Color, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = color),

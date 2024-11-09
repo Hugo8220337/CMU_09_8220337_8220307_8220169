@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -24,18 +22,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.MyBottomSheet
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProgressScreen(navController: NavController, totalDays: Int = 75, completedDays: Int = 4, skippedDays: Int = 1) {
+fun ProgressScreen(totalDays: Int = 75, completedDays: Int = 4) {
 
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
     var selectedDay by rememberSaveable { mutableIntStateOf(1) }
-    val sheetState = rememberModalBottomSheetState()
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 50.dp),  // Adapta as colunas com um tamanho mínimo
@@ -49,7 +43,6 @@ fun ProgressScreen(navController: NavController, totalDays: Int = 75, completedD
             DayCircle(
                 day = day + 1,
                 completedDays = completedDays,
-                skippedDays = skippedDays,
                 onClick = {
                     selectedDay = day + 1
                     isSheetOpen = true
@@ -67,15 +60,15 @@ fun ProgressScreen(navController: NavController, totalDays: Int = 75, completedD
 }
 
 @Composable
-private fun DayCircle(day: Int, completedDays: Int, skippedDays: Int, onClick: () -> Unit = {}) {
+private fun DayCircle(day: Int, completedDays: Int, onClick: () -> Unit = {}) {
     val backgroundColor = when {
         day <= completedDays -> MaterialTheme.colorScheme.primary
-        day == completedDays + 1 && skippedDays > 0 -> Color.Transparent
+        day == completedDays + 1 -> Color.Transparent
 //        else -> Color.LightGray
         else -> Color.Transparent
     }
 
-    val borderModifier = if (day == completedDays + 1 && skippedDays > 0) {
+    val borderModifier = if (day == completedDays + 1) {
         Modifier.border(2.dp, Color.LightGray, CircleShape)
     } else Modifier
 
@@ -118,8 +111,7 @@ fun SheetContent(day: Int) {
 @Composable
 fun ProgressPreview() {
     CMU_09_8220169_8220307_8220337Theme {
-        val navController = rememberNavController()
 
-        ProgressScreen(navController)
+        ProgressScreen()
     }
 }
