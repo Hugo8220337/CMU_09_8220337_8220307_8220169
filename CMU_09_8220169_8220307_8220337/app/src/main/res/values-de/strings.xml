@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CMU_09_8220169_8220307_8220337</string>
+    <string name="apiKey">CMU_09_8220169_8220307_8220337</string>
+    <string name="no_exercises_available">Keine Übungen verfügbar</string>
+    <string name="back">Zurück</string>
+    <string name="next">Weiter</string>
+    <string name="finish">Beenden</string>
+    <string name="password">Passwort</string>
+    <string name="email">E-Mail</string>
+    <string name="login">Anmelden</string>
+    <string name="username">Benutzername</string>
+    <string name="repeat_password">Passwort Wiederholen</string>
+    <string name="register">Registrieren</string>
+    <string name="by_clicking_register_you_agree_to_our">Durch die Registrierung stimmen Sie unseren</string>
+    <string name="and">" und "</string>
+    <string name="terms_of_service">Nutzungsbedingungen</string>
+    <string name="privacy_policy">Datenschutzrichtlinien</string>
+    <string name="home">Startseite</string>
+    <string name="progress">Fortschritt</string>
+    <string name="workout_generator">Workout-Generator</string>
+    <string name="running">Laufen</string>
+    <string name="settings">Einstellungen</string>
+    <string name="profile">Profil</string>
+    <string name="open_menu">Menü Öffnen</string>
+    <string name="daily_tasks">Tägliche Aufgaben</string>
+    <string name="drink_4l_water">4L Wasser Trinken</string>
+    <string name="complete_2_workouts">2 Workouts Abschließen</string>
+    <string name="follow_diet">Diät Einhalten</string>
+    <string name="read_10_pages">10 Seiten Lesen</string>
+    <string name="daily_progress_picture">Tägliches Fortschrittsbild</string>
+    <string name="captured_photo">Aufgenommenes Foto</string>
+    <string name="upload_photo">Foto Hochladen</string>
+    <string name="notification_preferences">Benachrichtigungseinstellungen</string>
+    <string name="enable_notifications">Benachrichtigungen Aktivieren</string>
+    <string name="enable_dark_mode">Dunkelmodus Aktivieren</string>
+    <string name="theme_preferences">Themen-Einstellungen</string>
+    <string name="language">Sprache</string>
+    <string name="generate_workout">Workout Generieren</string>
+    <string name="select_body_parts">Körperteile auswählen</string>
+</resources>

@@ -28,10 +28,12 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.navigation.menuWithLeftNavigation.MenuWithLeftNavigation
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.navigation.menuWithLeftNavigation.NavigationItem
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.ProfileScreen
@@ -52,7 +54,7 @@ fun HomeScreen(navController: NavController) {
     val startingNavItem = 0
     val navItems = listOf(
         NavigationItem(
-            title = "Home",
+            title = stringResource(id = R.string.home),
             selectedIcon = Icons.Filled.Home,
             unselectedIcon = Icons.Outlined.Home,
             content = {
@@ -60,7 +62,7 @@ fun HomeScreen(navController: NavController) {
             }
         ),
         NavigationItem(
-            title = "Progress",
+            title = stringResource(id = R.string.progress),
             selectedIcon = Icons.Filled.DateRange,
             unselectedIcon = Icons.Outlined.DateRange,
             badgeCount = 45,
@@ -69,7 +71,7 @@ fun HomeScreen(navController: NavController) {
             }
         ),
         NavigationItem(
-            title = "Workout Generator",
+            title = stringResource(id = R.string.workout_generator),
             selectedIcon = Icons.Filled.FitnessCenter,
             unselectedIcon = Icons.Outlined.FitnessCenter,
             badgeCount = 45,
@@ -78,7 +80,7 @@ fun HomeScreen(navController: NavController) {
             }
         ),
         NavigationItem(
-            title = "Running",
+            title = stringResource(id = R.string.running),
             selectedIcon = Icons.Filled.DirectionsRun,
             unselectedIcon = Icons.Outlined.DirectionsRun,
             badgeCount = 45,
@@ -95,7 +97,7 @@ fun HomeScreen(navController: NavController) {
             }
         ),
         NavigationItem(
-            title = "Settings",
+            title = stringResource(id = R.string.settings),
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings,
             content = {
@@ -103,7 +105,7 @@ fun HomeScreen(navController: NavController) {
             }
         ),
         NavigationItem(
-            title = "Profile",
+            title = stringResource(id = R.string.profile),
             selectedIcon = Icons.Filled.Face,
             unselectedIcon = Icons.Outlined.Face,
             content = {
@@ -143,7 +145,7 @@ fun HomeScreen(navController: NavController) {
                                 drawerState.open()
                             }
                         }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menu")
+                            Icon(Icons.Default.Menu, contentDescription = stringResource(id = R.string.open_menu))
                         }
                     },
                     scrollBehavior = scrollBehavior,

@@ -46,8 +46,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.checkCameraPermission
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.launchCamera
@@ -129,7 +131,7 @@ private fun TaskChecklist(homeViewModel: HomeViewModel) {
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                "Today's Tasks",
+                stringResource(id = R.string.daily_tasks),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -138,7 +140,7 @@ private fun TaskChecklist(homeViewModel: HomeViewModel) {
 
             // Lista de tarefas com acesso ao estado persistente
             TaskItemCard(
-                task = "Drink 4L of Water",
+                task = stringResource(id = R.string.drink_4l_water),
                 isTaskCompleted = tasks?.gallonOfWater ?: false,
                 onTaskToggle = { isCompleted ->
                     homeViewModel.setTasksValue(
@@ -147,7 +149,7 @@ private fun TaskChecklist(homeViewModel: HomeViewModel) {
                 }
             )
             TaskItemCard(
-                task = "Complete 2 Workouts",
+                task = stringResource(id = R.string.complete_2_workouts),
                 isTaskCompleted = tasks?.twoWorkouts ?: false,
                 onTaskToggle = { isCompleted ->
                     homeViewModel.setTasksValue(
@@ -156,7 +158,7 @@ private fun TaskChecklist(homeViewModel: HomeViewModel) {
                 }
             )
             TaskItemCard(
-                task = "Follow Diet",
+                task = stringResource(id = R.string.follow_diet),
                 isTaskCompleted = tasks?.followDiet ?: false,
                 onTaskToggle = { isCompleted ->
                     homeViewModel.setTasksValue(
@@ -165,7 +167,7 @@ private fun TaskChecklist(homeViewModel: HomeViewModel) {
                 }
             )
             TaskItemCard(
-                task = "Read 10 Pages",
+                task = stringResource(id = R.string.read_10_pages),
                 isTaskCompleted = tasks?.readTenPages ?: false,
                 onTaskToggle = { isCompleted ->
                     homeViewModel.setTasksValue(
@@ -216,13 +218,13 @@ private fun TaskItemCard(
 
             Spacer(modifier = Modifier.width(8.dp))
 
+
             Icon(
                 imageVector = when (task) {
-                    "Drink 4L of Water" -> Icons.Default.LocalDrink
-                    "Complete 2 Workouts" -> Icons.Default.FitnessCenter
-                    "Follow Diet" -> Icons.Default.Restaurant
-                    "Read 10 Pages" -> Icons.Default.Book
-                    "Take Progress Photo" -> Icons.Default.CameraAlt
+                    stringResource(id = R.string.drink_4l_water) -> Icons.Default.LocalDrink
+                    stringResource(id = R.string.complete_2_workouts) -> Icons.Default.FitnessCenter
+                    stringResource(id = R.string.follow_diet) -> Icons.Default.Restaurant
+                    stringResource(id = R.string.read_10_pages) -> Icons.Default.Book
                     else -> Icons.Default.Check
                 },
                 contentDescription = null,
@@ -267,7 +269,7 @@ fun DailyPhotoSection(homeViewModel: HomeViewModel) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Daily Progress Photo", style = MaterialTheme.typography.bodyMedium)
+        Text(stringResource(id = R.string.daily_progress_picture), style = MaterialTheme.typography.bodyMedium)
 
         Box(
             contentAlignment = Alignment.Center,
@@ -286,10 +288,10 @@ fun DailyPhotoSection(homeViewModel: HomeViewModel) {
             if (homeViewModel.getProgressPicture() != null) {
                 Image(
                     bitmap = homeViewModel.getProgressPicture()!!.asImageBitmap(),
-                    contentDescription = "Captured Photo"
+                    contentDescription = stringResource(id = R.string.captured_photo)
                 )
             } else {
-                Text(text = "Upload Photo", color = Color.White)
+                Text(text = stringResource(id = R.string.upload_photo), color = Color.White)
             }
         }
     }

@@ -7,10 +7,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.SuperUsefulDropDownMenuBox
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 
@@ -31,7 +33,7 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
             .fillMaxSize()
     ) {
         Text(
-            text = "Preferências de Notificação",
+            text = stringResource(id = R.string.notification_preferences),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp)
@@ -41,7 +43,7 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "Ativar Notificações")
+            Text(text = stringResource(id = R.string.enable_notifications))
             Switch(
                 checked = notificationsEnabled,
                 onCheckedChange = {
@@ -58,7 +60,7 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Preferências de Tema",
+            text = stringResource(id = R.string.theme_preferences),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp)
@@ -68,7 +70,7 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "Ativar Modo Escuro")
+            Text(text = stringResource(id = R.string.enable_dark_mode))
             Switch(
                 checked = darkModeEnabled,
                 onCheckedChange = {
@@ -87,15 +89,15 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Idioma",
+            text = stringResource(id = R.string.language),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         SuperUsefulDropDownMenuBox(
-            label = "Idioma",
+            label = stringResource(id = R.string.language),
             currentValue = selectedLanguage,
-            options = listOf("pt-pt", "en"),
+            options = listOf("pt-rPT", "en", "de"),
             onOptionSelected = {
                 selectedLanguage = it
                 settingsPreferencesRepo.setLanguagePreference(it)

@@ -28,12 +28,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.BuildConfig
+import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Converter
@@ -64,7 +66,7 @@ fun WorkoutGeneratorScreen(navController: NavController) {
             .padding(16.dp)
     ) {
         Text(
-            "Select Body Parts",
+            stringResource(id = R.string.select_body_parts),
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(bottom = 12.dp)
@@ -126,7 +128,7 @@ fun WorkoutGeneratorScreen(navController: NavController) {
             enabled = !selectedParts.isEmpty()
         ) {
             Text(
-                "Generate Workout",
+                text = stringResource(id = R.string.generate_workout),
                 color = Color.White,
                 style = MaterialTheme.typography.bodyLarge
             )
