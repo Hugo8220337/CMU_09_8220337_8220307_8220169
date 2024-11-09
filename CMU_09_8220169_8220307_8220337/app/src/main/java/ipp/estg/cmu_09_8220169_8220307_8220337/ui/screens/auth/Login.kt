@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
@@ -68,7 +69,7 @@ private fun Header() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.minilogo),
-            contentDescription = "Leaflings Logo",
+            contentDescription = stringResource(id = R.string.app_name),
             modifier = Modifier
                 .size(200.dp)
         )
@@ -96,7 +97,7 @@ private fun Form(navController: NavController) {
         TextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
+            label = { Text(stringResource(id = R.string.email)) },
             modifier = Modifier.fillMaxWidth(0.85f) // Adjust the width (85% of screen width)
         )
 
@@ -106,7 +107,7 @@ private fun Form(navController: NavController) {
         TextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            label = { Text(stringResource(id = R.string.password)) },
             visualTransformation = PasswordVisualTransformation(), // Hide password text
             modifier = Modifier.fillMaxWidth(0.85f) // Same width as email field
         )
@@ -115,7 +116,7 @@ private fun Form(navController: NavController) {
 
         // Login Button
         LightSquaredButton(
-            text = "Login",
+            text = stringResource(id = R.string.login),
             buttonModifier = Modifier
                 .fillMaxWidth(0.85f) // Make the button the same width as the TextFields
                 .height(80.dp) // Adjust height if needed

@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.LightSquaredButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
@@ -72,7 +74,7 @@ private fun Header() {
     ) {
 
         Text(
-            text = "Register",
+            text = stringResource(id = R.string.register),
             fontSize = 55.sp,
             textAlign = TextAlign.Center
         )
@@ -110,7 +112,7 @@ private fun Form(navController: NavController) {
         TextField(
             value = userName,
             onValueChange = { userName = it },
-            label = { Text("Username") },
+            label = { Text(stringResource(id = R.string.username)) },
             modifier = Modifier.fillMaxWidth(0.85f) // Adjust the width (85% of screen width)
         )
 
@@ -121,7 +123,7 @@ private fun Form(navController: NavController) {
         TextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
+            label = { Text(stringResource(id = R.string.email)) },
             modifier = Modifier.fillMaxWidth(0.85f) // Adjust the width (85% of screen width)
         )
 
@@ -131,7 +133,7 @@ private fun Form(navController: NavController) {
         TextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            label = { Text(stringResource(id = R.string.password)) },
             visualTransformation = PasswordVisualTransformation(), // Hide password text
             modifier = Modifier.fillMaxWidth(0.85f) // Same width as email field
         )
@@ -142,7 +144,7 @@ private fun Form(navController: NavController) {
         TextField(
             value = password2,
             onValueChange = { password2 = it },
-            label = { Text("Repeat Password") },
+            label = { Text(stringResource(id = R.string.repeat_password)) },
             visualTransformation = PasswordVisualTransformation(), // Hide password text
             modifier = Modifier.fillMaxWidth(0.85f) // Same width as email field
         )
@@ -151,7 +153,7 @@ private fun Form(navController: NavController) {
 
         // Register Button
         LightSquaredButton(
-            text = "Register",
+            text = stringResource(id = R.string.register),
             buttonModifier = Modifier
                 .fillMaxWidth(0.85f)
                 .height(80.dp)
@@ -179,13 +181,13 @@ private fun TermsOfService() {
     ) {
         Text(
             text = buildAnnotatedString {
-                append("By clicking Register, you agree to 75 Hard's ")
+                append(stringResource(id = R.string.by_clicking_register_you_agree_to_our))
                 withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
-                    append("Terms of Service")
+                    append(stringResource(id = R.string.terms_of_service))
                 }
-                append(" and ")
+                append(stringResource(id = R.string.and))
                 withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
-                    append("Privacy Policy")
+                    append(stringResource(id = R.string.privacy_policy))
                 }
             },
             fontSize = 15.sp,

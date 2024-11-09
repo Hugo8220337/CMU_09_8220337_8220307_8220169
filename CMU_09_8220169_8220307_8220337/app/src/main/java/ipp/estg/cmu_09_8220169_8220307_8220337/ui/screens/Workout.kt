@@ -27,10 +27,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExerciseItem
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.WorkoutViewModel
@@ -66,7 +68,8 @@ fun WorkoutScreen(navController: NavController, bodyParts: List<String>) {
             } else {
                 if (state.workout.isEmpty()) {
                     Text(
-                        text = "No exercises available.",
+                        text = stringResource(id = R.string.no_exercises_available),
+
                         style = MaterialTheme.typography.bodyLarge
                     )
                 } else {
@@ -97,7 +100,8 @@ private fun ExerciseScreen(navController: NavController, exercises: List<Exercis
                     .weight(1f)
                     .padding(end = 8.dp)
             ) {
-                Text(text = "Retroceder")
+//                Text(text = "Retroceder")
+                Text(text = stringResource(id = R.string.back))
             }
         }
 
@@ -108,14 +112,16 @@ private fun ExerciseScreen(navController: NavController, exercises: List<Exercis
                     .weight(1f)
                     .padding(start = 8.dp)
             ) {
-                Text(text = "Avançar")
+//                Text(text = "Avançar")
+                Text(text = stringResource(id = R.string.next))
             }
         } else {
             Button(
                 onClick = { navController.navigate(Screen.Home.route) },
                 modifier = Modifier.weight(1f)
             ) {
-                Text(text = "Finalizar")
+//                Text(text = "Finalizar")
+                Text(text = stringResource(id = R.string.finish))
             }
         }
     }

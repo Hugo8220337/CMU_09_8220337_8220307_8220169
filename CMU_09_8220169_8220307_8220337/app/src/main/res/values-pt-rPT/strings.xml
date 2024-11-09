@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CMU_09_8220169_8220307_8220337</string>
+    <string name="apiKey">CMU_09_8220169_8220307_8220337</string>
+    <string name="no_exercises_available">Sem exercícios disponíveis</string>
+    <string name="back">Voltar</string>
+    <string name="next">Próximo</string>
+    <string name="finish">Concluir</string>
+    <string name="password">Senha</string>
+    <string name="email">Email</string>
+    <string name="login">Iniciar Sessão</string>
+    <string name="username">Nome de Utilizador</string>
+    <string name="repeat_password">Repetir Senha</string>
+    <string name="register">Registar</string>
+    <string name="by_clicking_register_you_agree_to_our">Ao registar, concorda com os nossos</string>
+    <string name="and">" e "</string>
+    <string name="terms_of_service">Termos de Serviço</string>
+    <string name="privacy_policy">Política de Privacidade</string>
+    <string name="home">Início</string>
+    <string name="progress">Progresso</string>
+    <string name="workout_generator">Gerador de Treino</string>
+    <string name="running">Corrida</string>
+    <string name="settings">Definições</string>
+    <string name="profile">Perfil</string>
+    <string name="open_menu">Abrir Menu</string>
+    <string name="daily_tasks">Tarefas Diárias</string>
+    <string name="drink_4l_water">Beber 4L de Água</string>
+    <string name="complete_2_workouts">Concluir 2 Treinos</string>
+    <string name="follow_diet">Seguir a Dieta</string>
+    <string name="read_10_pages">Ler 10 Páginas</string>
+    <string name="daily_progress_picture">Foto Diária de Progresso</string>
+    <string name="captured_photo">Foto Capturada</string>
+    <string name="upload_photo">Carregar Foto</string>
+    <string name="notification_preferences">Preferências de Notificação</string>
+    <string name="enable_notifications">Ativar Notificações</string>
+    <string name="enable_dark_mode">Ativar Modo Escuro</string>
+    <string name="theme_preferences">Preferências de Tema</string>
+    <string name="language">Idioma</string>
+    <string name="generate_workout">Gerar Treino</string>
+    <string name="select_body_parts">Selecione as partes do corpo</string>
+</resources>

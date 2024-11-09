@@ -32,29 +32,6 @@ class HomeViewModel(
         tasksLiveData = dailyTasksLocalRepository.getTodayTasks()
     }
 
-//    private fun getTodaysTasks() {
-//
-//
-//        try {
-//            // Recupera as tarefas de hoje do repositório local (Room)
-////            dailyTasksLocalRepository.getTodayTasks().observeForever { todayTasks ->
-////                // Posta o valor para `tasksLiveData`
-////                tasksLiveData.postValue(todayTasks)
-////            }
-//
-//        } catch (e: Exception) {
-//            state = state.copy(error = e.message)
-//        } finally {
-//            state = state.copy(isLoading = false)
-//        }
-//
-//
-//    }
-
-    fun getTodaysTask():LiveData<DailyTasks>{
-        return dailyTasksLocalRepository.getTodayTasks();
-    }
-
     fun setTasksValue(dailyTasks: DailyTasks) {
         //tasksLiveData.postValue(dailyTasks)
 
