@@ -1,6 +1,7 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent

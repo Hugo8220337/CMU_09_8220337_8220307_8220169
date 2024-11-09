@@ -1,5 +1,7 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,33 +18,47 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 
+@RequiresApi(Build.VERSION_CODES.Q)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun RunningWorkoutScreen(
     distance: String,
     time: String,
-    pace: String,
-    steps: String,
-    onStart: () -> Unit,
-    onPause: () -> Unit,
-    onStop: () -> Unit
+    pace: String
 ) {
-    val isRunning by remember { mutableStateOf(false) } // Track if the run is active
+    val runningViewModel: RunningViewModel = viewModel()
+
+    val stepCount = runningViewModel.stepCounter
+    val pedometerPermission = rememberPermissionState(permission = android.Manifest.permission.ACTIVITY_RECOGNITION)
+
+
+    // Only request permission if it's not already granted
+    LaunchedEffect(pedometerPermission.status) {
+        if (!pedometerPermission.status.isGranted) {
+            pedometerPermission.launchPermissionRequest()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -63,8 +79,19 @@ fun RunningWorkoutScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Run Details Section
-        RunDetailsSection(distance, time, pace, steps)
+        when {
+            pedometerPermission.status.isGranted -> {
+                // Run Details Section
+                RunDetailsSection(distance, time, pace, stepCount.value)
+            }
+            pedometerPermission.status.shouldShowRationale -> {
+                pedometerPermission.launchPermissionRequest()
+            }
+            else -> {
+                Text("Permission denied. Cannot track steps.", color = MaterialTheme.colorScheme.error)
+            }
+        }
+
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -76,21 +103,26 @@ fun RunningWorkoutScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             ControlButton(
-                text = if (isRunning) "Pause" else "Start",
-                color = if (isRunning) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
-                onClick = if (isRunning) onPause else onStart
+                text = if (runningViewModel.isRunning) "Pause" else "Start",
+                color = if (runningViewModel.isRunning) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
+                onClick = {
+                    runningViewModel.isRunning = !runningViewModel.isRunning
+                }
             )
             ControlButton(
                 text = "Stop",
                 color = MaterialTheme.colorScheme.error,
-                onClick = onStop
+                onClick = {
+                    runningViewModel.isRunning = false
+                    runningViewModel.stepCounter.value = 0
+                }
             )
         }
     }
 }
 
 @Composable
-fun RunDetailsSection(distance: String, time: String, pace: String, steps: String) {
+fun RunDetailsSection(distance: String, time: String, pace: String, steps: Int) {
     Card(
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
@@ -105,12 +137,18 @@ fun RunDetailsSection(distance: String, time: String, pace: String, steps: Strin
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             RunDetailItem(label = "Distance", value = "$distance km")
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
             RunDetailItem(label = "Time", value = time)
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
             RunDetailItem(label = "Pace", value = "$pace min/km")
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
-            RunDetailItem(label = "Steps", value = steps)
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            RunDetailItem(label = "Steps", value = steps.toString())
         }
     }
 }
@@ -158,11 +196,7 @@ fun StartPagePreview() {
         RunningWorkoutScreen(
             distance = "5.2",
             time = "30:00",
-            pace = "5:45",
-            steps = "7,500",
-            onStart = { },
-            onPause = { },
-            onStop = { }
+            pace = "5:45"
         )
     }
 }

@@ -88,11 +88,7 @@ fun HomeScreen(navController: NavController) {
                 RunningWorkoutScreen(
                     distance = "5.2",
                     time = "30:00",
-                    pace = "5:45",
-                    steps = "7,500",
-                    onStart = { },
-                    onPause = { },
-                    onStop = { }
+                    pace = "5:45"
                 )
             }
         ),
