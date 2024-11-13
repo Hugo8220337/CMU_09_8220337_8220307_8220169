@@ -1,21 +1,20 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -25,7 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,100 +36,87 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.LightSquaredButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
 
-@SuppressLint("SuspiciousIndentation")
 @Composable
 fun LoginScreen(navController: NavController) {
-    val scrollState = rememberScrollState()
-
-    Scaffold { innerPadding ->
-        Column(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.tertiary
+                    )
+                )
+            )
+    ) {
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .padding(32.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Header()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.minilogo),
+                    contentDescription = stringResource(id = R.string.app_name),
+                    modifier = Modifier.size(200.dp)
+                )
 
-            Form(navController)
-        }
-    }
-}
+                var email by remember {
+                    mutableStateOf(TextFieldValue())
+                }
 
-@Composable
-private fun Header() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(top = 35.dp)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.minilogo),
-            contentDescription = stringResource(id = R.string.app_name),
-            modifier = Modifier
-                .size(200.dp)
-        )
-    }
-}
+                var password by remember {
+                    mutableStateOf(TextFieldValue())
+                }
 
-@Composable
-private fun Form(navController: NavController) {
-    var email by remember {
-        mutableStateOf(TextFieldValue())
-    }
+                TextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text(stringResource(id = R.string.email)) },
+                    modifier = Modifier.fillMaxWidth(0.85f),
 
-    var password by remember {
-        mutableStateOf(TextFieldValue())
-    }
+                )
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .padding(vertical = 60.dp)
-            .fillMaxWidth()
-    ) {
-        // Email TextField
-        TextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text(stringResource(id = R.string.email)) },
-            modifier = Modifier.fillMaxWidth(0.85f) // Adjust the width (85% of screen width)
-        )
+                TextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text(stringResource(id = R.string.password)) },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth(0.85f),
+                )
 
-        Spacer(modifier = Modifier.height(50.dp))
-
-        // Password TextField
-        TextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text(stringResource(id = R.string.password)) },
-            visualTransformation = PasswordVisualTransformation(), // Hide password text
-            modifier = Modifier.fillMaxWidth(0.85f) // Same width as email field
-        )
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        // Login Button
-        LightSquaredButton(
-            text = stringResource(id = R.string.login),
-            buttonModifier = Modifier
-                .fillMaxWidth(0.85f) // Make the button the same width as the TextFields
-                .height(80.dp) // Adjust height if needed
-                .padding(vertical = 10.dp),
-            textModifier = Modifier.align(Alignment.CenterHorizontally),
-            fontWeight = FontWeight.Normal,
-            textSize = 30,
-            textColor = MaterialTheme.colorScheme.surface,
-            buttonColors = ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.primary),
-            onClick = {
-                navController.navigate(Screen.Home.route)
+                Button(
+                    onClick = {
+                        navController.navigate(Screen.Home.route)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(0.85f)
+                        .padding(vertical = 8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        stringResource(id = R.string.login),
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
             }
-        )
+        }
     }
 }
 

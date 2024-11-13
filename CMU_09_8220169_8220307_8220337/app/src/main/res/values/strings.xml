@@ -37,5 +37,7 @@
     <string name="language">Language</string>
     <string name="generate_workout">Generate Workout</string>
     <string name="select_body_parts">Select Body Parts</string>
+    <string name="previous">Previus</string>
+    <string name="your_workout">Your Workout</string>
 
 </resources>

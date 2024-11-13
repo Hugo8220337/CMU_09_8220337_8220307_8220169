@@ -181,14 +181,18 @@ private fun BodyPartCard(
                 tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(32.dp)
             )
+
             Spacer(modifier = Modifier.height(8.dp))
+
             Text(
                 text = partName,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium,
                 color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
             )
+
             Spacer(modifier = Modifier.height(8.dp))
+
             Checkbox(
                 checked = isSelected,
                 onCheckedChange = { onPartClicked() },
