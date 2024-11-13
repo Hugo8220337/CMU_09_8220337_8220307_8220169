@@ -44,6 +44,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.SettingsScre
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.MainContent
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.RunningWorkoutStartScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.WorkoutGeneratorScreen
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.yourActivitiesScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 import kotlinx.coroutines.launch
 
@@ -106,6 +107,14 @@ fun HomeScreen(navController: NavController) {
                 ProfileScreen(navController)
             }
         ),
+        NavigationItem(
+            title = "Your Activities",
+            selectedIcon = Icons.Filled.DateRange,
+            unselectedIcon = Icons.Outlined.DateRange,
+            content = {
+                yourActivitiesScreen(navController)
+            }
+        )
     )
 
 
