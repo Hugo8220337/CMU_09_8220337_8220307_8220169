@@ -1,7 +1,5 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,217 +10,194 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BatteryAlert
+import androidx.compose.material.icons.filled.DirectionsRun
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
+import androidx.navigation.NavController
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 
-@RequiresApi(Build.VERSION_CODES.Q)
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun RunningWorkoutScreen(
-    distance: String,
-    time: String,
-    pace: String
+fun RunningWorkoutStartScreen(
+    navController: NavController
 ) {
     val runningViewModel: RunningViewModel = viewModel()
-
     val batteryLevel = runningViewModel.getBatteryLevel()
-    val pedometerPermission = rememberPermissionState(permission = android.Manifest.permission.ACTIVITY_RECOGNITION)
 
-
-    // Only request permission if it's not already granted
-    LaunchedEffect(pedometerPermission.status) {
-        if (!pedometerPermission.status.isGranted) {
-            pedometerPermission.launchPermissionRequest()
-        }
-    }
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
             .padding(16.dp)
     ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Top Section with Welcome Text
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(top = 32.dp)
+            ) {
+                Text(
+                    text = "Ready for Your Run?",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
 
-        if(batteryLevel > 40) {
-            MainContent(
-                runningViewModel = runningViewModel,
-                pedometerPermission = pedometerPermission,
-                distance = distance,
-                time = time,
-                pace = pace
-            )
-        } else {
-            Text(text = "Battery level is too low for this functionality.", color = MaterialTheme.colorScheme.error)
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Track your progress and achieve your goals",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            // Stats Preview Cards
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 24.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    StatsPreviewCard(
+                        icon = Icons.Default.DirectionsRun,
+                        title = "Distance",
+                        value = "0.0 km"
+                    )
+                    StatsPreviewCard(
+                        icon = Icons.Default.Timer,
+                        title = "Duration",
+                        value = "00:00"
+                    )
+                }
+            }
+
+            // Bottom Section with Start Button or Battery Warning
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(bottom = 32.dp)
+            ) {
+                if (batteryLevel > 40) {
+                    Button(
+                        onClick = { navController.navigate(Screen.RunningWorkout.route) },
+                        modifier = Modifier
+                            .height(56.dp)
+                            .fillMaxWidth(0.8f),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ),
+                        shape = RoundedCornerShape(28.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.DirectionsRun,
+                            contentDescription = "Start Running",
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text(
+                            text = "Start Workout",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                } else {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.BatteryAlert,
+                                contentDescription = "Battery Warning",
+                                tint = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                            Text(
+                                text = "Battery level too low (${batteryLevel}%)\nPlease charge your device",
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+                }
+            }
         }
-
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun MainContent(
-    runningViewModel: RunningViewModel,
-    pedometerPermission: PermissionState,
-    distance: String,
-    time: String,
-    pace: String
+private fun StatsPreviewCard(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    value: String
 ) {
-    val stepCount = runningViewModel.stepCounter
-
-    // Map Section Placeholder
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(250.dp)
-            .background(Color.LightGray, shape = RoundedCornerShape(12.dp)),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("Map View (Your Route)", color = Color.Gray, style = MaterialTheme.typography.bodyMedium)
-    }
-
-    Spacer(modifier = Modifier.height(24.dp))
-
-    when {
-        pedometerPermission.status.isGranted -> {
-            // Run Details Section
-            RunDetailsSection(distance, time, pace, stepCount.value)
-        }
-        pedometerPermission.status.shouldShowRationale -> {
-            pedometerPermission.launchPermissionRequest()
-        }
-        else -> {
-            Text("Permission denied. Cannot track steps.", color = MaterialTheme.colorScheme.error)
-        }
-    }
-
-
-    Spacer(modifier = Modifier.height(32.dp))
-
-    // Controls: Start, Pause, Stop
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        ControlButton(
-            text = if (runningViewModel.isRunning) "Pause" else "Start",
-            color = if (runningViewModel.isRunning) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
-            onClick = {
-                runningViewModel.isRunning = !runningViewModel.isRunning
-            }
-        )
-        ControlButton(
-            text = "Stop",
-            color = MaterialTheme.colorScheme.error,
-            onClick = {
-                runningViewModel.isRunning = false
-                runningViewModel.stepCounter.value = 0
-            }
-        )
-    }
-}
-
-@Composable
-private fun RunDetailsSection(distance: String, time: String, pace: String, steps: Int) {
     Card(
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 16.dp)
+            .width(150.dp)
+            .padding(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        )
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            RunDetailItem(label = "Distance", value = "$distance km")
-
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-            RunDetailItem(label = "Time", value = time)
-
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-            RunDetailItem(label = "Pace", value = "$pace min/km")
-
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-            RunDetailItem(label = "Steps", value = steps.toString())
+            Icon(
+                imageVector = icon,
+                contentDescription = title,
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
         }
-    }
-}
-
-@Composable
-private fun RunDetailItem(label: String, value: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-}
-
-@Composable
-private fun ControlButton(text: String, color: Color, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = color),
-        shape = RoundedCornerShape(50),
-        modifier = Modifier
-            .width(120.dp)
-            .padding(8.dp)
-    ) {
-        Text(text = text, color = Color.White)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun StartPagePreview() {
-    CMU_09_8220169_8220307_8220337Theme {
-        val navController = rememberNavController()
-
-        RunningWorkoutScreen(
-            distance = "5.2",
-            time = "30:00",
-            pace = "5:45"
-        )
     }
 }
