@@ -56,6 +56,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.OnboardingScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.GoldColor
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.checkCameraPermission
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.launchCamera
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.requestCameraPermission
@@ -73,7 +74,7 @@ fun MainContent(homeViewModel: HomeViewModel) {
     ) {
 
         // Progress Overview Section
-        ProgressSection()
+        ProgressSection(homeViewModel.streak)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -101,17 +102,17 @@ fun MainContent(homeViewModel: HomeViewModel) {
 }
 
 @Composable
-private fun ProgressSection() {
+private fun ProgressSection(streak: Int) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Day 20 of 75", style = MaterialTheme.typography.bodyMedium)
+        Text("Day $streak of 75", style = MaterialTheme.typography.bodyMedium)
 
         LinearProgressIndicator(
             progress = {
-                20f / 75f // Dynamic based on progress
+                streak / 75f // Dynamic based on progress
             },
-            color = MaterialTheme.colorScheme.primary,
+            color = if(streak <= 75) MaterialTheme.colorScheme.primary else GoldColor,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),

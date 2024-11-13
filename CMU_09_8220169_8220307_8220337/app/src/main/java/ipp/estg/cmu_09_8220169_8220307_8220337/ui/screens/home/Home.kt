@@ -42,13 +42,12 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.ProfileScree
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.ProgressScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.SettingsScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.MainContent
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.RunningWorkoutScreen
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.RunningWorkoutStartScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.WorkoutGeneratorScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.yourActivitiesScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -71,7 +70,7 @@ fun HomeScreen(navController: NavController) {
             unselectedIcon = Icons.Outlined.DateRange,
             badgeCount = 45,
             content = {
-                ProgressScreen()
+                ProgressScreen(homeViewModel.streak)
             }
         ),
         NavigationItem(
@@ -89,11 +88,7 @@ fun HomeScreen(navController: NavController) {
             unselectedIcon = Icons.AutoMirrored.Outlined.DirectionsRun,
             badgeCount = 45,
             content = {
-                RunningWorkoutScreen(
-                    distance = "5.2",
-                    time = "30:00",
-                    pace = "5:45"
-                )
+                RunningWorkoutStartScreen(navController)
             }
         ),
         NavigationItem(

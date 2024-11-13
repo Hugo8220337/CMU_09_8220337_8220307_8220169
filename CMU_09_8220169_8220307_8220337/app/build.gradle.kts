@@ -109,11 +109,9 @@ dependencies {
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.0-rc02")
     implementation("io.coil-kt.coil3:coil-gif:3.0.0-rc02") // suport with gifs
 
-    // The view calendar library for Android
-    implementation("com.kizitonwose.calendar:view:2.6.0")
 
     // The compose calendar library for Android
-    implementation("com.kizitonwose.calendar:compose:2.6.0")
+//    implementation("com.kizitonwose.calendar:compose:2.6.0")
 
     // mais icons
     implementation("androidx.compose.material:material-icons-extended:1.7.1")
@@ -126,4 +124,7 @@ dependencies {
 
     // To use LiveData with Compose
     implementation("androidx.compose.runtime:runtime-livedata:1.7.5")
+
+    // For Background Services
+    implementation ("androidx.work:work-runtime-ktx:2.8.1")
 }

@@ -1,6 +1,5 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.retrofit
 
-import android.content.Context
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.apis.ExerciseDbApi
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.apis.QuotesApi
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.EXERCICE_DB_API_BASE_URL
