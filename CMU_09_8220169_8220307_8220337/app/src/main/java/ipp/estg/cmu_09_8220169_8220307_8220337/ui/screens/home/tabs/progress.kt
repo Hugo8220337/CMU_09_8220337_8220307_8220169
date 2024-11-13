@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +27,14 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.MyBottomSheet
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
 
 @Composable
-fun ProgressScreen(totalDays: Int = 75, completedDays: Int = 4) {
+fun ProgressScreen(completedDays: Int) {
+    var totalDays by rememberSaveable { mutableIntStateOf(75) }
+
+    LaunchedEffect(Unit) {
+        if (completedDays > totalDays) {
+            totalDays = completedDays
+        }
+    }
 
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
     var selectedDay by rememberSaveable { mutableIntStateOf(1) }
@@ -112,6 +120,6 @@ fun SheetContent(day: Int) {
 fun ProgressPreview() {
     CMU_09_8220169_8220307_8220337Theme {
 
-        ProgressScreen()
+        ProgressScreen(5)
     }
 }

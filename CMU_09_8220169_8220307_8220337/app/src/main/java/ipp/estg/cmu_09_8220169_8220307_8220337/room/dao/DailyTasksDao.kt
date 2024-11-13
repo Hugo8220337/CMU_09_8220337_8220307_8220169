@@ -17,6 +17,9 @@ interface DailyTasksDao {
     @Query("SELECT * FROM dailyTasks WHERE date = :date")
     fun getTasksByDate(date: String): LiveData<DailyTasks>
 
+    @Query("SELECT * FROM DailyTasks ORDER BY date DESC")
+    suspend fun getAllTasks(): List<DailyTasks>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTasks(tasks: DailyTasks): Long
 

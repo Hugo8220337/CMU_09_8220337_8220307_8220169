@@ -70,7 +70,7 @@ fun HomeScreen(navController: NavController) {
             unselectedIcon = Icons.Outlined.DateRange,
             badgeCount = 45,
             content = {
-                ProgressScreen()
+                ProgressScreen(homeViewModel.streak)
             }
         ),
         NavigationItem(

@@ -51,4 +51,41 @@ class DailyTasksLocalRepository(
 
         return dailyTasksDao.getTasksByDate(currentDate)
     }
+
+    fun areTodaysTasksDone(): Boolean {
+        val dailyTasks = getTodayTasks()
+
+        val diet = dailyTasks.value?.followDiet
+        val workouts = dailyTasks.value?.twoWorkouts
+        val tenPages = dailyTasks.value?.readTenPages
+        val water = dailyTasks.value?.gallonOfWater
+
+        val condition = (diet == true && workouts == true && tenPages == true && water == true)
+
+        return condition
+    }
+
+    suspend fun getStreak(): Int {
+        val tasks = dailyTasksDao.getAllTasks()  // Busca todas as tarefas
+        var streak = 0
+        var previousDate: LocalDate? = null
+
+        for (task in tasks) {
+            val taskDate = LocalDate.parse(task.date)
+
+            // Verifica se todas as tarefas foram concluídas nesse dia
+            if (task.gallonOfWater && task.twoWorkouts && task.followDiet && task.readTenPages) {
+                if (previousDate == null || taskDate == previousDate.minusDays(1)) {
+                    streak++
+                    previousDate = taskDate
+                } else {
+                    break
+                }
+            } else {
+                break
+            }
+        }
+
+        return streak
+    }
 }

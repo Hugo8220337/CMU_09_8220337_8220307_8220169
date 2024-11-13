@@ -11,6 +11,7 @@ val PrimaryColor = Color(0xFFff2e62)
 val SecundaryColor = Color(0xFFB0BEC5) // Light grey-blue
 val Error = Color(0xFFEB0707)
 
+val GoldColor = Color(0xFFF4E198)
 
 // TODO apagar estas cores
 val Purple80 = Color(0xFFD0BCFF)
