@@ -68,7 +68,6 @@ fun HomeScreen(navController: NavController) {
             title = stringResource(id = R.string.progress),
             selectedIcon = Icons.Filled.DateRange,
             unselectedIcon = Icons.Outlined.DateRange,
-            badgeCount = 45,
             content = {
                 ProgressScreen(homeViewModel.streak)
             }
@@ -77,7 +76,6 @@ fun HomeScreen(navController: NavController) {
             title = stringResource(id = R.string.workout_generator),
             selectedIcon = Icons.Filled.FitnessCenter,
             unselectedIcon = Icons.Outlined.FitnessCenter,
-            badgeCount = 45,
             content = {
                 WorkoutGeneratorScreen(navController)
             }
@@ -86,7 +84,6 @@ fun HomeScreen(navController: NavController) {
             title = stringResource(id = R.string.running),
             selectedIcon = Icons.AutoMirrored.Filled.DirectionsRun,
             unselectedIcon = Icons.AutoMirrored.Outlined.DirectionsRun,
-            badgeCount = 45,
             content = {
                 RunningWorkoutStartScreen(navController)
             }

@@ -48,14 +48,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.DailyTasks
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.OnboardingScreen
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.GoldColor
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.checkCameraPermission
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.launchCamera
@@ -124,8 +119,6 @@ private fun ProgressSection(streak: Int) {
 private fun TaskChecklist(homeViewModel: HomeViewModel) {
 
     val tasks by homeViewModel.tasksLiveData.observeAsState()
-    val t1 = tasks?.followDiet?:false
-
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -323,15 +316,5 @@ private fun MotivationalQuote() {
                 .padding(16.dp),
             textAlign = TextAlign.Center
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainPreview() {
-    CMU_09_8220169_8220307_8220337Theme {
-        val homeMvvm: HomeViewModel = viewModel()
-
-        MainContent(homeMvvm)
     }
 }
