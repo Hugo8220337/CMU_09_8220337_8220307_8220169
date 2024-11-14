@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,21 +32,12 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8
 
 @Composable
 fun StartScreen(navController: NavController) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-//            .background(
-//                brush = Brush.linearGradient(
-//                    colors = listOf(
-//                        MaterialTheme.colorScheme.background,
-//                        MaterialTheme.colorScheme.tertiary
-//                    )
-//                )
-//            )
-    ) {
+
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(innerPadding)
                 .padding(32.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -104,6 +96,7 @@ fun StartScreen(navController: NavController) {
             }
         }
     }
+
 }
 
 @Preview(showBackground = true)

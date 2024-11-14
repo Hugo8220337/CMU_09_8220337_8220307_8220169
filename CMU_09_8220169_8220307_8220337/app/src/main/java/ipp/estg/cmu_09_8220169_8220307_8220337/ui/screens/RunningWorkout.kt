@@ -133,22 +133,22 @@ private fun RunDetailsSection(distance: String, time: String, pace: String, step
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             RunDetailItem(
-                label = "Distance",
-                value = "$distance km",
+                label = stringResource(id = R.string.distance),
+                value = "$distance Km",
                 icon = Icons.Filled.DirectionsRun
             )
             RunDetailItem(
-                label = "Time",
+                label = stringResource(id = R.string.duration),
                 value = time,
                 icon = Icons.Filled.Timer
             )
             RunDetailItem(
-                label = "Pace",
+                label = stringResource(id = R.string.pace),
                 value = "$pace min/km",
                 icon = Icons.Filled.Speed
             )
             RunDetailItem(
-                label = "Steps",
+                label = stringResource(id = R.string.steps),
                 value = steps.toString(),
                 icon = Icons.Filled.Directions
             )

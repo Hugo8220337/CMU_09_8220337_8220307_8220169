@@ -53,22 +53,28 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8
 
 @Composable
 fun RegisterScreen(navController: NavController) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-//            .background(
-//                brush = Brush.linearGradient(
-//                    colors = listOf(
-//                        MaterialTheme.colorScheme.background,
-//                        MaterialTheme.colorScheme.tertiary
-//                    )
-//                )
-//            )
-    ) {
+    var username by remember {
+        mutableStateOf(TextFieldValue())
+    }
+
+    var email by remember {
+        mutableStateOf(TextFieldValue())
+    }
+
+    var password by remember {
+        mutableStateOf(TextFieldValue())
+    }
+
+    var password2 by remember {
+        mutableStateOf(TextFieldValue())
+    }
+
+    Scaffold { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(32.dp),
+                .padding(innerPadding)
+                .padding(20.dp),
             contentAlignment = Alignment.Center
         ) {
             Column(
@@ -76,7 +82,7 @@ fun RegisterScreen(navController: NavController) {
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.minilogo),
@@ -92,25 +98,10 @@ fun RegisterScreen(navController: NavController) {
                     )
                 )
 
-                var userName by remember {
-                    mutableStateOf(TextFieldValue())
-                }
-
-                var email by remember {
-                    mutableStateOf(TextFieldValue())
-                }
-
-                var password by remember {
-                    mutableStateOf(TextFieldValue())
-                }
-
-                var password2 by remember {
-                    mutableStateOf(TextFieldValue())
-                }
 
                 TextField(
-                    value = userName,
-                    onValueChange = { userName = it },
+                    value = username,
+                    onValueChange = { username = it },
                     label = { Text(stringResource(id = R.string.username)) },
                     modifier = Modifier.fillMaxWidth(0.85f),
                 )

@@ -27,17 +27,21 @@ class HomeViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
+    /**
+     * Repositórios
+     */
     val settingsPreferencesRepository: SettingsPreferencesRepository =
         SettingsPreferencesRepository(application)
-
-    var state: ScreenState by mutableStateOf(ScreenState())
-
     val dailyTasksRepository: IDailyTasksRepository
     var quotesRepository: IQuotesRepository
 
+
+    /**
+     * Informação Mutável
+     */
+    var state: ScreenState by mutableStateOf(ScreenState())
     var tasksLiveData: LiveData<DailyTasks>
-    var streak: Int = 0
-    var dailyQuote: String = ""
+
 
 
 
@@ -56,18 +60,32 @@ class HomeViewModel(
         // Obtem as tasks de hoje
         tasksLiveData = dailyTasksRepository.getTodayTasks()
 
-        // Lança uma coroutine para obter o daily streak e a daily quote de forma assíncrona
-        viewModelScope.launch {
-            streak = dailyTasksRepository.getStreak()
-            //dailyQuote = quotesRepository.getTodaysQuote().quote
-        }
+        // Obtem o streak atual
+        updateDailyStreak()
 
+        // Obtem a quote do dia
+        loadDailyQuote()
     }
 
+
+    private fun updateDailyStreak() {
+        viewModelScope.launch {
+            val streak = dailyTasksRepository.getStreak()
+            state = state.copy(streak = streak)
+        }
+    }
+
+    private fun loadDailyQuote() {
+        viewModelScope.launch {
+            val dailyQuote = quotesRepository.getTodaysQuote().quote
+            state = state.copy(dailyQuote = dailyQuote)
+        }
+    }
 
     /**
      * Começa o DailyRemeinderService que vai mandar notificações com a app fechada
      * quando o utilizador não realiza o treino
+     * TODO NÃO ESTÁ A FUNCIONAR
      */
     private fun buildForegroundDailyRemeinderNotifications() {
         val channel = NotificationChannel(
@@ -89,6 +107,7 @@ class HomeViewModel(
         val serviceIntent = Intent(application, DailyRemeinderService::class.java).apply {
             action = DailyRemeinderService.Actions.START.toString()
         }
+
         application.startForegroundService(serviceIntent)
 
 
@@ -114,8 +133,6 @@ class HomeViewModel(
     }
 
     fun setTasksValue(dailyTasks: DailyTasks) {
-        //tasksLiveData.postValue(dailyTasks)
-
         // insert on room
         viewModelScope.launch {
             dailyTasksRepository.insertTasks(
@@ -125,6 +142,9 @@ class HomeViewModel(
                 dailyTasks.readTenPages,
                 dailyTasks.takeProgressPicture
             )
+
+            // Atualizar streak sempre que houver alguma alteração nas tasks
+            updateDailyStreak()
         }
     }
 
@@ -145,8 +165,10 @@ class HomeViewModel(
 
     data class ScreenState(
         val isLoading: Boolean = false,
+        val streak: Int = 0,
         val error: String? = null,
         val hasCameraPermission: Boolean = false,
+        val dailyQuote: String = "",
         val imageBitmap: Bitmap? = null,
     )
 }

@@ -49,5 +49,7 @@
     <string name="please_charge_your_device">Bitte laden Sie Ihr Gerät auf</string>
     <string name="pause">Pause</string>
     <string name="start">Start</string>
-    <string name="stop">Stopp</string>
+    <string name="stop">Stop</string>
+    <string name="pace">Pace</string>
+    <string name="steps">Schritte</string>
 </resources>

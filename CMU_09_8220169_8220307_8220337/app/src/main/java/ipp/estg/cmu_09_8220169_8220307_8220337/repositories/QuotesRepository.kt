@@ -1,5 +1,6 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
+import android.util.Log
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Quote
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.quotesApi.QuoteRetrofitResponse
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.apis.QuotesApi
@@ -21,29 +22,27 @@ class QuotesRepository(
     override suspend fun getTodaysQuote(): Quote {
         val currentDate = LocalDate.now().toString()
 
+        // Try to get the quote from cache
         var dailyQuote = getTodaysQuoteFromCache(currentDate)
 
-        // se não está vazio é porque já fez um pedido à API hoje, logo pode ir simplesmente à cache
-        if(dailyQuote == null) {
-            val response = getQuoteFromApi()
-
-            if (!response.isSuccessful) {
-                throw Exception("Error code: ${response.code()}")
+        // If not found in cache, fetch from API
+        if (dailyQuote == null) {
+            val response = try {
+                getQuoteFromApi()
+            } catch (e: Exception) {
+                null
             }
 
-            val quoteRetrofitResponse = response.body() ?: throw Exception("Error: Quote is null")
-
-            // Convert Quote from api to quote from Room DB
-            dailyQuote = Quote(
-                quote = quoteRetrofitResponse.text
-            )
-
-            // Inseret quote in Room DB on a different thread
-            withContext(Dispatchers.IO) {
-                insertQuoteInCache(dailyQuote)
+            if (response == null || !response.isSuccessful) {
+                // Default Quote in case of error
+                return Quote(quote = "The only bad workout is the one you didn't do")
             }
 
-            return dailyQuote
+            val quoteRetrofitResponse = response.body() ?: return Quote(quote = "Default quote due to error")
+
+            // Convert and cache the quote
+            dailyQuote = Quote(quote = quoteRetrofitResponse.text)
+            insertQuoteInCache(dailyQuote)
         }
 
         return dailyQuote
@@ -63,7 +62,7 @@ class QuotesRepository(
             )
             quoteDao.insertQuote(newQuote)
         } catch (e: Exception) {
-            throw e
+            Log.d("QuotesRepository", "Error inserting quote in cache")
         }
     }
 

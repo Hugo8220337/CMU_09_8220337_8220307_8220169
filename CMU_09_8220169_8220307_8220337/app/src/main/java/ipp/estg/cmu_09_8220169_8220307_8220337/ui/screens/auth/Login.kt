@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -41,22 +42,12 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8
 
 @Composable
 fun LoginScreen(navController: NavController) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-//            .background(
-//                brush = Brush.linearGradient(
-//                    colors = listOf(
-//                        MaterialTheme.colorScheme.background,
-//                        MaterialTheme.colorScheme.tertiary
-//                    )
-//                )
-//            )
-    ) {
+    Scaffold { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(32.dp),
+                .padding(innerPadding)
+                .padding(30.dp),
             contentAlignment = Alignment.Center
         ) {
             Column(
@@ -64,7 +55,7 @@ fun LoginScreen(navController: NavController) {
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(25.dp)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.minilogo),

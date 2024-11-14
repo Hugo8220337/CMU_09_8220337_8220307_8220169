@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.LocalDrink
@@ -69,7 +68,7 @@ fun MainContent(homeViewModel: HomeViewModel) {
     ) {
 
         // Progress Overview Section
-        ProgressSection(homeViewModel.streak)
+        ProgressSection(homeViewModel.state.streak)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -84,7 +83,7 @@ fun MainContent(homeViewModel: HomeViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Motivational Quote
-        MotivationalQuote()
+        MotivationalQuote(homeViewModel.state.dailyQuote)
 
         homeViewModel.getError()?.let {
             Text(
@@ -298,7 +297,7 @@ fun DailyPhotoSection(homeViewModel: HomeViewModel) {
 
 
 @Composable
-private fun MotivationalQuote() {
+private fun MotivationalQuote(quote: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -308,7 +307,7 @@ private fun MotivationalQuote() {
         elevation = CardDefaults.elevatedCardElevation()
     ) {
         Text(
-            text = "\"The only bad workout is the one you didn't do.\"",
+            text = "\"$quote\"",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier

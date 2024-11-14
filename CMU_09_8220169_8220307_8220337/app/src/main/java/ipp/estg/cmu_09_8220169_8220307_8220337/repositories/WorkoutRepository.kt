@@ -1,5 +1,6 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
+import android.util.Log
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExerciseItemDataResponse
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExercisesRetrofitResponse
@@ -33,10 +34,16 @@ class WorkoutRepository(
 
         // Get BodyParts from API
         for (part in bodyParts) {
-            val response = getExercisesByBodyPartFromApi(part.lowercase(), limit, offset)
+            val response = try {
+                getExercisesByBodyPartFromApi(part.lowercase(), limit, offset)
+            } catch (e: Exception) {
+                null
+            }
 
-            if (!response.isSuccessful) {
-                throw Exception("Error code: ${response.code()}")
+            if (response == null || !response.isSuccessful) {
+                // Log the error and continue with the next body part
+                Log.d("WorkoutRepository", "Error fetching exercises for body part $part")
+                continue
             }
 
             val exercises = response.body()
@@ -63,9 +70,8 @@ class WorkoutRepository(
 
             workoutDao.insertWorkout(workoutToInsert)
         } catch (e: Exception) {
-            throw e
+            Log.d("WorkoutRepository", "Error inserting workout in cache")
         }
-
     }
 
     private suspend fun getExercisesByBodyPartFromApi(

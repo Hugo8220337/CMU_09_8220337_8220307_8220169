@@ -69,7 +69,7 @@ fun HomeScreen(navController: NavController) {
             selectedIcon = Icons.Filled.DateRange,
             unselectedIcon = Icons.Outlined.DateRange,
             content = {
-                ProgressScreen(homeViewModel.streak)
+                ProgressScreen(homeViewModel.state.streak)
             }
         ),
         NavigationItem(
