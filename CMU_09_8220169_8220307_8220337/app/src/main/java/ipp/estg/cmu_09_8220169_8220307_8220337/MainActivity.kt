@@ -71,7 +71,6 @@ fun MyApp(navController: NavHostController) {
 
             // Converte os parámetros numa lista
             val bodyParts = backStackEntry.arguments?.getString("bodyparts")
-
             val bodyPartsList = converter.toStringList(bodyParts!!)
 
             WorkoutScreen(navController, bodyPartsList)

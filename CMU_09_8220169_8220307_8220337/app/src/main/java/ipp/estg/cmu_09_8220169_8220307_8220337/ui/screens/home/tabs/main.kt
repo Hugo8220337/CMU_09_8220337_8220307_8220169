@@ -1,6 +1,7 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs
 
 import android.Manifest
+import android.widget.Toast
 import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -252,16 +253,18 @@ fun DailyPhotoSection(homeViewModel: HomeViewModel) {
         }
     }
 
+    val lackOfPermissionsText = stringResource(id = R.string.lack_of_permissions)
     val requestPermissionLauncher = requestCameraPermission { granted ->
         hasCameraPermission = granted
         if (granted) {
             cameraLauncher.launch()
         } else {
-            // TODO Handle permission denied, show message if needed
+            // Mostra mensagem no toast caso a permissão não seja concedida
+            Toast.makeText(context, lackOfPermissionsText, Toast.LENGTH_SHORT).show()
         }
     }
 
-    // Check if camera permission is granted on load
+    // Checa se a permissão para a camara foi concedida
     hasCameraPermission = checkCameraPermission(context)
 
     Column(
@@ -283,9 +286,9 @@ fun DailyPhotoSection(homeViewModel: HomeViewModel) {
                     }
                 }
         ) {
-            if (homeViewModel.getProgressPicture() != null) {
+            if (homeViewModel.getTodayProgressPicture() != null) {
                 Image(
-                    bitmap = homeViewModel.getProgressPicture()!!.asImageBitmap(),
+                    bitmap = homeViewModel.getTodayProgressPicture()!!.asImageBitmap(),
                     contentDescription = stringResource(id = R.string.captured_photo)
                 )
             } else {

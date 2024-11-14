@@ -21,6 +21,9 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.IQuotesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.QuotesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.RemoteApis
 import ipp.estg.cmu_09_8220169_8220307_8220337.services.DailyRemeinderService
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.getImageFromFile
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.getImageFromFileWithDate
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.saveImageToFile
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -40,7 +43,7 @@ class HomeViewModel(
      * Informação Mutável
      */
     var state: ScreenState by mutableStateOf(ScreenState())
-    var tasksLiveData: LiveData<DailyTasks>
+    lateinit var tasksLiveData: LiveData<DailyTasks>
 
 
 
@@ -58,13 +61,28 @@ class HomeViewModel(
         quotesRepository = QuotesRepository(quotesApi, dbDao.quotesDao)
 
         // Obtem as tasks de hoje
-        tasksLiveData = dailyTasksRepository.getTodayTasks()
+        loadTodaysTasks()
 
         // Obtem o streak atual
         updateDailyStreak()
 
         // Obtem a quote do dia
         loadDailyQuote()
+    }
+
+    private fun loadTodaysTasks() {
+        // Obter as tasks de hoje
+        tasksLiveData = dailyTasksRepository.getTodayTasks()
+
+        // Observar as tasks
+        // TODO está a ser observado duas vezes, não é boa ideia
+        tasksLiveData.observeForever { dailyTasks ->
+            // Load da imagem
+            if (dailyTasks?.takeProgressPicture != null) {
+                val image = getImageFromFile(dailyTasks.takeProgressPicture)
+                state = state.copy(imageBitmap = image)
+            }
+        }
     }
 
 
@@ -152,10 +170,21 @@ class HomeViewModel(
     // Função para atualizar a imagem
     fun updateProgressPicture(bitmap: Bitmap) {
         state = state.copy(imageBitmap = bitmap)
+
+        // Guardar a imagem num ficheiro
+        val fileAbsolutePath = saveImageToFile(getApplication(), bitmap)
+
+        // Atualizar a task
+        val newTasks = tasksLiveData.value?.copy(takeProgressPicture = fileAbsolutePath)
+        setTasksValue(newTasks!!)
     }
 
-    fun getProgressPicture(): Bitmap? {
+    fun getTodayProgressPicture(): Bitmap? {
         return state.imageBitmap
+    }
+
+    fun getProgressPictureFromDate(date: String): Bitmap? {
+        return getImageFromFileWithDate(getApplication(), date)
     }
 
     fun getError(): String? {
