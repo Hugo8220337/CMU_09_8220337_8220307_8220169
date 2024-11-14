@@ -2,7 +2,6 @@ package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth
 
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,14 +34,14 @@ fun StartScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.tertiary
-                    )
-                )
-            )
+//            .background(
+//                brush = Brush.linearGradient(
+//                    colors = listOf(
+//                        MaterialTheme.colorScheme.background,
+//                        MaterialTheme.colorScheme.tertiary
+//                    )
+//                )
+//            )
     ) {
         Column(
             modifier = Modifier
@@ -71,8 +69,8 @@ fun StartScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White,
-                        contentColor = Color.Black
+                        containerColor = MaterialTheme.colorScheme.onBackground,
+                        contentColor = MaterialTheme.colorScheme.background
                     )
                 ) {
                     Text(
@@ -97,6 +95,7 @@ fun StartScreen(navController: NavController) {
                 ) {
                     Text(
                         stringResource(id = R.string.register),
+                        color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
                         )

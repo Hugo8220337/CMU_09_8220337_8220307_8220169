@@ -44,14 +44,14 @@ fun LoginScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.tertiary
-                    )
-                )
-            )
+//            .background(
+//                brush = Brush.linearGradient(
+//                    colors = listOf(
+//                        MaterialTheme.colorScheme.background,
+//                        MaterialTheme.colorScheme.tertiary
+//                    )
+//                )
+//            )
     ) {
         Box(
             modifier = Modifier

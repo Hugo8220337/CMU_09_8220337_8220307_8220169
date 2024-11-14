@@ -145,7 +145,7 @@ fun WorkoutGeneratorScreen(navController: NavController) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
-                    contentDescription = "Generate Workout"
+                    contentDescription = stringResource(id = R.string.generate_workout)
                 )
             }
         }
@@ -166,7 +166,7 @@ private fun BodyPartCard(
             .padding(8.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+            containerColor = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.elevatedCardElevation(4.dp)
     ) {

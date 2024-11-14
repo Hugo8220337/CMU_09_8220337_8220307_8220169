@@ -56,14 +56,14 @@ fun RegisterScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.tertiary
-                    )
-                )
-            )
+//            .background(
+//                brush = Brush.linearGradient(
+//                    colors = listOf(
+//                        MaterialTheme.colorScheme.background,
+//                        MaterialTheme.colorScheme.tertiary
+//                    )
+//                )
+//            )
     ) {
         Box(
             modifier = Modifier
@@ -86,6 +86,7 @@ fun RegisterScreen(navController: NavController) {
 
                 Text(
                     text = stringResource(id = R.string.register),
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.headlineLarge.copy(
                         fontWeight = FontWeight.Bold
                     )
@@ -169,7 +170,7 @@ fun RegisterScreen(navController: NavController) {
                         }
                     },
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )

@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -41,6 +41,8 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import ipp.estg.cmu_09_8220169_8220307_8220337.R
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -52,7 +54,7 @@ fun RunningWorkoutScreen(
     val distance = "5.2"
     val time = "30:00"
     val pace = "5:45"
-    val stepCount = runningViewModel.stepCounter.value
+    val stepCount = runningViewModel.stepCounter.intValue
 
     val pedometerPermission =
         rememberPermissionState(android.Manifest.permission.ACTIVITY_RECOGNITION)
@@ -81,7 +83,8 @@ fun RunningWorkoutScreen(
 
                 ControlsSection(
                     runningViewModel = runningViewModel,
-                    pedometerPermission = pedometerPermission
+                    pedometerPermission = pedometerPermission,
+                    navController = navController
                 )
             }
         }
@@ -157,7 +160,8 @@ private fun RunDetailsSection(distance: String, time: String, pace: String, step
 @Composable
 private fun ControlsSection(
     runningViewModel: RunningViewModel,
-    pedometerPermission: PermissionState
+    pedometerPermission: PermissionState,
+    navController: NavController
 ) {
     Row(
         modifier = Modifier
@@ -167,18 +171,19 @@ private fun ControlsSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ControlButton(
-            text = if (runningViewModel.isRunning) "Pause" else "Start",
+            text = if (runningViewModel.isRunning) stringResource(id = R.string.pause) else stringResource(id = R.string.start),
             color = if (runningViewModel.isRunning) Color(0xFFFF9800) else Color(0xFF4CAF50),
             onClick = {
                 runningViewModel.isRunning = !runningViewModel.isRunning
             }
         )
         ControlButton(
-            text = "Stop",
+            text = stringResource(id = R.string.stop),
             color = Color(0xFFE53935),
             onClick = {
                 runningViewModel.isRunning = false
                 runningViewModel.stepCounter.value = 0
+                navController.navigate(Screen.Home.route)
             }
         )
     }
