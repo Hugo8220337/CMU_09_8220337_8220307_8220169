@@ -6,8 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.BodyPart
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.DailyTasks
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Quote
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.DailyTasksDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.QuoteDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.WorkoutDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.LOCAL_DB_NAME
 
@@ -15,7 +17,8 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.LOCAL_DB_NAME
     entities = [
         Workout::class,
         BodyPart::class,
-        DailyTasks::class
+        DailyTasks::class,
+        Quote::class
     ],
     version = 1,
     exportSchema = false
@@ -23,6 +26,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.LOCAL_DB_NAME
 abstract class LocalDatabase : RoomDatabase() {
     abstract val workoutDao: WorkoutDao
     abstract val dailyTaskCompletionDao: DailyTasksDao
+    abstract val quotesDao: QuoteDao
 
     companion object{
         private var INSTANCE:LocalDatabase?=null
