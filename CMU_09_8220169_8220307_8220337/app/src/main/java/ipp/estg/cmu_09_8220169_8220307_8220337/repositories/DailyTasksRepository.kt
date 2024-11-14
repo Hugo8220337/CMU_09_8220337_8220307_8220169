@@ -1,34 +1,32 @@
-package ipp.estg.cmu_09_8220169_8220307_8220337.room.repositories
+package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
 import androidx.lifecycle.LiveData
-import androidx.room.util.convertByteToUUID
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.DailyTasksDao
 import java.time.LocalDate
 
-class DailyTasksLocalRepository(
-    private val dailyTasksDao: DailyTasksDao,
-) {
-    // Função para registrar a conclusão das tarefas diárias
-    /*suspend fun recordDailyCompletion() {
-        try {
-            // Atualizar cache em Room
-            val currentDate = getCurrentDate()
-
-            val completion = DailyTasks(date = currentDate)
-            dailyTasksDao.insertCompletion(completion)
-        } catch (e: Exception) {
-            throw e
-        }
-
-    }*/
-
+interface IDailyTasksRepository {
     suspend fun insertTasks(
         gallonOfWater: Boolean,
         twoWorkouts: Boolean,
         followDiet: Boolean,
         readTenPages: Boolean,
         takeProgressPicture: String = "",
+    )
+
+    fun getTodayTasks(): LiveData<DailyTasks>
+    fun areTodaysTasksDone(): Boolean
+    suspend fun getStreak(): Int
+}
+class DailyTasksRepository(
+    private val dailyTasksDao: DailyTasksDao,
+) : IDailyTasksRepository{
+    override suspend fun insertTasks(
+        gallonOfWater: Boolean,
+        twoWorkouts: Boolean,
+        followDiet: Boolean,
+        readTenPages: Boolean,
+        takeProgressPicture: String,
     ) {
         try {
             // Inserir ou atualizar tarefas diárias
@@ -46,13 +44,13 @@ class DailyTasksLocalRepository(
         }
     }
 
-    fun getTodayTasks(): LiveData<DailyTasks> {
+    override fun getTodayTasks(): LiveData<DailyTasks> {
         val currentDate = LocalDate.now().toString()
 
         return dailyTasksDao.getTasksByDate(currentDate)
     }
 
-    fun areTodaysTasksDone(): Boolean {
+    override fun areTodaysTasksDone(): Boolean {
         val dailyTasks = getTodayTasks()
 
         val diet = dailyTasks.value?.followDiet
@@ -65,7 +63,7 @@ class DailyTasksLocalRepository(
         return condition
     }
 
-    suspend fun getStreak(): Int {
+    override suspend fun getStreak(): Int {
         val tasks = dailyTasksDao.getAllTasks()  // Busca todas as tarefas
         var streak = 0
         var previousDate: LocalDate? = null

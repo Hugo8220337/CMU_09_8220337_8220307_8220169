@@ -6,11 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExerciseItem
+import androidx.lifecycle.viewmodel.compose.viewModel
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExerciseItemDataResponse
+import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.IWorkoutRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.WorkoutRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.RemoteApis
-import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.repositories.ExerciseDbApiRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.room.LocalDatabase
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.repositories.WorkoutLocalRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Resource
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -19,53 +20,30 @@ class WorkoutViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val exerciseDbApiRepository = ExerciseDbApiRepository(
-        RemoteApis.getExerciseDbApi()
+    private val workoutRepository: IWorkoutRepository = WorkoutRepository(
+        exerciseDbApi = RemoteApis.getExerciseDbApi(),
+        workoutDao = LocalDatabase.getDatabase(application).workoutDao
     )
-
-    private val workoutLocalRepository: WorkoutLocalRepository
 
 
     var state by mutableStateOf(ScreenState())
         private set
 
-    init {
-        val workoutDao = LocalDatabase.getDatabase(application).workoutDao
-        workoutLocalRepository = WorkoutLocalRepository(workoutDao)
-    }
-
     fun generateWorkout(bodyParts: List<String>) {
-        state = state.copy(isGeneratingWorkout = true)
+        viewModelScope.launch {
+            state = state.copy(isGeneratingWorkout = true)
 
-        for (bodyPart in bodyParts) {
-            exerciseDbApiRepository.getExercisesByBodyPart(
-                bodyPart = bodyPart.lowercase(Locale.ROOT),
+            // load exercises from the repository
+            val exercises = workoutRepository.getExercisesByBodyParts(
+                bodyParts = bodyParts,
                 limit = 10,
                 offset = 0
-            ) { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        val exercisesList = result.data.orEmpty()
+            )
 
-                        // Atualiza o estado com os novos exercícios
-                        state = state.copy(
-                            workout = state.workout + exercisesList
-                        )
+            // store exercises on the state
+            state = state.copy(workout = exercises)
 
-                        // adiciona o treino gerado na cache
-                        viewModelScope.launch {
-                            workoutLocalRepository.insertWorkout(bodyParts)
-                        }
-                    }
-
-                    is Resource.Error -> {
-                        state = state.copy(
-                            error = result.message ?: "Unknown error"
-                        )
-                    }
-                }
-                state = state.copy(isGeneratingWorkout = false)
-            }
+            state = state.copy(isGeneratingWorkout = false)
         }
     }
 
@@ -73,7 +51,7 @@ class WorkoutViewModel(
         val isLoading: Boolean = false,
         val isGeneratingWorkout: Boolean = false,
         val error: String? = null,
-        val workout: List<ExerciseItem> = emptyList()
+        val workout: List<ExerciseItemDataResponse> = emptyList()
     )
 }
 

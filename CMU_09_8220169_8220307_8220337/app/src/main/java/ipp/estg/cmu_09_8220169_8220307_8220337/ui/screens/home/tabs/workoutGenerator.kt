@@ -95,7 +95,7 @@ fun WorkoutGeneratorScreen(navController: NavController) {
                 text = stringResource(id = R.string.select_body_parts),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             // Body Parts Grid

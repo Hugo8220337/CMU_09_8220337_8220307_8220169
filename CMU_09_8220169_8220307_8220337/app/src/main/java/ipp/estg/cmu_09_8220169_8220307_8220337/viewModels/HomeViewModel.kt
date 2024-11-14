@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,8 +15,11 @@ import coil3.Bitmap
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.SettingsPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.room.LocalDatabase
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.repositories.DailyTasksLocalRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.repositories.QuoteRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.DailyTasksRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.IDailyTasksRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.IQuotesRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.QuotesRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.RemoteApis
 import ipp.estg.cmu_09_8220169_8220307_8220337.services.DailyRemeinderService
 import kotlinx.coroutines.launch
 
@@ -30,8 +32,8 @@ class HomeViewModel(
 
     var state: ScreenState by mutableStateOf(ScreenState())
 
-    val dailyTasksLocalRepository: DailyTasksLocalRepository
-    var quoteRepository: QuoteRepository
+    val dailyTasksRepository: IDailyTasksRepository
+    var quotesRepository: IQuotesRepository
 
     var tasksLiveData: LiveData<DailyTasks>
     var streak: Int = 0
@@ -44,19 +46,20 @@ class HomeViewModel(
         buildForegroundDailyRemeinderNotifications()
 
 
-        // inicializa as tasks com a informação em cache no Room e o repositório de citações
+        val quotesApi = RemoteApis.getQuotesApi()
         val dbDao = LocalDatabase.getDatabase(application)
-        dailyTasksLocalRepository = DailyTasksLocalRepository(dbDao.dailyTaskCompletionDao)
-        quoteRepository = QuoteRepository(dbDao.quotesDao)
 
-        tasksLiveData = dailyTasksLocalRepository.getTodayTasks()
+        // Inicializar repositórios
+        dailyTasksRepository = DailyTasksRepository(dbDao.dailyTaskCompletionDao)
+        quotesRepository = QuotesRepository(quotesApi, dbDao.quotesDao)
 
-        // Lança uma coroutine para obter o streak de forma assíncrona
+        // Obtem as tasks de hoje
+        tasksLiveData = dailyTasksRepository.getTodayTasks()
+
+        // Lança uma coroutine para obter o daily streak e a daily quote de forma assíncrona
         viewModelScope.launch {
-            // Atualiza streak dentro da coroutine
-            streak = dailyTasksLocalRepository.getStreak()
-            // Obtem a citação do dia
-            //dailyQuote = quoteRepository.getTodaysQuote().quote
+            streak = dailyTasksRepository.getStreak()
+            //dailyQuote = quotesRepository.getTodaysQuote().quote
         }
 
     }
@@ -115,7 +118,7 @@ class HomeViewModel(
 
         // insert on room
         viewModelScope.launch {
-            dailyTasksLocalRepository.insertTasks(
+            dailyTasksRepository.insertTasks(
                 dailyTasks.gallonOfWater,
                 dailyTasks.twoWorkouts,
                 dailyTasks.followDiet,

@@ -1,9 +1,10 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.apis
 
 import ipp.estg.cmu_09_8220169_8220307_8220337.BuildConfig
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.BodyParts
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.Exercises
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.BodyPartsRetrofitResponse
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExercisesRetrofitResponse
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
@@ -12,7 +13,7 @@ import retrofit2.http.Query
 interface ExerciseDbApi {
 
     @GET("exercises/bodyPartList")
-    suspend fun getBodyParts(): Call<BodyParts>
+    suspend fun getBodyParts(): Call<BodyPartsRetrofitResponse>
 
     @GET("exercises/bodyPart/{bodyPart}")
     fun getExercisesByBodyPart(
@@ -20,9 +21,9 @@ interface ExerciseDbApi {
         @Path("bodyPart") bodyPart: String,
         @Query("limit") limit: Int,
         @Query("offset") offset: Int
-    ): Call<Exercises>
+    ): Call<ExercisesRetrofitResponse>
 
     // se calhar não vai ser preciso este
     @GET("exercises/name/{exerciseName}")
-    suspend fun getExercisesByName(@Path("exerciseName") exerciseName: String): Call<Exercises>
+    suspend fun getExercisesByName(@Path("exerciseName") exerciseName: String): Call<ExercisesRetrofitResponse>
 }

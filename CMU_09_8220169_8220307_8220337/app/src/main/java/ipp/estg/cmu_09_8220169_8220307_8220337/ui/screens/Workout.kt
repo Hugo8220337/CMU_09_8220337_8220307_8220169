@@ -1,6 +1,5 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens
 
-import android.widget.Space
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -10,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,8 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -50,7 +46,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExerciseItem
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExerciseItemDataResponse
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.WorkoutViewModel
 
@@ -133,7 +129,7 @@ private fun TopAppBar(
 }
 
 @Composable
-private fun WorkoutContent(navController: NavController, exercises: List<ExerciseItem>) {
+private fun WorkoutContent(navController: NavController, exercises: List<ExerciseItemDataResponse>) {
     var currentExercise by remember { mutableIntStateOf(0) }
 
 //    LazyColumn(
@@ -171,7 +167,7 @@ private fun WorkoutContent(navController: NavController, exercises: List<Exercis
 }
 
 @Composable
-private fun ExerciseCard(exercise: ExerciseItem) {
+private fun ExerciseCard(exercise: ExerciseItemDataResponse) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
