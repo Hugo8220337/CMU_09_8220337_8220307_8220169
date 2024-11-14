@@ -17,6 +17,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.SettingsPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.room.repositories.DailyTasksLocalRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.room.repositories.QuoteRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.services.DailyRemeinderService
 import kotlinx.coroutines.launch
 
@@ -28,24 +29,34 @@ class HomeViewModel(
         SettingsPreferencesRepository(application)
 
     var state: ScreenState by mutableStateOf(ScreenState())
+
     val dailyTasksLocalRepository: DailyTasksLocalRepository
+    var quoteRepository: QuoteRepository
+
     var tasksLiveData: LiveData<DailyTasks>
     var streak: Int = 0
+    var dailyQuote: String = ""
+
 
 
     init {
 
         buildForegroundDailyRemeinderNotifications()
 
-        // inicializa as tasks com a informação em cache no Room
-        val dbDao = LocalDatabase.getDatabase(application).dailyTaskCompletionDao
-        dailyTasksLocalRepository = DailyTasksLocalRepository(dbDao)
+
+        // inicializa as tasks com a informação em cache no Room e o repositório de citações
+        val dbDao = LocalDatabase.getDatabase(application)
+        dailyTasksLocalRepository = DailyTasksLocalRepository(dbDao.dailyTaskCompletionDao)
+        quoteRepository = QuoteRepository(dbDao.quotesDao)
 
         tasksLiveData = dailyTasksLocalRepository.getTodayTasks()
 
         // Lança uma coroutine para obter o streak de forma assíncrona
         viewModelScope.launch {
-            streak = dailyTasksLocalRepository.getStreak() // Atualiza streak dentro da coroutine
+            // Atualiza streak dentro da coroutine
+            streak = dailyTasksLocalRepository.getStreak()
+            // Obtem a citação do dia
+            //dailyQuote = quoteRepository.getTodaysQuote().quote
         }
 
     }
