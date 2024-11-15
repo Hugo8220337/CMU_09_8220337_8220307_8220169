@@ -68,6 +68,10 @@ class DailyTasksRepository(
         val currentDate = LocalDate.now().toString()
         val progressPicture = dailyTasksDao.getProgressPathPictureByDate(currentDate)
 
+        if(progressPicture == null) {
+            return ""
+        }
+
         return progressPicture
     }
 
