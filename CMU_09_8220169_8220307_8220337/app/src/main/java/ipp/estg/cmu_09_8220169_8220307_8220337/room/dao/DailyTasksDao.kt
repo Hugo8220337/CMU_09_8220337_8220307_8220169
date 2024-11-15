@@ -20,6 +20,9 @@ interface DailyTasksDao {
     @Query("SELECT * FROM DailyTasks ORDER BY date DESC")
     suspend fun getAllTasks(): List<DailyTasks>
 
+    @Query("SELECT takeProgressPicture FROM DailyTasks WHERE date = :date")
+    suspend fun getProgressPathPictureByDate(date: String): String
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTasks(tasks: DailyTasks): Long
 

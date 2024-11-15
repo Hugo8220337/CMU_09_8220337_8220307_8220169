@@ -1,10 +1,13 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.utils
 
 import android.Manifest
+import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Environment
+import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -12,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.core.content.ContextCompat
 import java.io.File
 import java.io.FileOutputStream
+import java.io.OutputStream
 import java.time.LocalDate
 
 
@@ -69,11 +73,35 @@ fun saveImageToFile(context: Context, bitmap: Bitmap): String {
 }
 
 /**
+ * Function to save a bitmap image to the gallery.
+ */
+fun saveImageToGallery(context: Context, bitmap: Bitmap, title: String, description: String): String? {
+    val contentValues = ContentValues().apply {
+        put(MediaStore.Images.Media.DISPLAY_NAME, "$title.png")
+        put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+        put(MediaStore.Images.Media.TITLE, title)
+        put(MediaStore.Images.Media.DESCRIPTION, description)
+        put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+    }
+
+    val uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+    uri?.let {
+        val outputStream: OutputStream? = context.contentResolver.openOutputStream(it)
+        outputStream?.use { stream ->
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        }
+        return uri.toString()
+    }
+    return null
+}
+
+/**
  * Function to get a bitmap image from a file.
  * Returns the bitmap or null if the file does not exist.
  */
 fun getImageFromFile(absolutePath: String): Bitmap? {
     val file = File(absolutePath)
+
     return if (file.exists()) {
         BitmapFactory.decodeFile(file.absolutePath)
     } else {

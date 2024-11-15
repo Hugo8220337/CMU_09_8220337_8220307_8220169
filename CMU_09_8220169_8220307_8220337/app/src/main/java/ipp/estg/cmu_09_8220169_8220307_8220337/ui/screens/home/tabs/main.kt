@@ -1,6 +1,7 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs
 
 import android.Manifest
+import android.content.Context
 import android.widget.Toast
 import androidx.activity.result.launch
 import androidx.compose.foundation.Image
@@ -26,13 +27,18 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.LocalDrink
 import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material.icons.outlined.Save
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,6 +52,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -55,6 +62,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.GoldColor
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.checkCameraPermission
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.launchCamera
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.requestCameraPermission
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.saveImageToGallery
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 
 @Composable
@@ -107,7 +115,7 @@ private fun ProgressSection(streak: Int) {
             progress = {
                 streak / 75f // Dynamic based on progress
             },
-            color = if(streak <= 75) MaterialTheme.colorScheme.primary else GoldColor,
+            color = if (streak <= 75) MaterialTheme.colorScheme.primary else GoldColor,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),
@@ -143,7 +151,8 @@ private fun TaskChecklist(homeViewModel: HomeViewModel) {
                 isTaskCompleted = tasks?.gallonOfWater ?: false,
                 onTaskToggle = { isCompleted ->
                     homeViewModel.setTasksValue(
-                        tasks?.copy(gallonOfWater = isCompleted) ?: DailyTasks(gallonOfWater = isCompleted)
+                        tasks?.copy(gallonOfWater = isCompleted)
+                            ?: DailyTasks(gallonOfWater = isCompleted)
                     )
                 }
             )
@@ -152,7 +161,8 @@ private fun TaskChecklist(homeViewModel: HomeViewModel) {
                 isTaskCompleted = tasks?.twoWorkouts ?: false,
                 onTaskToggle = { isCompleted ->
                     homeViewModel.setTasksValue(
-                        tasks?.copy(twoWorkouts = isCompleted) ?: DailyTasks(twoWorkouts = isCompleted)
+                        tasks?.copy(twoWorkouts = isCompleted)
+                            ?: DailyTasks(twoWorkouts = isCompleted)
                     )
                 }
             )
@@ -161,7 +171,8 @@ private fun TaskChecklist(homeViewModel: HomeViewModel) {
                 isTaskCompleted = tasks?.followDiet ?: false,
                 onTaskToggle = { isCompleted ->
                     homeViewModel.setTasksValue(
-                        tasks?.copy(followDiet = isCompleted) ?: DailyTasks(followDiet = isCompleted)
+                        tasks?.copy(followDiet = isCompleted)
+                            ?: DailyTasks(followDiet = isCompleted)
                     )
                 }
             )
@@ -170,7 +181,8 @@ private fun TaskChecklist(homeViewModel: HomeViewModel) {
                 isTaskCompleted = tasks?.readTenPages ?: false,
                 onTaskToggle = { isCompleted ->
                     homeViewModel.setTasksValue(
-                        tasks?.copy(readTenPages = isCompleted) ?: DailyTasks(readTenPages = isCompleted)
+                        tasks?.copy(readTenPages = isCompleted)
+                            ?: DailyTasks(readTenPages = isCompleted)
                     )
                 }
             )
@@ -270,8 +282,14 @@ fun DailyPhotoSection(homeViewModel: HomeViewModel) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(stringResource(id = R.string.daily_progress_picture), style = MaterialTheme.typography.bodyMedium)
+        Text(
+            stringResource(id = R.string.daily_progress_picture),
+            style = MaterialTheme.typography.bodyMedium
+        )
 
+        Row {
+
+        }
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -295,6 +313,29 @@ fun DailyPhotoSection(homeViewModel: HomeViewModel) {
                 Text(text = stringResource(id = R.string.upload_photo), color = Color.White)
             }
         }
+
+        SaveButton(homeViewModel = homeViewModel, context = context)
+    }
+}
+
+@Composable
+private fun SaveButton(homeViewModel: HomeViewModel, context: Context) {
+    val toastText = stringResource(id = R.string.photo_saved_in_the_gallery)
+    IconButton(
+        onClick = {
+            homeViewModel.saveProgressPitureToGallery()?.let {
+                Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
+            }
+        },
+        modifier = Modifier
+            .padding(8.dp)
+            .size(36.dp),
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Save,
+            contentDescription = stringResource(id = R.string.save),
+            tint = MaterialTheme.colorScheme.onBackground
+        )
     }
 }
 

@@ -16,6 +16,7 @@ interface IDailyTasksRepository {
 
     fun getTodayTasks(): LiveData<DailyTasks>
     fun areTodaysTasksDone(): Boolean
+    suspend fun getTodaysProgressPicture(): String
     suspend fun getStreak(): Int
 }
 class DailyTasksRepository(
@@ -63,6 +64,13 @@ class DailyTasksRepository(
         return condition
     }
 
+    override suspend fun getTodaysProgressPicture(): String {
+        val currentDate = LocalDate.now().toString()
+        val progressPicture = dailyTasksDao.getProgressPathPictureByDate(currentDate)
+
+        return progressPicture
+    }
+
     override suspend fun getStreak(): Int {
         val tasks = dailyTasksDao.getAllTasks()  // Busca todas as tarefas
         var streak = 0
@@ -86,4 +94,6 @@ class DailyTasksRepository(
 
         return streak
     }
+
+
 }

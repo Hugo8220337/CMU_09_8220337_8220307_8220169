@@ -52,4 +52,6 @@
     <string name="pace">Pace</string>
     <string name="steps">Steps</string>
     <string name="lack_of_permissions">Lack of permissions</string>
+    <string name="photo_saved_in_the_gallery">Photo Saved in the Galley</string>
+    <string name="save">Save</string>
 </resources>

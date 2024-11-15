@@ -24,7 +24,9 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.services.DailyRemeinderService
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.getImageFromFile
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.getImageFromFileWithDate
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.saveImageToFile
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.saveImageToGallery
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class HomeViewModel(
     application: Application
@@ -43,9 +45,7 @@ class HomeViewModel(
      * Informação Mutável
      */
     var state: ScreenState by mutableStateOf(ScreenState())
-    lateinit var tasksLiveData: LiveData<DailyTasks>
-
-
+    var tasksLiveData: LiveData<DailyTasks>
 
 
     init {
@@ -60,8 +60,9 @@ class HomeViewModel(
         dailyTasksRepository = DailyTasksRepository(dbDao.dailyTaskCompletionDao)
         quotesRepository = QuotesRepository(quotesApi, dbDao.quotesDao)
 
-        // Obtem as tasks de hoje
-        loadTodaysTasks()
+        // Obter as tasks de hoje
+        tasksLiveData = dailyTasksRepository.getTodayTasks()
+        loadTodaysProgressPicture()
 
         // Obtem o streak atual
         updateDailyStreak()
@@ -70,16 +71,12 @@ class HomeViewModel(
         loadDailyQuote()
     }
 
-    private fun loadTodaysTasks() {
-        // Obter as tasks de hoje
-        tasksLiveData = dailyTasksRepository.getTodayTasks()
-
-        // Observar as tasks
-        // TODO está a ser observado duas vezes, não é boa ideia
-        tasksLiveData.observeForever { dailyTasks ->
-            // Load da imagem
-            if (dailyTasks?.takeProgressPicture != null) {
-                val image = getImageFromFile(dailyTasks.takeProgressPicture)
+    private fun loadTodaysProgressPicture() {
+        viewModelScope.launch {
+            // Load da fotografia de hoje, se existir
+            val todayProgressPicturePath = dailyTasksRepository.getTodaysProgressPicture();
+            if (todayProgressPicturePath.isNotEmpty()) {
+                val image = getImageFromFile(todayProgressPicturePath)
                 state = state.copy(imageBitmap = image)
             }
         }
@@ -175,16 +172,27 @@ class HomeViewModel(
         val fileAbsolutePath = saveImageToFile(getApplication(), bitmap)
 
         // Atualizar a task
-        val newTasks = tasksLiveData.value?.copy(takeProgressPicture = fileAbsolutePath)
-        setTasksValue(newTasks!!)
+        // TODO newTask está null, aposto  que é por causa do observable
+        // Observar as tasks e atualizar a task (Mais um OBSERVE, CORRIGIR ISSO)
+        val dailyTasks = tasksLiveData.value
+        if (dailyTasks != null) {
+            val newTasks = dailyTasks.copy(takeProgressPicture = fileAbsolutePath)
+            setTasksValue(newTasks)
+        }
     }
 
     fun getTodayProgressPicture(): Bitmap? {
         return state.imageBitmap
     }
 
-    fun getProgressPictureFromDate(date: String): Bitmap? {
-        return getImageFromFileWithDate(getApplication(), date)
+    fun saveProgressPitureToGallery(): String? {
+        val bitmap = state.imageBitmap ?: return null
+
+        val currentDate = LocalDate.now().toString()
+        val imageName = "progress_picture_${currentDate}.png"
+        val imageDescription = "Progress picture taken on $currentDate"
+
+        return saveImageToGallery(getApplication(), bitmap, imageName, imageDescription)
     }
 
     fun getError(): String? {
