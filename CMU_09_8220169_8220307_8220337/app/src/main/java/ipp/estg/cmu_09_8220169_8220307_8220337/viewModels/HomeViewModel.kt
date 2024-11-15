@@ -181,10 +181,6 @@ class HomeViewModel(
         }
     }
 
-    fun getTodayProgressPicture(): Bitmap? {
-        return state.imageBitmap
-    }
-
     fun saveProgressPitureToGallery(): String? {
         val bitmap = state.imageBitmap ?: return null
 
@@ -194,11 +190,6 @@ class HomeViewModel(
 
         return saveImageToGallery(getApplication(), bitmap, imageName, imageDescription)
     }
-
-    fun getError(): String? {
-        return state.error
-    }
-
 
     data class ScreenState(
         val isLoading: Boolean = false,

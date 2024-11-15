@@ -28,8 +28,6 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.LocalDrink
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.outlined.Save
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -38,7 +36,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,7 +49,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -94,7 +90,7 @@ fun MainContent(homeViewModel: HomeViewModel) {
         // Motivational Quote
         MotivationalQuote(homeViewModel.state.dailyQuote)
 
-        homeViewModel.getError()?.let {
+        homeViewModel.state.error?.let {
             Text(
                 text = it,
                 color = MaterialTheme.colorScheme.error
@@ -304,9 +300,9 @@ fun DailyPhotoSection(homeViewModel: HomeViewModel) {
                     }
                 }
         ) {
-            if (homeViewModel.getTodayProgressPicture() != null) {
+            if (homeViewModel.state.imageBitmap != null) {
                 Image(
-                    bitmap = homeViewModel.getTodayProgressPicture()!!.asImageBitmap(),
+                    bitmap = homeViewModel.state.imageBitmap!!.asImageBitmap(),
                     contentDescription = stringResource(id = R.string.captured_photo)
                 )
             } else {
