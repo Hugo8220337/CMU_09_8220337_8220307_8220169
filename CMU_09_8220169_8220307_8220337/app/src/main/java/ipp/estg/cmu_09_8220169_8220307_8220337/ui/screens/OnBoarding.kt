@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
@@ -16,11 +17,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
+import coil3.compose.AsyncImage
+import ipp.estg.cmu_09_8220169_8220307_8220337.R
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import kotlinx.coroutines.launch
 
 
@@ -37,22 +38,28 @@ fun OnboardingScreen(navController: NavController) {
             when (page) {
                 0 -> OnboardingScreen1()
                 1 -> OnboardingScreen2()
+                2 -> OnboardingScreen3()
+                // Adicione mais telas de onboarding aqui se necessário
             }
         }
 
         Button(
             onClick = {
                 coroutineScope.launch {
-                    if (pagerState.currentPage < 1) {
+                    if (pagerState.currentPage < 2) { // Mude para 2 se houver 3 páginas no total
                         pagerState.scrollToPage(pagerState.currentPage + 1)
                     } else {
-                        // Navigate to the main content of your app
-                        navController.navigate("main")
+                        // Navega para a tela inicial ou principal do app após o onboarding
+                        navController.navigate(Screen.Home.route) {
+                            // Remove a tela de onboarding da pilha para que o usuário não possa voltar
+                            popUpTo(Screen.Onboarding.route) { inclusive = true }
+                        }
                     }
                 }
             },
             modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp)
         ) {
+            //OnboardingScreen3()
             Text(text = if (pagerState.currentPage < 2) "Next" else "Get Started")
         }
     }
@@ -67,6 +74,10 @@ private fun OnboardingScreen1() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        AsyncImage( model = R.drawable.hello_hand,
+            contentDescription = "Exemplo de GIF",
+            modifier = Modifier.size(250.dp)
+        )
         Text(
             text = "Welcome to MyApp!",
             style = MaterialTheme.typography.labelMedium
@@ -75,7 +86,7 @@ private fun OnboardingScreen1() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            text = "Hi there, seems like you're new around here.",
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
@@ -91,6 +102,10 @@ private fun OnboardingScreen2() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        AsyncImage( model = R.drawable.muscle_man,
+            contentDescription = "Exemplo de GIF",
+            modifier = Modifier.size(400.dp).padding(horizontal = 0.dp, vertical = 0.dp)
+        )
         Text(
             text = "Welcome to MyApp!",
             style = MaterialTheme.typography.labelMedium
@@ -99,21 +114,37 @@ private fun OnboardingScreen2() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Lorem ipsum dolor sit asdfsdfdsmet, consectetur adipiscing elit.",
+            text = "Welcome to 75Heart, here we will guide you in different ways to put you in shape.",
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
     }
 }
 
-
-
-@Preview(showBackground = true)
 @Composable
-fun LoginPreview() {
-    CMU_09_8220169_8220307_8220337Theme {
-        val navController = rememberNavController()
+private fun OnboardingScreen3() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        AsyncImage( model = R.drawable.create_account,
+            contentDescription = "Exemplo de GIF",
+            modifier = Modifier.size(400.dp).padding(horizontal = 0.dp, vertical = 0.dp)
+        )
+        Text(
+            text = "Welcome to MyApp!",
+            style = MaterialTheme.typography.labelMedium
+        )
 
-        OnboardingScreen(navController)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "But looks like it is your first time here so first we need you to create a account for yourself.",
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center
+        )
     }
 }

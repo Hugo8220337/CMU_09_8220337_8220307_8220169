@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.SuperUsefulDropDownMenuBox
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 
 @Composable
@@ -107,14 +108,18 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
 
 
     }
+    Row (horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = {navController.navigate(Screen.Start.route)},
+            modifier = Modifier
+                .fillMaxWidth(0.45f)
+                .padding(vertical = 10.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White
+            )
+        ) {
+            Text("Log out")
+        }
+    }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun SettingsPreview() {
-//    CMU_09_8220169_8220307_8220337Theme {
-//        val navController = rememberNavController()
-//
-//        SettingsScreen(navController)
-//    }
-//}
