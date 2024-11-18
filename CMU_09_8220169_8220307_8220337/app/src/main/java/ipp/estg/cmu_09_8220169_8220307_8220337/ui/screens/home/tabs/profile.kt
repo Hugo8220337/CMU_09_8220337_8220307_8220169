@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,11 +29,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -130,20 +133,10 @@ fun ProfileScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Divider()
+        HorizontalDivider()
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(35.dp))
 
-        Button(
-            onClick = { navController.navigate("progress") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)
-        ) {
-            Text(text = "Ver Progresso Completo")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = { /* Ação para o segundo botão */ },
@@ -151,7 +144,7 @@ fun ProfileScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp)
         ) {
-            Text(text = "Editar Perfil")
+            Text(text = stringResource(id = R.string.edit_profile))
         }
     }
 }

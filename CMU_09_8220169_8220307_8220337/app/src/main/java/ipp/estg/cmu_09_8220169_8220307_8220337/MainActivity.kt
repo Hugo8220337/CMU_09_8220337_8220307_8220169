@@ -49,7 +49,7 @@ fun MyApp(navController: NavHostController) {
     // Set up a NavHost to hold different composable destinations (screens)
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Start.route
     ) {
         composable(Screen.Start.route) {
             StartScreen(navController)

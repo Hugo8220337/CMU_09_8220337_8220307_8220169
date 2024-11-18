@@ -55,4 +55,7 @@
     <string name="photo_saved_in_the_gallery">Foto in der Galerie gespeichert</string>
     <string name="save">Speichern</string>
     <string name="history">Verlauf</string>
+    <string name="sort_by">Sortieren nach</string>
+    <string name="trained_parts">Trainierte Körperteile</string>
+    <string name="edit_profile">Profil bearbeiten</string>
 </resources>
