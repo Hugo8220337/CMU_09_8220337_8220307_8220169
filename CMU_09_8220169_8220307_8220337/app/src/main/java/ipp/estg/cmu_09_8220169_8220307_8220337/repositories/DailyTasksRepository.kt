@@ -84,7 +84,7 @@ class DailyTasksRepository(
             val taskDate = LocalDate.parse(task.date)
 
             // Verifica se todas as tarefas foram concluídas nesse dia
-            if (task.gallonOfWater && task.twoWorkouts && task.followDiet && task.readTenPages) {
+            if (task.gallonOfWater && task.twoWorkouts && task.followDiet && task.readTenPages   ) {
                 if (previousDate == null || taskDate == previousDate.minusDays(1)) {
                     streak++
                     previousDate = taskDate

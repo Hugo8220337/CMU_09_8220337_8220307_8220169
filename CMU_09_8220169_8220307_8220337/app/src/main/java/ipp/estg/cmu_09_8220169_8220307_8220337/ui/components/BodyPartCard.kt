@@ -1,4 +1,4 @@
-package ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils
+package ipp.estg.cmu_09_8220169_8220307_8220337.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

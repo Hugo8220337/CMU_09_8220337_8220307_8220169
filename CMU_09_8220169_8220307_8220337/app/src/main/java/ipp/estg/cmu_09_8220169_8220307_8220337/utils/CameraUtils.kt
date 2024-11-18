@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.core.content.ContextCompat
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -66,7 +67,9 @@ fun saveImageToFile(context: Context, bitmap: Bitmap): String {
     val file = File(context.filesDir, filename)
 
     FileOutputStream(file).use { out ->
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+        val buffer = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, buffer)
+        out.write(buffer.toByteArray())
     }
 
     return file.absolutePath
@@ -88,7 +91,9 @@ fun saveImageToGallery(context: Context, bitmap: Bitmap, title: String, descript
     uri?.let {
         val outputStream: OutputStream? = context.contentResolver.openOutputStream(it)
         outputStream?.use { stream ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            val buffer = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, buffer)
+            stream.write(buffer.toByteArray())
         }
         return uri.toString()
     }

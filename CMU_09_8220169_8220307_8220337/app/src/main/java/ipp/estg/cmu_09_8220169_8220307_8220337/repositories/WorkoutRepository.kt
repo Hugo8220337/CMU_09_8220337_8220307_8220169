@@ -17,6 +17,8 @@ interface IWorkoutRepository {
         limit: Int,
         offset: Int,
     ): List<ExerciseItemDataResponse>
+
+    suspend fun getWorkouts(): List<Workout>
 }
 
 class WorkoutRepository(
@@ -58,6 +60,10 @@ class WorkoutRepository(
         }
 
         return allExercises
+    }
+
+    override suspend fun getWorkouts(): List<Workout> {
+        return workoutDao.getWorkouts()
     }
 
     private suspend fun insertWorkoutInCache(trainedBodyParts: List<String>) {

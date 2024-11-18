@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CMU_09_8220169_8220307_8220337</string>
     <string name="apiKey">CMU_09_8220169_8220307_8220337</string>
     <string name="no_exercises_available">Keine Übungen verfügbar</string>
     <string name="back">Zurück</string>
     <string name="next">Weiter</string>
-    <string name="finish">Beenden</string>
+    <string name="finish">Fertig</string>
     <string name="password">Passwort</string>
     <string name="email">E-Mail</string>
     <string name="login">Anmelden</string>
@@ -15,17 +14,17 @@
     <string name="by_clicking_register_you_agree_to_our">Mit der Registrierung stimmen Sie unseren</string>
     <string name="and">" und "</string>
     <string name="terms_of_service">Nutzungsbedingungen</string>
-    <string name="privacy_policy">Datenschutzrichtlinien</string>
+    <string name="privacy_policy">Datenschutzbestimmungen</string>
     <string name="home">Startseite</string>
     <string name="progress">Fortschritt</string>
-    <string name="workout_generator">Trainingsgenerator</string>
+    <string name="workout_generator">Trainings-Generator</string>
     <string name="running">Laufen</string>
     <string name="settings">Einstellungen</string>
     <string name="profile">Profil</string>
     <string name="open_menu">Menü öffnen</string>
     <string name="daily_tasks">Tägliche Aufgaben</string>
-    <string name="drink_4l_water">4L Wasser trinken</string>
-    <string name="complete_2_workouts">2 Workouts abschließen</string>
+    <string name="drink_4l_water">4 Liter Wasser trinken</string>
+    <string name="complete_2_workouts">2 Workouts absolvieren</string>
     <string name="follow_diet">Diät einhalten</string>
     <string name="read_10_pages">10 Seiten lesen</string>
     <string name="daily_progress_picture">Tägliches Fortschrittsfoto</string>
@@ -34,22 +33,26 @@
     <string name="notification_preferences">Benachrichtigungseinstellungen</string>
     <string name="enable_notifications">Benachrichtigungen aktivieren</string>
     <string name="enable_dark_mode">Dunkelmodus aktivieren</string>
-    <string name="theme_preferences">Thema-Einstellungen</string>
+    <string name="theme_preferences">Design-Einstellungen</string>
     <string name="language">Sprache</string>
     <string name="generate_workout">Training generieren</string>
     <string name="select_body_parts">Körperteile auswählen</string>
-    <string name="previous">Zurück</string>
+    <string name="previous">Vorherige</string>
     <string name="your_workout">Dein Training</string>
     <string name="ready_for_your_run">Bereit für deinen Lauf?</string>
     <string name="track_your_progress_and_achieve_your_goals">Verfolge deinen Fortschritt und erreiche deine Ziele</string>
-    <string name="distance">Entfernung</string>
+    <string name="distance">Distanz</string>
     <string name="duration">Dauer</string>
     <string name="battery_warning">Batteriewarnung</string>
     <string name="battery_level_to_low">Batteriestand zu niedrig</string>
-    <string name="please_charge_your_device">Bitte laden Sie Ihr Gerät auf</string>
+    <string name="please_charge_your_device">Bitte lade dein Gerät auf</string>
     <string name="pause">Pause</string>
     <string name="start">Start</string>
-    <string name="stop">Stop</string>
-    <string name="pace">Pace</string>
+    <string name="stop">Stopp</string>
+    <string name="pace">Tempo</string>
     <string name="steps">Schritte</string>
+    <string name="lack_of_permissions">Fehlende Berechtigungen</string>
+    <string name="photo_saved_in_the_gallery">Foto in der Galerie gespeichert</string>
+    <string name="save">Speichern</string>
+    <string name="history">Verlauf</string>
 </resources>

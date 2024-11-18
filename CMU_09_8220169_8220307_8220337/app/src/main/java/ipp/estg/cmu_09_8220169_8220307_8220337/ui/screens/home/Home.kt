@@ -44,8 +44,9 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.SettingsScre
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.MainContent
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.RunningWorkoutStartScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.WorkoutGeneratorScreen
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.yourActivitiesScreen
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.WorkoutHistoryPage
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.WorkoutViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,6 +54,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(navController: NavController) {
     val homeViewModel: HomeViewModel = viewModel()
+    val workoutViewModel: WorkoutViewModel = viewModel()
 
     val startingNavItem = 0
     val navItems = listOf(
@@ -105,11 +107,11 @@ fun HomeScreen(navController: NavController) {
             }
         ),
         NavigationItem(
-            title = "Your Activities",
+            title = stringResource(id = R.string.history),
             selectedIcon = Icons.Filled.DateRange,
             unselectedIcon = Icons.Outlined.DateRange,
             content = {
-                yourActivitiesScreen(navController)
+                WorkoutHistoryPage(workoutViewModel)
             }
         )
     )

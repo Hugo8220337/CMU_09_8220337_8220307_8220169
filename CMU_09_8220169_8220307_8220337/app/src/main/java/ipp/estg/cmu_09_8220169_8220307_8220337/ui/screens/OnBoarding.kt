@@ -11,6 +11,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -30,38 +31,47 @@ fun OnboardingScreen(navController: NavController) {
     val pagerState = rememberPagerState(pageCount = { 3 })
     val coroutineScope = rememberCoroutineScope()
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.weight(1f) // Let the pager take up available space
-        ) { page ->
-            when (page) {
-                0 -> OnboardingScreen1()
-                1 -> OnboardingScreen2()
-                2 -> OnboardingScreen3()
-                // Adicione mais telas de onboarding aqui se necessário
+    Scaffold { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.weight(1f) // Let the pager take up available space
+            ) { page ->
+                when (page) {
+                    0 -> OnboardingScreen1()
+                    1 -> OnboardingScreen2()
+                    2 -> OnboardingScreen3()
+                    // Adicione mais telas de onboarding aqui se necessário
+                }
+            }
+
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        if (pagerState.currentPage < 2) { // Mude para 2 se houver 3 páginas no total
+                            pagerState.scrollToPage(pagerState.currentPage + 1)
+                        } else {
+                            // Navega para a tela inicial ou principal do app após o onboarding
+                            navController.navigate(Screen.Home.route) {
+                                // Remove a tela de onboarding da pilha para que o usuário não possa voltar
+                                popUpTo(Screen.Onboarding.route) { inclusive = true }
+                            }
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp)
+            ) {
+                //OnboardingScreen3()
+                Text(text = if (pagerState.currentPage < 2) "Next" else "Get Started")
             }
         }
 
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    if (pagerState.currentPage < 2) { // Mude para 2 se houver 3 páginas no total
-                        pagerState.scrollToPage(pagerState.currentPage + 1)
-                    } else {
-                        // Navega para a tela inicial ou principal do app após o onboarding
-                        navController.navigate(Screen.Home.route) {
-                            // Remove a tela de onboarding da pilha para que o usuário não possa voltar
-                            popUpTo(Screen.Onboarding.route) { inclusive = true }
-                        }
-                    }
-                }
-            },
-            modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp)
-        ) {
-            //OnboardingScreen3()
-            Text(text = if (pagerState.currentPage < 2) "Next" else "Get Started")
-        }
     }
 }
 
@@ -74,7 +84,8 @@ private fun OnboardingScreen1() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AsyncImage( model = R.drawable.hello_hand,
+        AsyncImage(
+            model = R.drawable.hello_hand,
             contentDescription = "Exemplo de GIF",
             modifier = Modifier.size(250.dp)
         )
@@ -102,9 +113,12 @@ private fun OnboardingScreen2() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AsyncImage( model = R.drawable.muscle_man,
+        AsyncImage(
+            model = R.drawable.muscle_man,
             contentDescription = "Exemplo de GIF",
-            modifier = Modifier.size(400.dp).padding(horizontal = 0.dp, vertical = 0.dp)
+            modifier = Modifier
+                .size(400.dp)
+                .padding(horizontal = 0.dp, vertical = 0.dp)
         )
         Text(
             text = "Welcome to MyApp!",
@@ -130,9 +144,12 @@ private fun OnboardingScreen3() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AsyncImage( model = R.drawable.create_account,
+        AsyncImage(
+            model = R.drawable.create_account,
             contentDescription = "Exemplo de GIF",
-            modifier = Modifier.size(400.dp).padding(horizontal = 0.dp, vertical = 0.dp)
+            modifier = Modifier
+                .size(400.dp)
+                .padding(horizontal = 0.dp, vertical = 0.dp)
         )
         Text(
             text = "Welcome to MyApp!",

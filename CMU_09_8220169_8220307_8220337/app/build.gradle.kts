@@ -29,6 +29,7 @@ android {
         // Configure gradle.properties variables
         buildConfigField("String", "EXERCICEDB_API_KEY", "\"${properties.getProperty("EXERCICEDB_API_KEY")}\"")
         buildConfigField("String", "QUOTES_API_KEY", "\"${properties.getProperty("QUOTES_API_KEY")}\"")
+        buildConfigField("String", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
 
     }
 
@@ -95,7 +96,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
-    // glide - para passar imagens de um link da web para o kotlin
+    // glide - para passar imagens de um link da web para o kotlin (um pouco redundante este, visto que estamos a usar o coil)
     implementation(libs.glide)
     implementation ("com.github.skydoves:landscapist-glide:1.4.8") // GlideCard
 
@@ -127,4 +128,15 @@ dependencies {
 
     // For Background Services
     implementation ("androidx.work:work-runtime-ktx:2.8.1")
+
+    // Open Steet Maps
+//    implementation("org.osmdroid:osmdroid-android:6.1.16")
+//    implementation("org.osmdroid:osmdroid-mapsforge:6.1.16")
+//    implementation("org.osmdroid:osmdroid-wms:6.1.16")
+//    implementation("org.osmdroid:osmdroid-geopackage:6.1.16")
+
+    // Open Street Maps with Compose (NOT WORKING)
+//    implementation("tech.utsmankece:osm-androd-compose:0.0.5")
+
+
 }
