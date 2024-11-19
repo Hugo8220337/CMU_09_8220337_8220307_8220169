@@ -20,7 +20,7 @@
 
 ---
 
-# PAW_8220337_8220307_8220169
+# CMU_8220337_8220307_8220169
 Aplicação Mobile desenvolvida em Kotlin para a monitorização do desafio "75 Hard Challange".
 
 
