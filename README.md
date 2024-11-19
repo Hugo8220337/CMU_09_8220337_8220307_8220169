@@ -1,7 +1,7 @@
 <h1 align="center">Practical Work on Computação Móvel e Ubíqua (Mobile and Ubiquitous Computing)</h1>
 
 <p>
-  <img src="http://img.shields.io/static/v1?style=for-the-badge&label=School%20year&message=2023/2024&color=sucess"/>
+  <img src="http://img.shields.io/static/v1?style=for-the-badge&label=School%20year&message=2024/2025&color=sucess"/>
   <img src="http://img.shields.io/static/v1?style=for-the-badge&label=Discipline&message=PAW&color=sucess"/>
   <img src="http://img.shields.io/static/v1?style=for-the-badge&label=Grade&message=15.52&color=sucess"/>
 </p>
