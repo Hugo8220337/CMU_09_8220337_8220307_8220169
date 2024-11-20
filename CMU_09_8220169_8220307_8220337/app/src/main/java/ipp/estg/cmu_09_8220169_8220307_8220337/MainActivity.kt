@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.SettingsPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.HomeScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.OnboardingScreen
@@ -29,18 +30,22 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            CMU_09_8220169_8220307_8220337Theme {
-                val navController =
-                    rememberNavController() // Create NavController to track current route
+        // Recuperar a preferência do tema (modo escuro ou claro)
+        val settingsPreferences = SettingsPreferencesRepository(this)
+        val darkModeEnabled = settingsPreferences.getDarkModePreference()
 
-                // Set up the main app
+        setContent {
+            // Aplica o tema com base na preferência de modo escuro
+            CMU_09_8220169_8220307_8220337Theme(
+                darkTheme = darkModeEnabled
+            ) {
+                val navController = rememberNavController()
+
+                // Configurar a navegação e o conteúdo da aplicação
                 MyApp(navController)
             }
         }
     }
-
-
 }
 
 @Composable

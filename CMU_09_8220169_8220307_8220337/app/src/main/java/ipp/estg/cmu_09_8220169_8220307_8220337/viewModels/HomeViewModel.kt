@@ -200,4 +200,3 @@ class HomeViewModel(
         val imageBitmap: Bitmap? = null,
     )
 }
-
