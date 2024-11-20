@@ -23,6 +23,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.LoginScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.RegisterScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Converter
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthenticationViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 
 class MainActivity : ComponentActivity() {
@@ -60,7 +61,8 @@ fun MyApp(navController: NavHostController) {
             StartScreen(navController)
         }
         composable(Screen.Login.route) {
-            LoginScreen(navController)
+            val authViewModel: AuthenticationViewModel = viewModel()
+            LoginScreen(navController, authViewModel)
         }
         composable(Screen.Register.route) {
             RegisterScreen(navController)

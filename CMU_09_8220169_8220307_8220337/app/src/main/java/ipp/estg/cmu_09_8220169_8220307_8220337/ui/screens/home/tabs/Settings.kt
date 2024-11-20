@@ -17,10 +17,11 @@ import androidx.navigation.NavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.SuperUsefulDropDownMenuBox
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthenticationViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 
 @Composable
-fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
+fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel, authViewModel: AuthenticationViewModel) {
 
     val settingsPreferencesRepo = homeViewModel.settingsPreferencesRepository
 
@@ -119,7 +120,10 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
     // Log out button
     Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
         Button(
-            onClick = { navController.navigate(Screen.Start.route) },
+            onClick = {
+                authViewModel.logout()
+                navController.navigate(Screen.Start.route)
+            },
             modifier = Modifier
                 .fillMaxWidth(0.45f)
                 .padding(vertical = 10.dp),

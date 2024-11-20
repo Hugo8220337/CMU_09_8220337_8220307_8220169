@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "540104897261",
+    "project_id": "projeto-cmu-56978",
+    "storage_bucket": "projeto-cmu-56978.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:540104897261:android:d8d017f28327672b90d2e4",
+        "android_client_info": {
+          "package_name": "ipp.estg.cmu_09_8220169_8220307_8220337"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdf1viOx-n_z33YHUmdeA-RS5lYdYArLY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
