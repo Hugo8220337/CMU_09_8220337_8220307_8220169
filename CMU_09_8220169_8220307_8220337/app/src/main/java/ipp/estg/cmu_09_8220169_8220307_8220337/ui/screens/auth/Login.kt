@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.AuthStatus
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.LoginFields
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthenticationViewModel
@@ -111,49 +112,3 @@ fun LoginScreen(navController: NavController, authViewModel: AuthenticationViewM
     }
 }
 
-@Composable
-private fun LoginFields(
-    email: String,
-    password: String,
-    onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit,
-    onLoginClick: () -> Unit
-) {
-
-    TextField(
-        value = email,
-        onValueChange = { onEmailChange(it) },
-        label = { Text(stringResource(id = R.string.email)) },
-        modifier = Modifier.fillMaxWidth(0.85f),
-
-        )
-
-    TextField(
-        value = password,
-        onValueChange = { onPasswordChange(it) },
-        label = { Text(stringResource(id = R.string.password)) },
-        visualTransformation = PasswordVisualTransformation(),
-        modifier = Modifier.fillMaxWidth(0.85f),
-    )
-
-    Button(
-        onClick = {
-//            navController.navigate(Screen.Onboarding.route)
-            onLoginClick()
-        },
-        modifier = Modifier
-            .fillMaxWidth(0.85f)
-            .padding(vertical = 8.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = Color.White
-        )
-    ) {
-        Text(
-            stringResource(id = R.string.login),
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.Bold
-            )
-        )
-    }
-}

@@ -65,7 +65,8 @@ fun MyApp(navController: NavHostController) {
             LoginScreen(navController, authViewModel)
         }
         composable(Screen.Register.route) {
-            RegisterScreen(navController)
+            val authViewModel: AuthenticationViewModel = viewModel()
+            RegisterScreen(navController, authViewModel)
         }
         composable(Screen.Onboarding.route) {
             OnboardingScreen(navController)
