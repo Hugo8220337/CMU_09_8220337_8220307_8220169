@@ -102,7 +102,7 @@ fun HomeScreen(navController: NavController) {
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings,
             content = {
-                SettingsScreen(navController, homeViewModel, authViewModel)
+                SettingsScreen(navController, homeViewModel)
             }
         ),
         NavigationItem(

@@ -17,11 +17,10 @@ import androidx.navigation.NavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.SuperUsefulDropDownMenuBox
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
-import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthenticationViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 
 @Composable
-fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel, authViewModel: AuthenticationViewModel) {
+fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
 
     val settingsPreferencesRepo = homeViewModel.settingsPreferencesRepository
 
@@ -110,9 +109,17 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel, a
             label = stringResource(id = R.string.language),
             currentValue = selectedLanguage,
             options = listOf("pt-rPT", "en", "de"),
-            onOptionSelected = {
-                selectedLanguage = it
-                settingsPreferencesRepo.setLanguagePreference(it)
+            onOptionSelected = {language ->
+                selectedLanguage = language
+                settingsPreferencesRepo.setLanguagePreference(language)
+
+                // Atualizar o idioma na aplicação
+                settingsPreferencesRepo.updateLocale(context, language)
+
+                // Recriar a atividade para aplicar a nova configuração
+                if (context is androidx.activity.ComponentActivity) {
+                    context.recreate()
+                }
             }
         )
     }
@@ -120,10 +127,7 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel, a
     // Log out button
     Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
         Button(
-            onClick = {
-                authViewModel.logout()
-                navController.navigate(Screen.Start.route)
-            },
+            onClick = { navController.navigate(Screen.Start.route) },
             modifier = Modifier
                 .fillMaxWidth(0.45f)
                 .padding(vertical = 10.dp),
