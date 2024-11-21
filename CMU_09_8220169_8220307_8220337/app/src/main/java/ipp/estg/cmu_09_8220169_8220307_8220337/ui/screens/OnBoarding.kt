@@ -85,7 +85,7 @@ private fun OnboardingScreen1() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
-            model = R.drawable.hello_hand,
+            model = R.drawable.wave,
             contentDescription = "Exemplo de GIF",
             modifier = Modifier.size(250.dp)
         )
@@ -145,7 +145,7 @@ private fun OnboardingScreen3() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
-            model = R.drawable.create_account,
+            model = R.drawable.phone_checkmark,
             contentDescription = "Exemplo de GIF",
             modifier = Modifier
                 .size(400.dp)

@@ -1,5 +1,6 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.SuperUsefulDropDownMenuBox
@@ -22,10 +24,11 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
 
     val settingsPreferencesRepo = homeViewModel.settingsPreferencesRepository
 
-    var notificationsEnabled by remember { mutableStateOf( settingsPreferencesRepo.getNotificationsPreference()) }
+    var notificationsEnabled by remember { mutableStateOf(settingsPreferencesRepo.getNotificationsPreference()) }
     var darkModeEnabled by remember { mutableStateOf(settingsPreferencesRepo.getDarkModePreference()) }
     var selectedLanguage by remember { mutableStateOf(settingsPreferencesRepo.getLanguagePreference()) }
 
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -39,6 +42,7 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp)
         )
+
         // Switch for enabling/disabling notifications
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -66,6 +70,7 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp)
         )
+
         // Switch for enabling/disabling dark mode
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -76,9 +81,12 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
                 checked = darkModeEnabled,
                 onCheckedChange = {
                     darkModeEnabled = it
-//                    Hard75Application.appModule.setDarkMode(it)
                     settingsPreferencesRepo.setDarkModePreference(it)
 
+                    // Force recreation of the activity to apply theme changes immediately
+                    if (context is androidx.activity.ComponentActivity) {
+                        context.recreate()  // Recreates the activity to apply the new theme
+                    }
                 },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White,
@@ -95,22 +103,31 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp)
         )
+
+        // Language dropdown menu
         SuperUsefulDropDownMenuBox(
             label = stringResource(id = R.string.language),
             currentValue = selectedLanguage,
             options = listOf("pt-rPT", "en", "de"),
-            onOptionSelected = {
-                selectedLanguage = it
-                settingsPreferencesRepo.setLanguagePreference(it)
+            onOptionSelected = {language ->
+                selectedLanguage = language
+                settingsPreferencesRepo.setLanguagePreference(language)
 
+                // Atualizar o idioma na aplicação
+                settingsPreferencesRepo.updateLocale(context, language)
+
+                // Recriar a atividade para aplicar a nova configuração
+                if (context is androidx.activity.ComponentActivity) {
+                    context.recreate()
+                }
             }
         )
-
-
     }
-    Row (horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+
+    // Log out button
+    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
         Button(
-            onClick = {navController.navigate(Screen.Start.route)},
+            onClick = { navController.navigate(Screen.Start.route) },
             modifier = Modifier
                 .fillMaxWidth(0.45f)
                 .padding(vertical = 10.dp),

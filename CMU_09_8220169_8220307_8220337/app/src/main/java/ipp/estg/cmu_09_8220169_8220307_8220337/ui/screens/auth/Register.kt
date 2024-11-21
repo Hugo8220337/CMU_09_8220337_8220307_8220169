@@ -22,6 +22,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,27 +49,38 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.AuthStatus
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.RegisterFields
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.LightSquaredButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthenticationViewModel
 
 @Composable
-fun RegisterScreen(navController: NavController) {
-    var username by remember {
-        mutableStateOf(TextFieldValue())
+fun RegisterScreen(navController: NavController, authViewModel: AuthenticationViewModel) {
+
+    val authStatus by authViewModel.authState.collectAsState()
+
+    var isError by remember { mutableStateOf(false) }
+
+    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    LaunchedEffect(authStatus) {
+        if(authStatus != AuthStatus.LOADING){
+            when(authStatus){
+                AuthStatus.LOGGED -> {
+                    authViewModel.register(email, password)
+                    navController.navigate(Screen.Login.route)
+                }
+                AuthStatus.INVALID_LOGIN -> isError = true
+                else -> isError = false
+            }
+        }
     }
 
-    var email by remember {
-        mutableStateOf(TextFieldValue())
-    }
 
-    var password by remember {
-        mutableStateOf(TextFieldValue())
-    }
-
-    var password2 by remember {
-        mutableStateOf(TextFieldValue())
-    }
 
     Scaffold { innerPadding ->
         Box(
@@ -98,56 +111,18 @@ fun RegisterScreen(navController: NavController) {
                     )
                 )
 
-
-                TextField(
-                    value = username,
-                    onValueChange = { username = it },
-                    label = { Text(stringResource(id = R.string.username)) },
-                    modifier = Modifier.fillMaxWidth(0.85f),
+                RegisterFields(
+                    username = username,
+                    email = email,
+                    password = password,
+                    onUsernameChange = { username = it },
+                    onEmailChange = { email = it },
+                    onPasswordChange = { password = it },
+                    onRegisterClick = {
+                        authViewModel.register(email, password)
+                    }
                 )
 
-                TextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text(stringResource(id = R.string.email)) },
-                    modifier = Modifier.fillMaxWidth(0.85f),
-                )
-
-                TextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text(stringResource(id = R.string.password)) },
-                    visualTransformation = PasswordVisualTransformation(),
-                    modifier = Modifier.fillMaxWidth(0.85f),
-                )
-
-                TextField(
-                    value = password2,
-                    onValueChange = { password2 = it },
-                    label = { Text(stringResource(id = R.string.repeat_password)) },
-                    visualTransformation = PasswordVisualTransformation(),
-                    modifier = Modifier.fillMaxWidth(0.85f),
-                )
-
-                Button(
-                    onClick = {
-                        navController.navigate(Screen.Login.route)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.85f)
-                        .padding(vertical = 8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text(
-                        stringResource(id = R.string.register),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                }
 
                 Text(
                     text = buildAnnotatedString {
@@ -168,14 +143,14 @@ fun RegisterScreen(navController: NavController) {
             }
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun RegisterPreview() {
-    CMU_09_8220169_8220307_8220337Theme {
-        val navController = rememberNavController() // Create NavController to track current route
-
-        RegisterScreen(navController)
+    if (isError) {
+        Text(
+            text = "Error registering",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = Color.Red
+            )
+        )
     }
 }
+

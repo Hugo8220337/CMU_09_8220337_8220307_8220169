@@ -10,7 +10,7 @@ data class User(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String = "",
+    val email: String = "",
     val weight: Double = 0.0,
     val height: Double = 0.0,
-    val authToken: String = ""
 )

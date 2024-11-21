@@ -49,6 +49,9 @@ class HomeViewModel(
 
 
     init {
+        // Configura o idioma baseado na preferência salva
+        val savedLanguage = settingsPreferencesRepository.getLanguagePreference()
+        settingsPreferencesRepository.updateLocale(application, savedLanguage)
 
         buildForegroundDailyRemeinderNotifications()
 
@@ -200,4 +203,3 @@ class HomeViewModel(
         val imageBitmap: Bitmap? = null,
     )
 }
-
