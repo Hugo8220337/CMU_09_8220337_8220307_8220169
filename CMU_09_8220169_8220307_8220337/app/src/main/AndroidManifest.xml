@@ -20,8 +20,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <!-- Para poder aceder à localização do utilizador -->
-<!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/> &lt;!&ndash; Dúvidas quanto a este &ndash;&gt;-->
-<!--    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> <!-- Para localização mais detalhada,em conjunto com o Fine_Location -->
 <!--    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"  />-->
 
 

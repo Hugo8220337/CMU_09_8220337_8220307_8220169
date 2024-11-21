@@ -32,6 +32,7 @@ android {
         buildConfigField("String", "EXERCICEDB_API_KEY", "\"${properties.getProperty("EXERCICEDB_API_KEY")}\"")
         buildConfigField("String", "QUOTES_API_KEY", "\"${properties.getProperty("QUOTES_API_KEY")}\"")
         buildConfigField("String", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
+        buildConfigField("String", "MAPBOX_DOWNLOADS_TOKEN", "\"${properties.getProperty("MAPBOX_DOWNLOADS_TOKEN")}\"")
 
     }
 
@@ -133,12 +134,18 @@ dependencies {
 
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
-
-
-    // TODO: Add the dependencies for Firebase products you want to use
-    // When using the BoM, don't specify versions in Firebase dependencies
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx:23.1.0")
+
+    // MapBox
+    implementation("com.mapbox.maps:android:11.8.0")
+    implementation("com.mapbox.extension:maps-compose:11.8.0")
+
+    // Google Maps
+    //implementation("com.google.android.gms:play-services-maps:18.1.0")
+
+    // Fiused Location Provider (google play service) - para obter a localização do utilizador
+    //implementation("com.google.android.gms:play-services-location:21.0.1")
 
 
     // Open Steet Maps

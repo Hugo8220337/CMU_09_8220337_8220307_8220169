@@ -41,9 +41,13 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.mapbox.geojson.Point
+import com.mapbox.maps.plugin.Plugin
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
+import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -109,12 +113,24 @@ private fun MapSection() {
             ),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            "Map View (Your Route)",
-            color = Color.White,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
+//        Text(
+//            "Map View (Your Route)",
+//            color = Color.White,
+//            style = MaterialTheme.typography.titleMedium,
+//            fontWeight = FontWeight.Bold
+//        )
+        MapboxMap(
+            Modifier.fillMaxSize(),
+            mapViewportState = rememberMapViewportState {
+                setCameraOptions {
+                    zoom(2.0)
+                    center(Point.fromLngLat(-98.0, 39.5))
+                    pitch(0.0)
+                    bearing(0.0)
+                }
+            },
         )
+
     }
 }
 
