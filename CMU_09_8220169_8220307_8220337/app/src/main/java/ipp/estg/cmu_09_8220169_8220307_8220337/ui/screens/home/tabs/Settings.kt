@@ -108,7 +108,7 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
         SuperUsefulDropDownMenuBox(
             label = stringResource(id = R.string.language),
             currentValue = selectedLanguage,
-            options = listOf("pt-rPT", "en", "de"),
+            options = listOf("pt-rPT", "en", "de", "fr"),
             onOptionSelected = {language ->
                 selectedLanguage = language
                 settingsPreferencesRepo.setLanguagePreference(language)
