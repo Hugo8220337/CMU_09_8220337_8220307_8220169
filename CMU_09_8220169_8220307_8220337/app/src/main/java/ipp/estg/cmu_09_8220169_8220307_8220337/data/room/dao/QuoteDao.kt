@@ -1,10 +1,10 @@
-package ipp.estg.cmu_09_8220169_8220307_8220337.room.dao
+package ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Quote
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Quote
 
 @Dao
 interface QuoteDao {

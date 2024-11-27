@@ -1,8 +1,8 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
 import androidx.lifecycle.LiveData
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.DailyTasks
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.DailyTasksDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.DailyTasksDao
 import java.time.LocalDate
 
 interface IDailyTasksRepository {

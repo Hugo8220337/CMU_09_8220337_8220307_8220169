@@ -84,7 +84,10 @@ fun MyApp(navController: NavHostController) {
             WorkoutScreen(navController, bodyPartsList)
         }
         composable(Screen.RunningWorkout.route) {
-            RunningWorkoutScreen(navController, viewModel(modelClass = RunningViewModel::class.java))
+            RunningWorkoutScreen(
+                runningViewModel =  viewModel(modelClass = RunningViewModel::class.java),
+                goBack = { navController.popBackStack() }
+            )
         }
     }
 }

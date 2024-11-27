@@ -1,7 +1,7 @@
-package ipp.estg.cmu_09_8220169_8220307_8220337.retrofit
+package ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit
 
-import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.apis.ExerciseDbApi
-import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.apis.QuotesApi
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.apis.ExerciseDbApi
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.apis.QuotesApi
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.EXERCICE_DB_API_BASE_URL
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.QUOTES_API_BASE_URL
 import okhttp3.OkHttpClient

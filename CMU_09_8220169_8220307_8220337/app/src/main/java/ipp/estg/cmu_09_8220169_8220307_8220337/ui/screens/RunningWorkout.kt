@@ -28,6 +28,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -41,31 +45,50 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
+import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.plugin.Plugin
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
+import com.mapbox.maps.extension.compose.style.ColorValue
+import com.mapbox.maps.extension.compose.style.DoubleValue
+import com.mapbox.maps.extension.compose.style.layers.generated.LineLayer
+import com.mapbox.maps.extension.compose.style.sources.GeoJSONData
+import com.mapbox.maps.extension.compose.style.sources.generated.rememberGeoJsonSourceState
+import com.mapbox.maps.plugin.PuckBearing
+import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
+import com.mapbox.maps.plugin.locationcomponent.location
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun RunningWorkoutScreen(
-    navController: NavController,
-    runningViewModel: RunningViewModel
+    runningViewModel: RunningViewModel,
+    goBack: () -> Unit
 ) {
     val distance = "5.2"
     val time = "30:00"
     val pace = "5:45"
     val stepCount = runningViewModel.stepCounter.intValue
 
+
+    val geolocationPermissions =
+        rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
     val pedometerPermission =
         rememberPermissionState(android.Manifest.permission.ACTIVITY_RECOGNITION)
 
     LaunchedEffect(pedometerPermission.status) {
         if (!pedometerPermission.status.isGranted) {
             pedometerPermission.launchPermissionRequest()
+        }
+    }
+
+    LaunchedEffect(geolocationPermissions.status) {
+        if (!geolocationPermissions.status.isGranted) {
+            geolocationPermissions.launchPermissionRequest()
         }
     }
 
@@ -88,7 +111,7 @@ fun RunningWorkoutScreen(
                 ControlsSection(
                     runningViewModel = runningViewModel,
                     pedometerPermission = pedometerPermission,
-                    navController = navController
+                    goBack = { goBack() }
                 )
             }
         }
@@ -119,6 +142,8 @@ private fun MapSection() {
 //            style = MaterialTheme.typography.titleMedium,
 //            fontWeight = FontWeight.Bold
 //        )
+        val geoJsonSource = rememberGeoJsonSourceState()
+        var pointList by remember { mutableStateOf(listOf<Point>()) }
         MapboxMap(
             Modifier.fillMaxSize(),
             mapViewportState = rememberMapViewportState {
@@ -129,7 +154,17 @@ private fun MapSection() {
                     bearing(0.0)
                 }
             },
-        )
+        ) {
+//            MapEffect(pointList) { map ->
+//                geoJsonSource.data = GeoJSONData(LineString.fromLngLats(pointList))
+//            }
+//            LineLayer(
+//                sourceState = geoJsonSource
+//            ) {
+//                lineColor = ColorValue(Color.Red)
+//                lineWidth = DoubleValue(4.0)
+//            }
+        }
 
     }
 }
@@ -177,7 +212,7 @@ private fun RunDetailsSection(distance: String, time: String, pace: String, step
 private fun ControlsSection(
     runningViewModel: RunningViewModel,
     pedometerPermission: PermissionState,
-    navController: NavController
+    goBack: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -199,7 +234,7 @@ private fun ControlsSection(
             onClick = {
                 runningViewModel.isRunning = false
                 runningViewModel.stepCounter.value = 0
-                navController.navigate(Screen.Home.route)
+                goBack()
             }
         )
     }

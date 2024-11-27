@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Workout
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.DropDownList
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.RunCardItem
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.WorkoutCardItem

@@ -1,11 +1,11 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
 import android.util.Log
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Workout
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExerciseItemDataResponse
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExercisesRetrofitResponse
-import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.apis.ExerciseDbApi
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.WorkoutDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.ExerciseItemDataResponse
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.ExercisesRetrofitResponse
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.apis.ExerciseDbApi
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.WorkoutDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Converter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

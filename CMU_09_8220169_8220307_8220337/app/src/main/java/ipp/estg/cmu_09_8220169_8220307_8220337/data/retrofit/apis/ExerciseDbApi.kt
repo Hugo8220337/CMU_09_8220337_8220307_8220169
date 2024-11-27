@@ -1,8 +1,8 @@
-package ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.apis
+package ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.apis
 
 import ipp.estg.cmu_09_8220169_8220307_8220337.BuildConfig
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.BodyPartsRetrofitResponse
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExercisesRetrofitResponse
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.BodyPartsRetrofitResponse
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.ExercisesRetrofitResponse
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET

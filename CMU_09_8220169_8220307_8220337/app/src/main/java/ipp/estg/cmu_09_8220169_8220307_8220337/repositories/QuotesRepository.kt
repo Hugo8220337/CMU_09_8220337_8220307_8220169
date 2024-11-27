@@ -1,10 +1,10 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
 import android.util.Log
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Quote
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.quotesApi.QuoteRetrofitResponse
-import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.apis.QuotesApi
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.QuoteDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Quote
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.quotesApi.QuoteRetrofitResponse
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.apis.QuotesApi
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.QuoteDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response

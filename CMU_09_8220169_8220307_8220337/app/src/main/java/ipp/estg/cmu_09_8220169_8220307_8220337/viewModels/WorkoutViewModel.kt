@@ -6,16 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Workout
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExerciseItemDataResponse
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.ExerciseItemDataResponse
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.IWorkoutRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.WorkoutRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.RemoteApis
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.LocalDatabase
-import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Resource
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.RemoteApis
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class WorkoutViewModel(
     application: Application

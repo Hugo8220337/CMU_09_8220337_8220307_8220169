@@ -1,16 +1,16 @@
-package ipp.estg.cmu_09_8220169_8220307_8220337.room
+package ipp.estg.cmu_09_8220169_8220307_8220337.data.room
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.BodyPart
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.DailyTasks
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Quote
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Workout
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.DailyTasksDao
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.QuoteDao
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.WorkoutDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.BodyPart
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Quote
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.DailyTasksDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.QuoteDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.WorkoutDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.LOCAL_DB_NAME
 
 @Database(
@@ -29,9 +29,9 @@ abstract class LocalDatabase : RoomDatabase() {
     abstract val quotesDao: QuoteDao
 
     companion object{
-        private var INSTANCE:LocalDatabase?=null
+        private var INSTANCE: LocalDatabase?=null
 
-        fun getDatabase(context: Context):LocalDatabase {
+        fun getDatabase(context: Context): LocalDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context,

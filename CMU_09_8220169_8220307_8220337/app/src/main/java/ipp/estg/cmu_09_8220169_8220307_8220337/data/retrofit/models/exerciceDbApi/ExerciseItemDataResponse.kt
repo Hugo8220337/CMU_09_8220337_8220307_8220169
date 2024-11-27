@@ -1,4 +1,4 @@
-package ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi
+package ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi
 
 data class ExerciseItemDataResponse(
     val bodyPart: String,
