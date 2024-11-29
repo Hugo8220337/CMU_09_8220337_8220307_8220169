@@ -39,9 +39,9 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 
 @Composable
 fun RunningWorkoutStartScreen(
-    navController: NavController
+    navController: NavController,
+    runningViewModel: RunningViewModel = viewModel()
 ) {
-    val runningViewModel: RunningViewModel = viewModel()
     val batteryLevel = runningViewModel.getBatteryLevel()
 
     Box(

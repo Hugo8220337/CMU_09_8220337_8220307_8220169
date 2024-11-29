@@ -6,6 +6,7 @@ plugins {
     id ("kotlin-kapt")
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -141,21 +142,27 @@ dependencies {
     implementation("com.mapbox.maps:android:11.8.0")
     implementation("com.mapbox.extension:maps-compose:11.8.0")
 
+
     // Google Maps
-    //implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.maps.android:maps-compose:2.7.3")
+    implementation("com.google.android.gms:play-services-maps:18.0.2")
 
     // Fiused Location Provider (google play service) - para obter a localização do utilizador
-    //implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+}
 
+// Google Maps
+secrets {
+    // Optionally specify a different file name containing your secrets.
+    // The plugin defaults to "local.properties"
+    propertiesFileName = "secrets.properties"
 
-    // Open Steet Maps
-//    implementation("org.osmdroid:osmdroid-android:6.1.16")
-//    implementation("org.osmdroid:osmdroid-mapsforge:6.1.16")
-//    implementation("org.osmdroid:osmdroid-wms:6.1.16")
-//    implementation("org.osmdroid:osmdroid-geopackage:6.1.16")
+    // A properties file containing default secret values. This file can be
+    // checked in version control.
+    defaultPropertiesFileName = "local.properties"
 
-    // Open Street Maps with Compose (NOT WORKING)
-//    implementation("tech.utsmankece:osm-androd-compose:0.0.5")
-
-
+    // Configure which keys should be ignored by the plugin by providing regular expressions.
+    // "sdk.dir" is ignored by default.
+    ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+    ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
 }

@@ -46,6 +46,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.maps.extension.compose.MapEffect
@@ -140,19 +146,21 @@ private fun MapSection() {
 //            style = MaterialTheme.typography.titleMedium,
 //            fontWeight = FontWeight.Bold
 //        )
-        val geoJsonSource = rememberGeoJsonSourceState()
-        var pointList by remember { mutableStateOf(listOf<Point>()) }
-        MapboxMap(
-            Modifier.fillMaxSize(),
-            mapViewportState = rememberMapViewportState {
-                setCameraOptions {
-                    zoom(2.0)
-                    center(Point.fromLngLat(-98.0, 39.5))
-                    pitch(0.0)
-                    bearing(0.0)
-                }
-            }
-        )
+
+        val singapore = LatLng(1.35, 103.87)
+        val singaporeMarkerState = rememberMarkerState(position = singapore)
+        val cameraPositionState = rememberCameraPositionState {
+            position = CameraPosition.fromLatLngZoom(singapore, 10f)
+        }
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            Marker(
+                state = singaporeMarkerState,
+                title = "Singapore",
+                snippet = "Marker in Singapore"
+            )
+        }
 
     }
 }
