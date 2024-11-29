@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.SuperUsefulDropDownMenuBox
@@ -20,7 +21,10 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 
 @Composable
-fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
+fun SettingsScreen(
+    navController: NavController,
+    homeViewModel: HomeViewModel = viewModel()
+) {
 
     val settingsPreferencesRepo = homeViewModel.settingsPreferencesRepository
 

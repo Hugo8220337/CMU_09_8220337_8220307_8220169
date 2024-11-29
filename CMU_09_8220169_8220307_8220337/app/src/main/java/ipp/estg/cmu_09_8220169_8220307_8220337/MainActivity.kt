@@ -61,12 +61,10 @@ fun MyApp(navController: NavHostController) {
             StartScreen(navController)
         }
         composable(Screen.Login.route) {
-            val authViewModel: AuthenticationViewModel = viewModel()
-            LoginScreen(navController, authViewModel)
+            LoginScreen(navController)
         }
         composable(Screen.Register.route) {
-            val authViewModel: AuthenticationViewModel = viewModel()
-            RegisterScreen(navController, authViewModel)
+            RegisterScreen(navController)
         }
         composable(Screen.Onboarding.route) {
             OnboardingScreen(navController)
@@ -84,10 +82,7 @@ fun MyApp(navController: NavHostController) {
             WorkoutScreen(navController, bodyPartsList)
         }
         composable(Screen.RunningWorkout.route) {
-            RunningWorkoutScreen(
-                runningViewModel =  viewModel(modelClass = RunningViewModel::class.java),
-                goBack = { navController.popBackStack() }
-            )
+            RunningWorkoutScreen(navController)
         }
     }
 }

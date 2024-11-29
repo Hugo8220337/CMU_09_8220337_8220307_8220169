@@ -36,8 +36,15 @@ class HomeViewModel(
      */
     val settingsPreferencesRepository: SettingsPreferencesRepository =
         SettingsPreferencesRepository(application)
-    val dailyTasksRepository: IDailyTasksRepository
-    var quotesRepository: IQuotesRepository
+
+    val dailyTasksRepository: IDailyTasksRepository =
+        DailyTasksRepository(LocalDatabase.getDatabase(application).dailyTaskCompletionDao)
+
+    var quotesRepository: IQuotesRepository =
+        QuotesRepository(
+            RemoteApis.getQuotesApi(),
+            LocalDatabase.getDatabase(application).quotesDao
+        )
 
 
     /**
@@ -52,15 +59,10 @@ class HomeViewModel(
         val savedLanguage = settingsPreferencesRepository.getLanguagePreference()
         settingsPreferencesRepository.updateLocale(application, savedLanguage)
 
+
+        // TODO Não está a funcionar
         buildForegroundDailyRemeinderNotifications()
 
-
-        val quotesApi = RemoteApis.getQuotesApi()
-        val dbDao = LocalDatabase.getDatabase(application)
-
-        // Inicializar repositórios
-        dailyTasksRepository = DailyTasksRepository(dbDao.dailyTaskCompletionDao)
-        quotesRepository = QuotesRepository(quotesApi, dbDao.quotesDao)
 
         // Obter as tasks de hoje
         tasksLiveData = dailyTasksRepository.getTodayTasks()

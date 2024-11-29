@@ -1,4 +1,4 @@
-package ipp.estg.cmu_09_8220169_8220307_8220337.ui.components
+package ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

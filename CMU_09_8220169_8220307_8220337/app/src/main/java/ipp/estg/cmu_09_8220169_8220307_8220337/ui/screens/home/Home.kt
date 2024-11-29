@@ -58,10 +58,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreen(navController: NavController) {
-    val authViewModel: AuthenticationViewModel = viewModel()
-    val homeViewModel: HomeViewModel = viewModel()
-    val workoutViewModel: WorkoutViewModel = viewModel()
+fun HomeScreen(
+    navController: NavController,
+    homeViewModel: HomeViewModel = viewModel(),
+) {
 
     val startingNavItem = 0
     val navItems = listOf(
@@ -102,7 +102,7 @@ fun HomeScreen(navController: NavController) {
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings,
             content = {
-                SettingsScreen(navController, homeViewModel)
+                SettingsScreen(navController)
             }
         ),
         NavigationItem(
@@ -118,7 +118,7 @@ fun HomeScreen(navController: NavController) {
             selectedIcon = Icons.Filled.DateRange,
             unselectedIcon = Icons.Outlined.DateRange,
             content = {
-                WorkoutHistoryPage(workoutViewModel)
+                WorkoutHistoryPage()
             }
         )
     )

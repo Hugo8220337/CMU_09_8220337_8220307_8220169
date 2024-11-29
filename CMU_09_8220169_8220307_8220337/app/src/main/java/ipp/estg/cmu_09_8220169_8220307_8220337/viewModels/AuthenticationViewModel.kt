@@ -26,6 +26,7 @@ class AuthenticationViewModel(
     var error by mutableStateOf("")
 
     init {
+        // Check if user is logged
         viewModelScope.launch {
             _authState.value = repository.isLogged()
         }

@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
@@ -50,24 +51,18 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.plugin.Plugin
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
-import com.mapbox.maps.extension.compose.style.ColorValue
-import com.mapbox.maps.extension.compose.style.DoubleValue
-import com.mapbox.maps.extension.compose.style.layers.generated.LineLayer
-import com.mapbox.maps.extension.compose.style.sources.GeoJSONData
 import com.mapbox.maps.extension.compose.style.sources.generated.rememberGeoJsonSourceState
-import com.mapbox.maps.plugin.PuckBearing
-import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
-import com.mapbox.maps.plugin.locationcomponent.location
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
+
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun RunningWorkoutScreen(
-    runningViewModel: RunningViewModel,
-    goBack: () -> Unit
+    navController: NavController,
+    runningViewModel: RunningViewModel = viewModel()
 ) {
     val distance = "5.2"
     val time = "30:00"
@@ -111,7 +106,10 @@ fun RunningWorkoutScreen(
                 ControlsSection(
                     runningViewModel = runningViewModel,
                     pedometerPermission = pedometerPermission,
-                    goBack = { goBack() }
+                    goBack = {
+                        navController.popBackStack()
+                        navController.navigate(Screen.Home.route)
+                    }
                 )
             }
         }
@@ -153,18 +151,8 @@ private fun MapSection() {
                     pitch(0.0)
                     bearing(0.0)
                 }
-            },
-        ) {
-//            MapEffect(pointList) { map ->
-//                geoJsonSource.data = GeoJSONData(LineString.fromLngLats(pointList))
-//            }
-//            LineLayer(
-//                sourceState = geoJsonSource
-//            ) {
-//                lineColor = ColorValue(Color.Red)
-//                lineWidth = DoubleValue(4.0)
-//            }
-        }
+            }
+        )
 
     }
 }

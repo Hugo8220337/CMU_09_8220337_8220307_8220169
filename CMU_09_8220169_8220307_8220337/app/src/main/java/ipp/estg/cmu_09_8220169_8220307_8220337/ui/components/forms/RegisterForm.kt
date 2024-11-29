@@ -1,4 +1,4 @@
-package ipp.estg.cmu_09_8220169_8220307_8220337.ui.components
+package ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.forms
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

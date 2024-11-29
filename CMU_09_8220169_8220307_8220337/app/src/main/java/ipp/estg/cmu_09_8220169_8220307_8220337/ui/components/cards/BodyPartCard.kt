@@ -1,4 +1,4 @@
-package ipp.estg.cmu_09_8220169_8220307_8220337.ui.components
+package ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,10 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 
 @Composable
-fun BodyPartCard(navController: NavController) {
+fun BodyPartCard() {
 
     ElevatedCard(
         onClick = {  },

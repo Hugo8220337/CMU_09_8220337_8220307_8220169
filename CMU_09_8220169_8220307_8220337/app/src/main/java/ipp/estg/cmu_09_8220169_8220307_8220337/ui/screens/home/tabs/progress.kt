@@ -36,9 +36,6 @@ fun ProgressScreen(completedDays: Int) {
         }
     }
 
-    var isSheetOpen by rememberSaveable { mutableStateOf(false) }
-    var selectedDay by rememberSaveable { mutableIntStateOf(1) }
-
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 50.dp),  // Adapta as colunas com um tamanho mínimo
         modifier = Modifier
@@ -50,25 +47,15 @@ fun ProgressScreen(completedDays: Int) {
         items(totalDays) { day ->
             DayCircle(
                 day = day + 1,
-                completedDays = completedDays,
-                onClick = {
-                    selectedDay = day + 1
-                    isSheetOpen = true
-                }
+                completedDays = completedDays
             )
         }
 
     }
-
-    if (isSheetOpen) {
-        MyBottomSheet(isSheetOpen = isSheetOpen, onDismissRequest = { isSheetOpen = false }) {
-            SheetContent(selectedDay)
-        }
-    }
 }
 
 @Composable
-private fun DayCircle(day: Int, completedDays: Int, onClick: () -> Unit = {}) {
+private fun DayCircle(day: Int, completedDays: Int) {
     val backgroundColor = when {
         day <= completedDays -> MaterialTheme.colorScheme.primary
         day == completedDays + 1 -> Color.Transparent
@@ -85,7 +72,6 @@ private fun DayCircle(day: Int, completedDays: Int, onClick: () -> Unit = {}) {
         modifier = Modifier
             .size(40.dp)
             .then(borderModifier)
-            .clickable(onClick = onClick)
             .background(color = backgroundColor, shape = CircleShape)
     ) {
         Text(
@@ -94,32 +80,5 @@ private fun DayCircle(day: Int, completedDays: Int, onClick: () -> Unit = {}) {
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onBackground
         )
-    }
-}
-
-@Composable
-fun SheetContent(day: Int) {
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Day $day", style = MaterialTheme.typography.titleLarge)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "This is detailed information about Day $day.",
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProgressPreview() {
-    CMU_09_8220169_8220307_8220337Theme {
-
-        ProgressScreen(5)
     }
 }

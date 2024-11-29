@@ -20,11 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.DropDownList
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.RunCardItem
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.WorkoutCardItem
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.RunCardItem
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.WorkoutCardItem
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.WorkoutViewModel
 
 // Enum RunSortOrder separado
@@ -43,7 +44,9 @@ data class Run(
 )
 
 @Composable
-fun WorkoutHistoryPage(workoutViewModel: WorkoutViewModel) {
+fun WorkoutHistoryPage(
+    workoutViewModel: WorkoutViewModel = viewModel()
+) {
     // Dados estáticos para visualização de corridas
     val staticRunList = listOf(
         Run(
