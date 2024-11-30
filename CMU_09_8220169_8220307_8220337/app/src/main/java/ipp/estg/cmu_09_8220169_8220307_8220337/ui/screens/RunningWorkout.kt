@@ -70,7 +70,9 @@ import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportS
 import com.mapbox.maps.extension.compose.style.sources.generated.rememberGeoJsonSourceState
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.ControlButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.RunDetailItem
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.RunDetails
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.formatTime
 
 
 @SuppressLint("InlinedApi")
@@ -80,10 +82,10 @@ fun RunningWorkoutScreen(
     navController: NavController,
     runningViewModel: RunningViewModel = viewModel()
 ) {
-    val distance = "5.2"
-    val time = "30:00"
-    val pace = "5:45"
-    val stepCount = runningViewModel.stepCounter.intValue
+    val distance by runningViewModel.distance.collectAsState()
+    val time by runningViewModel.time.collectAsState()
+    val pace by runningViewModel.pace.collectAsState()
+    val stepCount by runningViewModel.stepCounter.collectAsState()
 
 
     val pedometerPermission =
@@ -105,7 +107,7 @@ fun RunningWorkoutScreen(
 
     DisposableEffect(Unit) {
         onDispose {
-            runningViewModel.stopLocationUpdates() // Stop updates when the Composable is removed
+            runningViewModel.stopRun() // Stop updates when the Composable is removed
         }
     }
 
@@ -123,7 +125,12 @@ fun RunningWorkoutScreen(
             ) {
                 MapSection(runningViewModel, locationPermission)
 
-                RunDetailsSection(distance, time, pace, stepCount)
+                RunDetails(
+                    distance = String.format("%.2f", distance), // Format to 2 decimal places
+                    time = formatTime(time), // Format seconds to "mm:ss"
+                    pace = String.format("%.2f", pace), // Format to 2 decimal places
+                    steps = stepCount
+                )
 
                 ControlsSection(
                     runningViewModel = runningViewModel,
@@ -142,7 +149,7 @@ fun RunningWorkoutScreen(
 @Composable
 private fun MapSection(runningViewModel: RunningViewModel, locationPermission: PermissionState) {
 
-    val currentLocation = runningViewModel.currentLocation.collectAsState().value
+    val currentLocation by runningViewModel.currentLocation.collectAsState()
     val cameraPositionState = rememberCameraPositionState()
 
     LaunchedEffect(currentLocation) {
@@ -150,7 +157,7 @@ private fun MapSection(runningViewModel: RunningViewModel, locationPermission: P
         currentLocation?.let {
             cameraPositionState.position = CameraPosition.fromLatLngZoom(
                 LatLng(it.latitude, it.longitude),
-                15f
+                19f
             )
         }
     }
@@ -193,43 +200,7 @@ private fun MapSection(runningViewModel: RunningViewModel, locationPermission: P
     }
 }
 
-@Composable
-private fun RunDetailsSection(distance: String, time: String, pace: String, steps: Int) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp)
-            .background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(12.dp)),
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            RunDetailItem(
-                label = stringResource(id = R.string.distance),
-                value = "$distance Km",
-                icon = Icons.AutoMirrored.Filled.DirectionsRun
-            )
-            RunDetailItem(
-                label = stringResource(id = R.string.duration),
-                value = time,
-                icon = Icons.Filled.Timer
-            )
-            RunDetailItem(
-                label = stringResource(id = R.string.pace),
-                value = "$pace min/km",
-                icon = Icons.Filled.Speed
-            )
-            RunDetailItem(
-                label = stringResource(id = R.string.steps),
-                value = steps.toString(),
-                icon = Icons.Filled.Directions
-            )
-        }
-    }
-}
+
 
 @Composable
 private fun ControlsSection(
@@ -251,9 +222,9 @@ private fun ControlsSection(
             onClick = {
                 runningViewModel.isRunning = !runningViewModel.isRunning
                 if (runningViewModel.isRunning) {
-                    runningViewModel.startLocationUpdates()
+                    runningViewModel.startRun() // Start the run
                 } else {
-                    runningViewModel.stopLocationUpdates()
+                    runningViewModel.stopRun() // Pause the run
                 }
             }
         )
@@ -261,9 +232,7 @@ private fun ControlsSection(
             text = stringResource(id = R.string.stop),
             color = Color(0xFFE53935),
             onClick = {
-                runningViewModel.isRunning = false
-                runningViewModel.stepCounter.value = 0
-                runningViewModel.stopLocationUpdates()
+                runningViewModel.stopRun()
                 goBack()
             }
         )

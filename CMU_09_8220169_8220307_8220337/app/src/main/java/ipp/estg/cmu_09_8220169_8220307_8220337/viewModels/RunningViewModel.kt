@@ -2,6 +2,9 @@ package ipp.estg.cmu_09_8220169_8220307_8220337.viewModels
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -22,13 +25,23 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import ipp.estg.cmu_09_8220169_8220307_8220337.services.StepCounterService
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Timer
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class RunningViewModel(
     application: Application
-) : AndroidViewModel(application), SensorEventListener {
+) : AndroidViewModel(application) {
+
+    private val LOCATION_UPDATE_INTERVAL_MS = 5000L
+    private val LOCATION_MIN_UPDATE_INTERVAL_MS = 2000L
+    private val ONE_SECOND_MS = 1000L
 
     private val sensorManager: SensorManager by lazy {
         application.getSystemService(Application.SENSOR_SERVICE) as SensorManager
@@ -46,16 +59,31 @@ class RunningViewModel(
         LocationServices.getFusedLocationProviderClient(application)
 
 
-    val stepCounter = mutableIntStateOf(0)
+    /**
+     * MutableStateFlow to hold the current distance, time, and pace of the run.
+     */
+    private val _distance = MutableStateFlow(0.0) // Distance in kilometers
+    val distance: StateFlow<Double> = _distance
+
+
+    private var startTime: Long? = null // Start time of the run
+    private val _time = MutableStateFlow(0) // Time in seconds
+    val time: StateFlow<Int> = _time
+
+    private val _pace = MutableStateFlow(0.0) // Pace in minutes/km
+    val pace: StateFlow<Double> = _pace
+
+    private val _stepCounter = MutableStateFlow(0)
+    val stepCounter = _stepCounter
+
     var isRunning by mutableStateOf(false) // Track if the run is active
 
     private val _currentLocation = MutableStateFlow<Location?>(null)
-    val currentLocation = _currentLocation.asStateFlow()
+    val currentLocation = _currentLocation
 
-    // CancellationTokenSource to cancel the location request
-    private val cancellationTokenSource = CancellationTokenSource()
-
-
+    /**
+     * Job to run a timer that increments the time every second.
+     */
     private lateinit var locationCallback: LocationCallback
     private val locationRequest: LocationRequest = LocationRequest.Builder(
         Priority.PRIORITY_HIGH_ACCURACY,
@@ -64,35 +92,64 @@ class RunningViewModel(
         .setMinUpdateIntervalMillis(2000) // Minimum interval (2 seconds)
         .build()
 
-
-    init {
-        // Initialize sensor if available
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-        sensor?.let {
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST)
-        } ?: run {
-            // Handle case where sensor is not available (could log or show a message)
-            // Log.d("RunningViewModel", "Step counter sensor not available.")
-        }
-
-        setupLocationCallback() // Setup location callback
+    /**
+     * Timer to increment the time every second.
+     */
+    private val timer = Timer { increment ->
+        _time.value += increment
     }
 
-    private fun setupLocationCallback() {
+
+    init {
+        setupLocationAndStatsCallback() // Setup location callback
+    }
+
+    fun startRun() {
+        isRunning = true
+        startTimer()
+        startStepCounterService()
+        StepCounterService.onStepDetected = { steps ->
+            updateStepsFromService(steps)
+        }
+        startLocationAndStatsUpdates()
+    }
+
+    fun stopRun() {
+        isRunning = false
+        stopStepCounterService()
+        stopTimer()
+        stopLocationUpdates()
+    }
+
+    private fun startStepCounterService() {
+        val intent = Intent(getApplication(), StepCounterService::class.java)
+        getApplication<Application>().startService(intent)
+    }
+
+    private fun stopStepCounterService() {
+        val intent = Intent(getApplication(), StepCounterService::class.java)
+        getApplication<Application>().stopService(intent)
+    }
+
+    /**
+     * Setup the location callback to get the last known location of the device.
+     */
+    private fun setupLocationAndStatsCallback() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
-                _currentLocation.value = locationResult.lastLocation
+                _currentLocation.value = locationResult.lastLocation // update location
+                updateStats(locationResult.locations) // update stats
             }
         }
     }
 
-    fun stopLocationUpdates() {
+    private fun stopLocationUpdates() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
     @SuppressLint("MissingPermission") // Ensure permissions are checked before calling
-    fun startLocationUpdates() {
+    fun startLocationAndStatsUpdates() {
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
@@ -105,17 +162,52 @@ class RunningViewModel(
         return batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
     }
 
-    override fun onSensorChanged(event: SensorEvent?) {
-        event?.let {
-            if (it.sensor.type == Sensor.TYPE_STEP_COUNTER && isRunning) { // só conta passos se estiver a correr
-                // Update step count based on the step counter sensor event
-                stepCounter.intValue += 1
-            }
+
+    private fun updateStepsFromService(steps: Int) {
+        _stepCounter.value = steps // Atualiza o contador de passos
+    }
+
+
+    private fun updateStats(locationList: List<Location>) {
+        // Calculate distance from locationList
+        _distance.value = calculateDistance(locationList)
+
+        val elapsedSeconds = getElapsedTime() // Calculate elapsed seconds
+        _time.value = elapsedSeconds.toInt()
+
+        // Calculate pace (minutes/km)
+        _pace.value = if (_distance.value > 0) {
+            (elapsedSeconds / 60) / _distance.value
+        } else {
+            0.0
         }
     }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // Not needed for this implementation, left unimplemented
+    private fun getElapsedTime(): Long {
+        val currentTimestamp = System.currentTimeMillis()
+        if (startTime == null) {
+            startTime = currentTimestamp // Initialize the start time
+        }
+        return (currentTimestamp - startTime!!) / ONE_SECOND_MS
+    }
+
+    private fun calculateDistance(locationList: List<Location>): Double {
+        if (locationList.size < 2) return 0.0
+
+        var totalDistance = 0.0
+        for (i in 1 until locationList.size) {
+            val start = locationList[i - 1]
+            val end = locationList[i]
+            totalDistance += start.distanceTo(end) // distanceTo returns distance in meters
+        }
+        return totalDistance / 1000 // Convert to kilometers
+    }
+
+
+    fun startTimer() = timer.start(viewModelScope)
+    fun stopTimer() = timer.stop()
+    fun resetTimer() {
+        _time.value = 0 // Reset the timer to 0
     }
 
     /**
@@ -123,8 +215,6 @@ class RunningViewModel(
      */
     override fun onCleared() {
         super.onCleared()
-        // Unregister sensor listener when ViewModel is cleared
-        sensorManager.unregisterListener(this)
     }
 
 }

@@ -62,6 +62,7 @@
             android:foregroundServiceType="dataSync"
         /> <!-- For Remeinder Notifications -->
         <service android:name=".services.RunningWorkoutService" /> <!-- For the running workout -->
+        <service android:name=".services.StepCounterService" /> <!-- For the walking workout -->
 
 
     </application>
