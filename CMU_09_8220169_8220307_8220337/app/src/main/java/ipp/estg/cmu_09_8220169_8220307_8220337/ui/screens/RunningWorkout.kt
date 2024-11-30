@@ -1,6 +1,7 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens
 
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.DirectionsRun
 import androidx.compose.material.icons.filled.Directions
 import androidx.compose.material.icons.filled.DirectionsRun
 import androidx.compose.material.icons.filled.Speed
@@ -27,7 +29,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,10 +50,13 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import com.mapbox.geojson.LineString
@@ -61,9 +68,12 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.style.sources.generated.rememberGeoJsonSourceState
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.ControlButton
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.RunDetailItem
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 
 
+@SuppressLint("InlinedApi")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun RunningWorkoutScreen(
@@ -76,10 +86,10 @@ fun RunningWorkoutScreen(
     val stepCount = runningViewModel.stepCounter.intValue
 
 
-    val geolocationPermissions =
-        rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
     val pedometerPermission =
         rememberPermissionState(android.Manifest.permission.ACTIVITY_RECOGNITION)
+    val locationPermission =
+        rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
 
     LaunchedEffect(pedometerPermission.status) {
         if (!pedometerPermission.status.isGranted) {
@@ -87,9 +97,15 @@ fun RunningWorkoutScreen(
         }
     }
 
-    LaunchedEffect(geolocationPermissions.status) {
-        if (!geolocationPermissions.status.isGranted) {
-            geolocationPermissions.launchPermissionRequest()
+    LaunchedEffect(locationPermission.status.isGranted) {
+        if (!locationPermission.status.isGranted) {
+            locationPermission.launchPermissionRequest()
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            runningViewModel.stopLocationUpdates() // Stop updates when the Composable is removed
         }
     }
 
@@ -105,13 +121,12 @@ fun RunningWorkoutScreen(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                MapSection()
+                MapSection(runningViewModel, locationPermission)
 
                 RunDetailsSection(distance, time, pace, stepCount)
 
                 ControlsSection(
                     runningViewModel = runningViewModel,
-                    pedometerPermission = pedometerPermission,
                     goBack = {
                         navController.popBackStack()
                         navController.navigate(Screen.Home.route)
@@ -123,8 +138,23 @@ fun RunningWorkoutScreen(
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun MapSection() {
+private fun MapSection(runningViewModel: RunningViewModel, locationPermission: PermissionState) {
+
+    val currentLocation = runningViewModel.currentLocation.collectAsState().value
+    val cameraPositionState = rememberCameraPositionState()
+
+    LaunchedEffect(currentLocation) {
+        // Move the camera to the new location when it changes
+        currentLocation?.let {
+            cameraPositionState.position = CameraPosition.fromLatLngZoom(
+                LatLng(it.latitude, it.longitude),
+                15f
+            )
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -140,26 +170,24 @@ private fun MapSection() {
             ),
         contentAlignment = Alignment.Center
     ) {
-//        Text(
-//            "Map View (Your Route)",
-//            color = Color.White,
-//            style = MaterialTheme.typography.titleMedium,
-//            fontWeight = FontWeight.Bold
-//        )
 
-        val singapore = LatLng(1.35, 103.87)
-        val singaporeMarkerState = rememberMarkerState(position = singapore)
-        val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(singapore, 10f)
-        }
-        GoogleMap(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            Marker(
-                state = singaporeMarkerState,
-                title = "Singapore",
-                snippet = "Marker in Singapore"
-            )
+        if(locationPermission.status.isGranted) {
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState
+            ) {
+                // Update Marker position dynamically
+                currentLocation?.let {
+                    Marker(
+                        state = MarkerState(
+                            position = LatLng(it.latitude, it.longitude)
+                        ),
+                        title = "You are here"
+                    )
+                }
+            }
+        } else {
+            Text("Location permission not granted")
         }
 
     }
@@ -182,7 +210,7 @@ private fun RunDetailsSection(distance: String, time: String, pace: String, step
             RunDetailItem(
                 label = stringResource(id = R.string.distance),
                 value = "$distance Km",
-                icon = Icons.Filled.DirectionsRun
+                icon = Icons.AutoMirrored.Filled.DirectionsRun
             )
             RunDetailItem(
                 label = stringResource(id = R.string.duration),
@@ -203,11 +231,9 @@ private fun RunDetailsSection(distance: String, time: String, pace: String, step
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun ControlsSection(
     runningViewModel: RunningViewModel,
-    pedometerPermission: PermissionState,
     goBack: () -> Unit
 ) {
     Row(
@@ -218,10 +244,17 @@ private fun ControlsSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ControlButton(
-            text = if (runningViewModel.isRunning) stringResource(id = R.string.pause) else stringResource(id = R.string.start),
+            text = if (runningViewModel.isRunning) stringResource(id = R.string.pause) else stringResource(
+                id = R.string.start
+            ),
             color = if (runningViewModel.isRunning) Color(0xFFFF9800) else Color(0xFF4CAF50),
             onClick = {
                 runningViewModel.isRunning = !runningViewModel.isRunning
+                if (runningViewModel.isRunning) {
+                    runningViewModel.startLocationUpdates()
+                } else {
+                    runningViewModel.stopLocationUpdates()
+                }
             }
         )
         ControlButton(
@@ -230,52 +263,12 @@ private fun ControlsSection(
             onClick = {
                 runningViewModel.isRunning = false
                 runningViewModel.stepCounter.value = 0
+                runningViewModel.stopLocationUpdates()
                 goBack()
             }
         )
     }
 }
 
-@Composable
-private fun ControlButton(text: String, color: Color, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = color),
-        shape = RoundedCornerShape(50),
-        modifier = Modifier
-            .width(120.dp)
-            .padding(8.dp)
-    ) {
-        Text(text = text, color = Color.White, style = MaterialTheme.typography.titleMedium)
-    }
-}
 
-@Composable
-private fun RunDetailItem(label: String, value: String, icon: ImageVector) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = label,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
-        Text(
-            text = value,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-}
+
