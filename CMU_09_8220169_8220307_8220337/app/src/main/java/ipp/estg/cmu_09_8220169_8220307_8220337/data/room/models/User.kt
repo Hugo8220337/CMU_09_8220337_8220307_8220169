@@ -7,10 +7,11 @@ import androidx.room.PrimaryKey
 // TODO apagar porque isto é temporário
 @Entity(tableName = "user")
 data class User(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     val id: Int = 0,
     val name: String = "",
     val email: String = "",
+    val birthDate: String = "",
     val weight: Double = 0.0,
     val height: Double = 0.0,
 )

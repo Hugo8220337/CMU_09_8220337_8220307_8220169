@@ -17,6 +17,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.HomeScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.OnboardingScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.RunningWorkoutScreen
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.UserDataInput
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.WorkoutScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.StartScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.LoginScreen
@@ -83,6 +84,9 @@ fun MyApp(navController: NavHostController) {
         }
         composable(Screen.RunningWorkout.route) {
             RunningWorkoutScreen(navController)
+        }
+        composable(Screen.UserDataInput.route) {
+            UserDataInput(navController)
         }
     }
 }
