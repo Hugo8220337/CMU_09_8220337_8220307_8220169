@@ -1,17 +1,11 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.viewModels
 
 import android.app.Application
-import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
-import ipp.estg.cmu_09_8220169_8220307_8220337.firebase.AuthenticationRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.firebase.UserFirestoreRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Resource
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.UserFirestoreRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -55,123 +49,6 @@ class UserViewModel(
             }
         }
     }
-
-
-
-//    fun getUserInfo(
-//        onSuccess: () -> Unit = {},
-//        onError: (String) -> Unit = {}
-//    ) {
-//        _isLoading.value = true
-//        try {
-//
-//        }
-//        viewModelScope.launch {
-//            try {
-//
-//                val userInfo = repository.getUser()
-//                if (userInfo != null) {
-//                    _user.value = userInfo
-//                    onSuccess()
-//                } else {
-//                    onError("User not found")
-//                    _error.value = "User not found"
-//                }
-//            } catch (e: Exception) {
-//                _error.value = "Error: ${e.message}"
-//            } finally {
-//                _isLoading.value = false
-//            }
-//        }
-//    }
-
-//    /*
-//    * Register user
-//    */
-//    fun registUser(
-//        user: User,
-//        onSuccess: () -> Unit = {},
-//        onError: (String) -> Unit = {}
-//    ) {
-//        _isLoading.value = true
-//        _error.value = "" // Reset the error state
-//
-//        viewModelScope.launch {
-//            try {
-//                val isRegistered = repository.registUser(user)
-//                if (isRegistered) {
-//                    onSuccess()
-//                } else {
-//                    _error.value = "User registration failed."
-//                    onError("User registration failed.")
-//                }
-//            } catch (e: Exception) {
-//                _error.value = "Error: ${e.message}"
-//                onError("Error: ${e.message}")
-//            } finally {
-//                _isLoading.value = false
-//            }
-//        }
-//    }
-
-    /*
-    * Register user
-    */
-    fun registUser(
-        user: User,
-        onSuccess: () -> Unit = {},
-        onError: (String) -> Unit = {}
-    ) {
-        _isLoading.value = true
-        _error.value = "" // Reset the error state
-
-        viewModelScope.launch {
-            try {
-                val isRegistered = repository.registUser(user)
-                if (isRegistered) {
-                    // Notify success
-                } else {
-                    _error.value = "User registration failed."
-                }
-            } catch (e: Exception) {
-                _error.value = "Error: ${e.message}"
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
-//    /**
-//     * Change user password
-//     */
-//
-//    fun changePassword(
-//        email: String,
-//        oldPassword: String,
-//        newPassword: String,
-//        onSuccess: () -> Unit = {},
-//        onError: (String) -> Unit = {}
-//    ){
-//        _isLoading.value = true
-//        _error.value = "" // Reset the error state
-//
-//        viewModelScope.launch {
-//            try {
-//                val isPasswordChanged = repository.changePassword(email, oldPassword, newPassword)
-//                if (isPasswordChanged) {
-//                    onSuccess()
-//                } else {
-//                    _error.value = "Password change failed."
-//                    onError("Password change failed.")
-//                }
-//            } catch (e: Exception) {
-//                _error.value = "Error: ${e.message}"
-//                onError("Error: ${e.message}")
-//            } finally {
-//                _isLoading.value = false
-//            }
-//        }
-//    }
 
     /**
      * Change user password

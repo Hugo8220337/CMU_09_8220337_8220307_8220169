@@ -1,6 +1,5 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs
 
-import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -18,12 +17,14 @@ import androidx.navigation.NavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.SuperUsefulDropDownMenuBox
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    homeViewModel: HomeViewModel = viewModel()
+    homeViewModel: HomeViewModel = viewModel(),
+    authViewModel: AuthViewModel = viewModel()
 ) {
 
     val settingsPreferencesRepo = homeViewModel.settingsPreferencesRepository
@@ -113,7 +114,7 @@ fun SettingsScreen(
             label = stringResource(id = R.string.language),
             currentValue = selectedLanguage,
             options = listOf("pt-rPT", "en", "de", "fr"),
-            onOptionSelected = {language ->
+            onOptionSelected = { language ->
                 selectedLanguage = language
                 settingsPreferencesRepo.setLanguagePreference(language)
 
@@ -131,7 +132,10 @@ fun SettingsScreen(
     // Log out button
     Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
         Button(
-            onClick = { navController.navigate(Screen.Start.route) },
+            onClick = {
+                navController.navigate(Screen.Start.route)
+                authViewModel.logout()
+            },
             modifier = Modifier
                 .fillMaxWidth(0.45f)
                 .padding(vertical = 10.dp),

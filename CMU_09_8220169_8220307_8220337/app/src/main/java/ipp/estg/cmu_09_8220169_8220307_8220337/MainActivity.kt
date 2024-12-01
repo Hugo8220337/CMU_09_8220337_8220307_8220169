@@ -1,18 +1,16 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.SettingsPreferencesRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.SettingsPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.HomeScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.OnboardingScreen
@@ -24,8 +22,6 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.LoginScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.RegisterScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Converter
-import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthenticationViewModel
-import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

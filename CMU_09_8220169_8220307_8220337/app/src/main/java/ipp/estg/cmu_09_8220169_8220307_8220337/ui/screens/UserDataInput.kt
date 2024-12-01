@@ -145,33 +145,7 @@ fun UserDataInput(
                 val weightFloat = weight.toDoubleOrNull() ?: 0f
                 val heightFloat = height.toDoubleOrNull() ?: 0f
 
-                // Chama a função de registro do usuário
-                userViewModel.registUser(
-                    user = User(
-                        name = name,
-                        email = email,
-                        birthDate = birthDate,
-                        height = heightFloat as Double,
-                        weight = weightFloat as Double
-                    ),
-                    onSuccess = {
-                        // Exibe uma mensagem de sucesso ou navega para outra tela
-                        Toast.makeText(
-                            navController.context,
-                            "Usuário registrado com sucesso",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        navController.popBackStack()
-                    },
-                    onError = { errorMessage ->
-                        // Exibe a mensagem de erro
-                        Toast.makeText(
-                            navController.context,
-                            errorMessage,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                )
+                // TODO
             },
             modifier = Modifier
                 .fillMaxWidth()

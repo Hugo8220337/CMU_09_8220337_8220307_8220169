@@ -1,0 +1,86 @@
+package ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories
+
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.auth.AuthStatus
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.CollectionsNames
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models.UserCollection
+import kotlinx.coroutines.tasks.await
+
+class AuthFirebaeRepository(
+    private val firebaseAuth: FirebaseAuth = Firebase.auth,
+    private val firestore: FirebaseFirestore = Firebase.firestore
+) {
+
+
+    fun isLogged(): AuthStatus {
+        return if (firebaseAuth.currentUser != null) {
+            AuthStatus.LOGGED
+        } else {
+            AuthStatus.NO_LOGIN
+        }
+    }
+
+    suspend fun login(
+        email: String,
+        password: String
+    ): AuthStatus {
+        try {
+            val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            if (result != null && result.user != null) {
+                return AuthStatus.LOGGED
+            }
+        } catch (_: Exception) {
+        }
+        return AuthStatus.INVALID_LOGIN
+    }
+
+    suspend fun register(
+        email: String,
+        password: String,
+        username: String,
+        birthDate: String,
+        weight: Double,
+        height: Double
+    ): AuthStatus {
+        return try {
+            // Insert user in firebase Auth
+            val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            if (result != null && result.user != null) {
+
+                // Insert user on firestore User Collection
+                val user = hashMapOf(
+                    UserCollection.FIELD_ID to result.user!!.uid,
+                    UserCollection.FIELD_NAME to username,
+                    UserCollection.FIELD_BIRTH_DATE to birthDate,
+                    UserCollection.FIELD_WEIGHT to weight,
+                    UserCollection.FIELD_HEIGHT to height
+                )
+
+                firestore.collection(CollectionsNames.userCollection)
+                    .add(user)
+                    .await()
+
+                // return logged status
+                AuthStatus.LOGGED
+            } else {
+                // return invalid login status
+                AuthStatus.INVALID_LOGIN
+            }
+        } catch (e: Exception) {
+            // return invalid login status
+            AuthStatus.INVALID_LOGIN
+        }
+    }
+
+    fun getCurrentUser() = firebaseAuth.currentUser
+
+
+    fun logout(): AuthStatus {
+        firebaseAuth.signOut()
+        return AuthStatus.NO_LOGIN
+    }
+}

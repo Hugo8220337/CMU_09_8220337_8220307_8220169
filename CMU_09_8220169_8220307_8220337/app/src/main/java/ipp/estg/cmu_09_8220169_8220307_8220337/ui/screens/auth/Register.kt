@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,15 +36,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.AuthStatus
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.auth.AuthStatus
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.forms.RegisterFields
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
-import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthenticationViewModel
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthViewModel
+import ipp.estg.mobile.ui.components.utils.Loading
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
-    authViewModel: AuthenticationViewModel = viewModel()
+    authViewModel: AuthViewModel = viewModel()
 ) {
 
     val authStatus by authViewModel.authState.collectAsState()
@@ -53,12 +55,14 @@ fun RegisterScreen(
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var birthDate by remember { mutableStateOf("") }
+    var weight by remember { mutableDoubleStateOf(0.0) }
+    var height by remember { mutableDoubleStateOf(0.0) }
 
     LaunchedEffect(authStatus) {
         if(authStatus != AuthStatus.LOADING){
             when(authStatus){
                 AuthStatus.LOGGED -> {
-                    authViewModel.register(email, password)
                     navController.navigate(Screen.Login.route)
                 }
                 AuthStatus.INVALID_LOGIN -> isError = true
@@ -102,11 +106,17 @@ fun RegisterScreen(
                     username = username,
                     email = email,
                     password = password,
+                    birthDate = birthDate,
+                    weight = weight,
+                    height = height,
                     onUsernameChange = { username = it },
                     onEmailChange = { email = it },
                     onPasswordChange = { password = it },
+                    onBirthDateChange = { birthDate = it },
+                    onWeightChange = { weight = it },
+                    onHeightChange = { height = it },
                     onRegisterClick = {
-                        authViewModel.register(email, password)
+                        authViewModel.register(email, password, username, birthDate, weight, height)
                     }
                 )
 
@@ -127,17 +137,25 @@ fun RegisterScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
+
+                if(authStatus == AuthStatus.LOADING){
+                    Loading()
+                }
+
+                if (isError) {
+                    Text(
+                        text = "Error registering",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = Color.Red
+                        )
+                    )
+                }
+
             }
         }
     }
 
-    if (isError) {
-        Text(
-            text = "Error registering",
-            style = MaterialTheme.typography.bodyMedium.copy(
-                color = Color.Red
-            )
-        )
-    }
+
+
 }
 

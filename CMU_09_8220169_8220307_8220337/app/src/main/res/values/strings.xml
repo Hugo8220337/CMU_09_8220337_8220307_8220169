@@ -59,4 +59,7 @@
     <string name="trained_parts">Trained Parts</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="logout">Logout</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="birth_date">Birth Date</string>
 </resources>

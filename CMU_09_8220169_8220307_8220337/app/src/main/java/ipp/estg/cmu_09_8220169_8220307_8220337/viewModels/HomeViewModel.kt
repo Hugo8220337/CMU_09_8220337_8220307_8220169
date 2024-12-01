@@ -13,11 +13,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import coil3.Bitmap
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
-import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.SettingsPreferencesRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.SettingsPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.DailyTasksRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.IDailyTasksRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.IQuotesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.QuotesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.RemoteApis
 import ipp.estg.cmu_09_8220169_8220307_8220337.services.DailyRemeinderService
@@ -37,10 +35,10 @@ class HomeViewModel(
     val settingsPreferencesRepository: SettingsPreferencesRepository =
         SettingsPreferencesRepository(application)
 
-    val dailyTasksRepository: IDailyTasksRepository =
+    val dailyTasksRepository: DailyTasksRepository =
         DailyTasksRepository(LocalDatabase.getDatabase(application).dailyTaskCompletionDao)
 
-    var quotesRepository: IQuotesRepository =
+    var quotesRepository: QuotesRepository =
         QuotesRepository(
             RemoteApis.getQuotesApi(),
             LocalDatabase.getDatabase(application).quotesDao

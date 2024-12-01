@@ -11,22 +11,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
-interface IWorkoutRepository {
-    suspend fun getExercisesByBodyParts(
-        bodyParts: List<String>,
-        limit: Int,
-        offset: Int,
-    ): List<ExerciseItemDataResponse>
-
-    suspend fun getWorkouts(): List<Workout>
-}
 
 class WorkoutRepository(
     private val exerciseDbApi: ExerciseDbApi,
     private val workoutDao: WorkoutDao
-) : IWorkoutRepository {
+) {
 
-    override suspend fun getExercisesByBodyParts(
+    suspend fun getExercisesByBodyParts(
         bodyParts: List<String>,
         limit: Int,
         offset: Int,
@@ -62,7 +53,7 @@ class WorkoutRepository(
         return allExercises
     }
 
-    override suspend fun getWorkouts(): List<Workout> {
+    suspend fun getWorkouts(): List<Workout> {
         return workoutDao.getWorkouts()
     }
 

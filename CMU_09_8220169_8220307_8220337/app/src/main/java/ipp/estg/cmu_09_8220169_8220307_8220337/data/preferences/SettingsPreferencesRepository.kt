@@ -1,4 +1,4 @@
-package ipp.estg.cmu_09_8220169_8220307_8220337.preferences
+package ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences
 
 import android.content.Context
 import android.content.SharedPreferences

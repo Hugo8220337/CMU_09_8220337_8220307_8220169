@@ -1,5 +1,6 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,11 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,38 +20,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.AuthStatus
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.auth.AuthStatus
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.forms.LoginFields
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
-import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthenticationViewModel
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthViewModel
+import ipp.estg.mobile.ui.components.utils.Loading
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    authViewModel: AuthenticationViewModel = viewModel()
+    authViewModel: AuthViewModel = viewModel()
 ) {
 
+    val context = LocalContext.current
     val authStatus by authViewModel.authState.collectAsState()
-
-    var isError by remember { mutableStateOf(false) }
-
-    // Check if the user is logged in
-    LaunchedEffect(authStatus) {
-        if (authStatus != AuthStatus.LOADING) {
-            when (authStatus) {
-                AuthStatus.LOGGED -> navController.navigate(Screen.Home.route)
-                AuthStatus.INVALID_LOGIN -> isError = true
-                else -> isError = false
-            }
-        }
-    }
 
     Scaffold { innerPadding ->
         Box(
@@ -85,18 +72,27 @@ fun LoginScreen(
                     onEmailChange = { email = it },
                     onPasswordChange = { password = it },
                     onLoginClick = {
-                        authViewModel.login(email, password)
+                        authViewModel.login(
+                            email = email,
+                            password = password,
+                            onSuccess = {
+                                navController.navigate(Screen.Home.route)
+                            },
+                            onError = { error ->
+                                Toast.makeText(
+                                    context,
+                                    error,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        )
                     }
                 )
 
-                if (isError) {
-                    Text(
-                        text = "Invalid login",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color.Red
-                        )
-                    )
+                if (authStatus == AuthStatus.LOADING) {
+                    Loading()
                 }
+
             }
         }
     }

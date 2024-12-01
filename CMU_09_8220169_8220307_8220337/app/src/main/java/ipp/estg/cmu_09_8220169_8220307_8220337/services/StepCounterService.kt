@@ -26,6 +26,7 @@ class StepCounterService : Service(), SensorEventListener {
         }
     }
 
+
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
             val totalSteps = event.values[0].toInt()

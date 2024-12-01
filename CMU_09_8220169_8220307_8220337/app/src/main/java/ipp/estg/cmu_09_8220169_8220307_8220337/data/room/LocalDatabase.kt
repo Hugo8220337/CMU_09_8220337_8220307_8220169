@@ -10,7 +10,9 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Quote
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.DailyTasksDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.QuoteDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.UserDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.WorkoutDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.LOCAL_DB_NAME
 
 @Database(
@@ -18,12 +20,14 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.LOCAL_DB_NAME
         Workout::class,
         BodyPart::class,
         DailyTasks::class,
-        Quote::class
+        Quote::class,
+        User::class
     ],
     version = 1,
     exportSchema = false
 )
 abstract class LocalDatabase : RoomDatabase() {
+    abstract val userDao: UserDao
     abstract val workoutDao: WorkoutDao
     abstract val dailyTaskCompletionDao: DailyTasksDao
     abstract val quotesDao: QuoteDao

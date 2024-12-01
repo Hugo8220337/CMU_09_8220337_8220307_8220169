@@ -8,7 +8,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.ExerciseItemDataResponse
-import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.IWorkoutRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.WorkoutRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.RemoteApis
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
@@ -18,7 +17,7 @@ class WorkoutViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val workoutRepository: IWorkoutRepository = WorkoutRepository(
+    private val workoutRepository: WorkoutRepository = WorkoutRepository(
         exerciseDbApi = RemoteApis.getExerciseDbApi(),
         workoutDao = LocalDatabase.getDatabase(application).workoutDao
     )
