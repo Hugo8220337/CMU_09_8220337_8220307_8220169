@@ -1,0 +1,14 @@
+package ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models
+
+class WorkoutCollection(
+    val fieldId: String = "",
+    val fieldTrainedBodyParts: String = "",
+    val fieldDateOfWorkou: String = ""
+
+) {
+    companion object {
+        const val FIELD_ID = "id"
+        const val FIELD_TRAINED_BODY_PARTS = "trainedBodyParts"
+        const val FIELD_DATE_WORKOUT = "dateOfWorkout"
+    }
+}
