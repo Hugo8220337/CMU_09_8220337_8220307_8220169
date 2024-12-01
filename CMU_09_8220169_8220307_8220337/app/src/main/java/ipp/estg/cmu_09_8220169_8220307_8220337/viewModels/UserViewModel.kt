@@ -31,6 +31,7 @@ class UserViewModel(
     private val _user = MutableStateFlow<User?>(null)
     val user = _user.asStateFlow()
 
+
     // Estado de carregamento
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
@@ -70,7 +71,7 @@ class UserViewModel(
     }
 
     // Função para sincronizar os dados do Firebase para o Room
-    fun syncUserData() {
+    private fun syncUserData() {
         _isLoading.value = true
         _errorMessage.value = null
 
@@ -95,6 +96,8 @@ class UserViewModel(
             try {
                 userRepository.updateUserInFirebase(user)
                 userRepository.updateUserInRoom(user)
+
+                // Atualiza o estado do utilizador
                 _user.value = user
             } catch (e: Exception) {
                 _errorMessage.value = e.message
@@ -103,117 +106,4 @@ class UserViewModel(
             }
         }
     }
-
-
-    /**
-     * Get user info
-     */
-//    fun getUserInfo() {
-//        _isLoading.value = true
-//        _error.value = "" // Reset do estado de erro
-//
-//        viewModelScope.launch {
-//            try {
-//                val userInfo = repository.getUser()
-//                if (userInfo != null) {
-//                    _user.value = userInfo // Atualiza o estado com o usuário
-//                } else {
-//                    val errorMessage = "User not found."
-//                    _error.value = errorMessage
-//                }
-//            } catch (e: Exception) {
-//                val errorMessage = "Error retrieving user: ${e.message}"
-//                _error.value = errorMessage
-//            } finally {
-//                _isLoading.value = false
-//            }
-//        }
-//    }
-
-//    fun getUserInfo() {
-//        _isLoading.value = true
-//        _error.value = ""
-//
-//        viewModelScope.launch {
-//            try {
-//                // Primeiro tenta buscar do Room
-//                val cachedUser = repository.getUserFromRoom()
-//                if (cachedUser != null) {
-//                    _user.value = cachedUser
-//                } else {
-//                    // Caso não exista no Room, busca no Firebase
-//                    val userInfo = repository.getUserFromFirebase()
-//                    if (userInfo != null) {
-//                        _user.value = userInfo
-//                    } else {
-//                        _error.value = "User not found."
-//                    }
-//                }
-//            } catch (e: Exception) {
-//                _error.value = "Error retrieving user: ${e.message}"
-//            } finally {
-//                _isLoading.value = false
-//            }
-//        }
-//    }
-
-//    fun getUserInfo() {
-//        _isLoading.value = true
-//        viewModelScope.launch {
-//            try {
-//                val cachedUser = repository.getCachedUser()
-//                if (cachedUser != null) {
-//                    _user.value = cachedUser
-//                } else {
-//                    repository.fetchAndSyncUser()
-//                    _user.value = repository.getCachedUser()
-//                }
-//            } catch (e: Exception) {
-//                _error.value = "Error: ${e.message}"
-//            } finally {
-//                _isLoading.value = false
-//            }
-//        }
-//    }
-
-    /**
-     * Change user password
-     */
-//    fun changePassword(
-//        email: String,
-//        oldPassword: String,
-//        newPassword: String
-//    ) {
-//        _isLoading.value = true
-//        _error.value = "" // Reset the error state
-//
-//        viewModelScope.launch {
-//            try {
-//                val isPasswordChanged = repository.changePassword(email, oldPassword, newPassword)
-//                if (isPasswordChanged) {
-//                    // Notify success
-//                } else {
-//                    _error.value = "Password change failed."
-//                }
-//            } catch (e: Exception) {
-//                _error.value = "Error: ${e.message}"
-//            } finally {
-//                _isLoading.value = false
-//            }
-//        }
-//    }
-//    fun changePassword(email: String, oldPassword: String, newPassword: String) {
-//        _isLoading.value = true
-//        viewModelScope.launch {
-//            try {
-//                val isSuccess = repository.changePassword(email, oldPassword, newPassword)
-//                if (!isSuccess) _error.value = "Password change failed."
-//            } catch (e: Exception) {
-//                _error.value = "Error: ${e.message}"
-//            } finally {
-//                _isLoading.value = false
-//            }
-//        }
-//    }
-
 }

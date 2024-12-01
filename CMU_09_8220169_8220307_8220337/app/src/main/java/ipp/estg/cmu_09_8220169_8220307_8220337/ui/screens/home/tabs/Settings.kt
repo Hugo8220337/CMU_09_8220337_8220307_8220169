@@ -128,23 +128,4 @@ fun SettingsScreen(
             }
         )
     }
-
-    // Log out button
-    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-        Button(
-            onClick = {
-                navController.navigate(Screen.Start.route)
-                authViewModel.logout()
-            },
-            modifier = Modifier
-                .fillMaxWidth(0.45f)
-                .padding(vertical = 10.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White
-            )
-        ) {
-            Text("Log out")
-        }
-    }
 }

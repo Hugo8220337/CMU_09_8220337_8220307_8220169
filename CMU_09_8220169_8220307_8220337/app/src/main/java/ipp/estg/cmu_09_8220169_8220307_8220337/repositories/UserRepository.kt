@@ -42,6 +42,9 @@ class UserRepository(
     // Atualizar dados do usuário no Firebase
     suspend fun updateUserInFirebase(user: User) {
         userFirestoreRepository.updateUserInFirebase(user)
+
+        // Atualizar dados do utilizador no Room
+        updateUserInRoom(user)
     }
 
     // Atualizar dados do usuário no Room (usando insert com replace)

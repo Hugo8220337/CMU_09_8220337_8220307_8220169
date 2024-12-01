@@ -42,13 +42,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.ErrorScreen
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.LoadingScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.UserViewModel
 
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    userViewModel: UserViewModel = viewModel()
+    userViewModel: UserViewModel = viewModel(),
+    authViewModel: AuthViewModel = viewModel()
 ) {
 
     val user by userViewModel.user.collectAsState()
@@ -86,12 +90,12 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(35.dp))
 
             // Edit Profile Button
-            EditProfileButton()
+            EditProfileButton(navController)
 
-            Spacer(modifier = Modifier.height(35.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            // Add Data Button
-            AddDataButton(navController)
+            // Logout Button
+            LogoutButton(navController, authViewModel)
         }
     }
 }
@@ -174,9 +178,11 @@ fun ProfileImage(image: Painter) {
 }
 
 @Composable
-fun EditProfileButton() {
+fun EditProfileButton(navController: NavController) {
     Button(
-        onClick = { /* Action to edit profile */ },
+        onClick = {
+            navController.navigate(Screen.EditProfile.route)
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp)
@@ -187,41 +193,21 @@ fun EditProfileButton() {
 }
 
 @Composable
-fun AddDataButton(navController: NavController) {
+fun LogoutButton(navController: NavController, authViewModel: AuthViewModel) {
     Button(
         onClick = {
-            navController.navigate(Screen.UserDataInput.route)
+            navController.navigate(Screen.Start.route)
+            authViewModel.logout()
         },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp)
             .height(50.dp)
     ) {
-        Text("Add Data")
+        Text(text = stringResource(id = R.string.logout))
     }
 }
 
-@Composable
-fun LoadingScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
-}
 
-@Composable
-fun ErrorScreen(errorMessage: String?) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text("Error", color = Color.Red)
-        Text(text = errorMessage.orEmpty(), color = Color.Red)
-    }
-}
+
 
