@@ -1,7 +1,7 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models
 
 class WorkoutCollection(
-    val fieldId: String = "",
+    val fieldId: Long = 0,
     val fieldTrainedBodyParts: String = "",
     val fieldDateOfWorkou: String = ""
 
