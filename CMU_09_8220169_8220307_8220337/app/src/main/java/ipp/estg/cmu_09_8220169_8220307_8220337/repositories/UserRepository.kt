@@ -22,7 +22,7 @@ class UserRepository(
         }
     }
 
-    // Obter usuário do Firebase
+    // Obter utilizador do Firebase
     suspend fun getUserFromFirebase(): User? {
         val userId = authFirebaseRepository.getCurrentUser()?.uid ?: return null
         return userFirestoreRepository.getUserFromFirebase(userId)

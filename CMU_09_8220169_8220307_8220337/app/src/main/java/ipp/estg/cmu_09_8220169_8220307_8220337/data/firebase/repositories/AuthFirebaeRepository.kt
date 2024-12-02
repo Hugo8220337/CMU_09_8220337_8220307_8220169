@@ -51,9 +51,12 @@ class AuthFirebaeRepository(
             val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             if (result != null && result.user != null) {
 
+                // Use UID as Firestore document ID
+                val userId = result.user!!.uid
+
                 // Insert user on firestore User Collection
                 val user = hashMapOf(
-                    UserCollection.FIELD_ID to result.user!!.uid,
+                    UserCollection.FIELD_ID  to userId,
                     UserCollection.FIELD_NAME to username,
                     UserCollection.FIELD_BIRTH_DATE to birthDate,
                     UserCollection.FIELD_WEIGHT to weight,
@@ -61,7 +64,8 @@ class AuthFirebaeRepository(
                 )
 
                 firestore.collection(CollectionsNames.userCollection)
-                    .add(user)
+                    .document(userId) // Use UID as document ID
+                    .set(user) // Use .set() instead of .add()
                     .await()
 
                 // return logged status

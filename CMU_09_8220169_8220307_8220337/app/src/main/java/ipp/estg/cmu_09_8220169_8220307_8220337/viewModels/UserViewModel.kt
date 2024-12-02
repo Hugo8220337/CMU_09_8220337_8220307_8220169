@@ -49,11 +49,11 @@ class UserViewModel(
             try {
                 val userFromRoom = userRepository.getUserFromRoom()
 
-                // Se não houver usuário no Room, tentar buscar no Firebase
+                // Se não houver utilizador no Room, tentar procurar no Firebase
                 if (userFromRoom == null) {
                     val userFromFirebase = userRepository.getUserFromFirebase()
 
-                    // Se encontrar no Firebase, salva no Room
+                    // Se encontrar no Firebase, guarda no Room
                     userFromFirebase?.let {
                         userRepository.saveUserToRoom(it)
                     }
