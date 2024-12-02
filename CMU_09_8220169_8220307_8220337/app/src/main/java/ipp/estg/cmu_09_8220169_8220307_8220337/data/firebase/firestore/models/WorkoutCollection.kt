@@ -1,9 +1,11 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models
 
+import java.time.LocalDate
+
 class WorkoutCollection(
     val fieldId: Long = 0,
     val fieldTrainedBodyParts: String = "",
-    val fieldDateOfWorkou: String = ""
+    val fieldDateOfWorkou: String = LocalDate.now().toString()
 
 ) {
     companion object {
