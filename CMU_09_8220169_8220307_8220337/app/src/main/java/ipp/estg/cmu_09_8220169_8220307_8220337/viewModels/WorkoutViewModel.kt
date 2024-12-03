@@ -6,11 +6,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.WorkoutFirestoreRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.ExerciseItemDataResponse
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.WorkoutRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.RemoteApis
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class WorkoutViewModel(
@@ -22,6 +26,19 @@ class WorkoutViewModel(
         workoutDao = LocalDatabase.getDatabase(application).workoutDao
     )
 
+    private val workoutFirestoreRepository: WorkoutFirestoreRepository = WorkoutFirestoreRepository()
+
+    // Estado de workout
+    private val _workout = MutableStateFlow<List<Workout?>>(emptyList())
+    val workout = _workout.asStateFlow()
+
+    // Estado de carregamento
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    // Estado de erro
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage = _errorMessage.asStateFlow()
 
     var state by mutableStateOf(ScreenState())
         private set
@@ -57,6 +74,24 @@ class WorkoutViewModel(
             state = state.copy(isLoading = false)
         }
     }
+
+    //get all workouts from Firebase by user ID
+    fun getWorkoutsFromFirebaseByUserID() {
+        viewModelScope.launch {
+            state = state.copy(isLoading = true)
+
+            val workouts = workoutFirestoreRepository.getAllWorkoutsFromFirebaseByUser()
+
+            if(workouts.isNotEmpty()) {
+                state = state.copy(storedWorkouts = workouts)
+                _workout.value = workouts
+            }
+
+            state = state.copy(isLoading = false)
+        }
+    }
+
+
 
     data class ScreenState(
         val isLoading: Boolean = false,
