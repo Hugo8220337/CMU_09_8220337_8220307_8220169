@@ -71,7 +71,8 @@ fun WorkoutHistoryPage(
 
     // Obter os dados dos treinos
     LaunchedEffect(Unit) {
-        workoutViewModel.getWorkouts()
+        //workoutViewModel.getWorkouts()
+        workoutViewModel.getWorkoutsFromFirebaseByUserID()
     }
 
     val workouts = workoutViewModel.state.storedWorkouts
