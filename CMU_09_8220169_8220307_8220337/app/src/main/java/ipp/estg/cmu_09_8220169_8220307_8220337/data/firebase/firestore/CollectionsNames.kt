@@ -6,5 +6,6 @@ class CollectionsNames {
     companion object{
         val userCollection = "user"
         val workoutCollection = "workout"
+        val dailyTasksCollection = "dailyTasks"
     }
 }
