@@ -18,6 +18,8 @@ class UserFirestoreRepository(
     private val firestore: FirebaseFirestore = Firebase.firestore
 ) {
 
+    private val authFirebaeRepository: AuthFirebaeRepository = AuthFirebaeRepository()
+
     // Get user from Firebase
     suspend fun getUserFromFirebase(userId: String): User? {
         return try {
@@ -48,7 +50,8 @@ class UserFirestoreRepository(
     // Update user information in Firebase
     suspend fun updateUserInFirebase(user: User) {
         try {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+            //val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+            val userId = authFirebaeRepository.getCurrentUser()?.uid ?: return
                 val updates = mapOf(
                     //UserCollection.FIELD_ID to user.id,
                     UserCollection.FIELD_NAME to user.name,

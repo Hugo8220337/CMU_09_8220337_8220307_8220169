@@ -5,7 +5,6 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.CollectionsNames
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models.UserCollection
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models.WorkoutCollection
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Converter
@@ -16,13 +15,17 @@ class WorkoutFirestoreRepository(
     private val firestore: FirebaseFirestore = Firebase.firestore
 ) {
 
+    private val authFirebaeRepository: AuthFirebaeRepository = AuthFirebaeRepository()
+
     suspend fun insertWorkoutInFirebase(workoutId: Long, trainedBodyParts: List<String>) {
         try {
+            val userId = authFirebaeRepository.getCurrentUser()?.uid
             val converter = Converter()
             val exercisedBodyPartsString = converter.fromStringList(trainedBodyParts)
 
             val workoutData = mapOf(
                 WorkoutCollection.FIELD_ID to workoutId,
+                WorkoutCollection.FIELD_USER_ID to userId,
                 WorkoutCollection.FIELD_TRAINED_BODY_PARTS to exercisedBodyPartsString,
                 WorkoutCollection.FIELD_DATE_WORKOUT to LocalDate.now().toString()
             )
@@ -89,4 +92,37 @@ class WorkoutFirestoreRepository(
         }
     }
 
+    //get all workouts from Firebase by user ID
+    suspend fun getAllWorkoutsFromFirebaseByUser(): List<Workout> {
+        return try {
+            val userId = authFirebaeRepository.getCurrentUser()?.uid
+            val result = firestore.collection(CollectionsNames.workoutCollection)
+                .whereEqualTo(WorkoutCollection.FIELD_USER_ID, userId)
+                .get()
+                .await()
+
+            // Convert the result into a list of Workout objects
+            result.documents.mapNotNull { document ->
+                val id = document.getLong(WorkoutCollection.FIELD_ID) // Fetch the ID
+                val trainedBodyPartsString =
+                    document.getString(WorkoutCollection.FIELD_TRAINED_BODY_PARTS)
+
+                if (id != null && trainedBodyPartsString != null) {
+                    // Use the Converter to parse the trainedBodyParts string
+                    val converter = Converter()
+                    val trainedBodyParts = converter.toStringList(trainedBodyPartsString)
+
+                    Workout(
+                        id = id,
+                        trainedBodyParts = trainedBodyPartsString // Keep the raw string in the model
+                    )
+                } else {
+                    null // Skip documents with missing or invalid data
+                }
+            }
+        } catch (e: Exception) {
+            Log.d("WorkoutFirestoreRepository", "Error fetching workouts from Firebase", e)
+            emptyList() // Return an empty list in case of errors
+        }
+    }
 }
