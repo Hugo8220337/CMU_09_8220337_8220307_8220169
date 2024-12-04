@@ -8,9 +8,8 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Running
 
 class RunningRepository(
     private val runningDao: RunningDao,
-    private val authFirebaseRepository: AuthFirebaseRepository
 ) {
-
+    private val authFirebaseRepository: AuthFirebaseRepository = AuthFirebaseRepository()
     private val runningFirestoreRepository: RunningFirestoreRepository = RunningFirestoreRepository()
 
     suspend fun insertRunningWorkout(

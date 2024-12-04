@@ -20,9 +20,10 @@ class RunningFirestoreRepository(
     suspend fun insertRunningInFirebase(running: Running) {
         try {
             val userId = authFirebaseRepository.getCurrentUser()?.uid
+            val documentId = userId?.let { randomId(it) } // Compound key: runningId + userId
 
             val runningData = mapOf(
-                RunningCollection.FIELD_ID to running.id,
+                RunningCollection.FIELD_ID to documentId,
                 RunningCollection.FIELD_USER_ID to userId,
                 RunningCollection.FIELD_DISTANCE to running.distance,
                 RunningCollection.FIELD_DURATION to running.duration,
@@ -31,10 +32,12 @@ class RunningFirestoreRepository(
                 RunningCollection.FIELD_DATE to LocalDate.now().toString()
             )
 
-            firestore.collection(CollectionsNames.runningCollection)
-                .document(running.id.toString()) // Convert Long to String to use as document ID
-                .set(runningData)
-                .await()
+            if (documentId != null) {
+                firestore.collection(CollectionsNames.runningCollection)
+                    .document(documentId) // Convert Long to String to use as document ID
+                    .set(runningData)
+                    .await()
+            }
         } catch (e: Exception) {
             Log.d("RunningFirestoreRepository", "Error inserting running in Firebase", e)
         }
@@ -109,6 +112,11 @@ class RunningFirestoreRepository(
         } catch (e: Exception) {
             Log.d("RunningFirestoreRepository", "Error deleting running from Firebase", e)
         }
+    }
+
+    private fun randomId(userId : String): String {
+        val random = (0..1000).random()
+        return "${userId}${random}"
     }
 
 }

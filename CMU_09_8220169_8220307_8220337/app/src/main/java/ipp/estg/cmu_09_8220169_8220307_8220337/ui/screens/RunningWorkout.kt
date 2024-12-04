@@ -208,7 +208,7 @@ private fun ControlsSection(
                 if (runningViewModel.isRunning) {
                     runningViewModel.startRun() // Start the run
                 } else {
-                    runningViewModel.stopRun() // Pause the run
+                    runningViewModel.pauseRun() // Pause the run
                 }
             }
         )

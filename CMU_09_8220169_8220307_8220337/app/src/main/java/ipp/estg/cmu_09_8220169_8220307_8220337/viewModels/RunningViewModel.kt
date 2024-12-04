@@ -26,6 +26,8 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.CancellationTokenSource
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
+import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.RunningRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.services.StepCounterService
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Timer
 import kotlinx.coroutines.Job
@@ -39,6 +41,10 @@ import kotlinx.coroutines.launch
 class RunningViewModel(
     application: Application
 ) : AndroidViewModel(application) {
+
+    private val runningRepository: RunningRepository = RunningRepository(
+        runningDao = LocalDatabase.getDatabase(application).runningDao
+    )
 
     private val LOCATION_UPDATE_INTERVAL_MS = 5000L
     private val LOCATION_MIN_UPDATE_INTERVAL_MS = 2000L
@@ -118,11 +124,30 @@ class RunningViewModel(
         startLocationAndStatsUpdates()
     }
 
-    fun stopRun() {
+    fun pauseRun() {
         isRunning = false
         stopStepCounterService()
         stopTimer()
         stopLocationUpdates()
+    }
+
+    fun stopRun() {
+        pauseRun()
+
+        //insert running data in Room and Firebase
+        viewModelScope.launch {
+            runningRepository.insertRunningWorkout(distance.value, time.value.toLong(), stepCounter.value)
+        }
+
+        // Reset the values
+        _distance.value = 0.0
+        _time.value = 0
+        _pace.value = 0.0
+        _stepCounter.value = 0
+        _path.value = emptyList()
+
+        startTime = null
+
     }
 
     private fun startStepCounterService() {
