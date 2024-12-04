@@ -174,8 +174,6 @@ class HomeViewModel(
         val fileAbsolutePath = saveImageToFile(getApplication(), bitmap)
 
         // Atualizar a task
-        // TODO newTask está null, aposto  que é por causa do observable
-        // Observar as tasks e atualizar a task (Mais um OBSERVE, CORRIGIR ISSO)
         val dailyTasks = tasksLiveData.value
         if (dailyTasks != null) {
             val newTasks = dailyTasks.copy(takeProgressPicture = fileAbsolutePath)
