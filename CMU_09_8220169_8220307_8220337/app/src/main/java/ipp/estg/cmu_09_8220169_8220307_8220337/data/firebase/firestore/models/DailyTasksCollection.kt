@@ -1,6 +1,7 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models
 
 class DailyTasksCollection(
+    val fieldId: String = "",
     val fieldDate: String = "",
     val fieldUserId : String = "",
     val fieldGallonOfWater: Boolean = false,
@@ -10,6 +11,7 @@ class DailyTasksCollection(
     val fieldTakeProgressPicture: String = "",
 ) {
     companion object{
+        const val FIELD_ID = "id"
         const val FIELD_DATE = "date"
         const val FIELD_USER_ID = "userId"
         const val FIELD_GALLON_OF_WATER = "gallonOfWater"

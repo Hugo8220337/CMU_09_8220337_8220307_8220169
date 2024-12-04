@@ -23,21 +23,26 @@ class DailyTasksFirestoreRepository(
         try {
             val userId = authFirebaseRepository.getCurrentUser()?.uid
 
-            val taskData = mapOf(
-                DailyTasksCollection.FIELD_DATE to LocalDate.now().toString(),
-                DailyTasksCollection.FIELD_USER_ID to userId,
-                DailyTasksCollection.FIELD_GALLON_OF_WATER to tasks.gallonOfWater,
-                DailyTasksCollection.FIELD_TWO_WORKOUTS to tasks.twoWorkouts,
-                DailyTasksCollection.FIELD_FOLLOW_DIET to tasks.followDiet,
-                DailyTasksCollection.FIELD_READ_TEN_PAGES to tasks.readTenPages,
-                DailyTasksCollection.FIELD_TAKE_PROGRESS_PICTURE to tasks.takeProgressPicture
-            )
+            if (userId != null) {
+                val documentId = "$userId${LocalDate.now()}" // Compound key: userId + date
+
+                val taskData = mapOf(
+                    DailyTasksCollection.FIELD_ID to documentId,
+                    DailyTasksCollection.FIELD_USER_ID to userId,
+                    DailyTasksCollection.FIELD_GALLON_OF_WATER to tasks.gallonOfWater,
+                    DailyTasksCollection.FIELD_TWO_WORKOUTS to tasks.twoWorkouts,
+                    DailyTasksCollection.FIELD_FOLLOW_DIET to tasks.followDiet,
+                    DailyTasksCollection.FIELD_READ_TEN_PAGES to tasks.readTenPages,
+                    DailyTasksCollection.FIELD_TAKE_PROGRESS_PICTURE to tasks.takeProgressPicture
+                )
 
             firestore.collection(CollectionsNames.dailyTasksCollection)
-                .document(LocalDate.now().toString()) // Convert LocalDate to String to use as document ID
+                .document(documentId) // Compound key: userId + date
                 .set(taskData)
                 .await()
-
+            }else{
+                Log.e("DailyTasksFirestoreRepository", "User ID is null")
+            }
         } catch (e: Exception) {
             Log.d("DailyTasksFirestoreRepository", "Erro ao inserir daily task no Firebase", e)
         }
@@ -75,8 +80,9 @@ class DailyTasksFirestoreRepository(
     // Get daily tasks from Firebase
     suspend fun getDailyTasksFromFirebase(): List<Boolean>? {
         return try {
+            val documentId = "${authFirebaseRepository.getCurrentUser()?.uid}${LocalDate.now()}" // Compound key: userId + date
             val result = firestore.collection(CollectionsNames.dailyTasksCollection)
-                .document(LocalDate.now().toString())
+                .document(documentId) // Compound key: userId + date
                 .get()
                 .await()
 
