@@ -3,13 +3,10 @@ package ipp.estg.cmu_09_8220169_8220307_8220337.viewModels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.Dao
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.AuthFirebaeRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.AuthFirebaseRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.UserFirestoreRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.UserDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +21,7 @@ class UserViewModel(
 
     private val userRepository: UserRepository = UserRepository(
         LocalDatabase.getDatabase(application).userDao,
-        AuthFirebaeRepository()
+        AuthFirebaseRepository()
     )
 
     // Estado de usuário

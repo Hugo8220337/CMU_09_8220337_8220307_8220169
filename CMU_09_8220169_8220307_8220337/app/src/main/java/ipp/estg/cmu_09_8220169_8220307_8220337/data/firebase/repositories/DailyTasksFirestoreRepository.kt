@@ -6,7 +6,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.CollectionsNames
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models.DailyTasksCollection
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models.WorkoutCollection
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
@@ -15,14 +14,14 @@ class DailyTasksFirestoreRepository(
     private val firestore: FirebaseFirestore = Firebase.firestore
 ) {
 
-    private val authFirebaeRepository: AuthFirebaeRepository = AuthFirebaeRepository()
+    private val authFirebaseRepository: AuthFirebaseRepository = AuthFirebaseRepository()
 
     // Insert daily task in Firebase
     suspend fun insertDailyTaskInFirebase(
         tasks: DailyTasks
     ) {
         try {
-            val userId = authFirebaeRepository.getCurrentUser()?.uid
+            val userId = authFirebaseRepository.getCurrentUser()?.uid
 
             val taskData = mapOf(
                 DailyTasksCollection.FIELD_DATE to LocalDate.now().toString(),
@@ -100,7 +99,7 @@ class DailyTasksFirestoreRepository(
     // Get all daily tasks by user Id from Firebase
     suspend fun getAllDailyTasksFromFirebaseByUser(): List<Boolean>? {
         return try {
-            val userId = authFirebaeRepository.getCurrentUser()?.uid
+            val userId = authFirebaseRepository.getCurrentUser()?.uid
 
             val result = firestore.collection(CollectionsNames.dailyTasksCollection)
                 //.whereEqualTo(WorkoutCollection.FIELD_USER_ID, userId)

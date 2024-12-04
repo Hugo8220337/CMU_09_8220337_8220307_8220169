@@ -2,15 +2,11 @@ package ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories
 
 import android.util.Log
 import com.google.firebase.Firebase
-import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.CollectionsNames
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models.UserCollection
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.UserDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
 import kotlinx.coroutines.tasks.await
 
@@ -18,7 +14,7 @@ class UserFirestoreRepository(
     private val firestore: FirebaseFirestore = Firebase.firestore
 ) {
 
-    private val authFirebaeRepository: AuthFirebaeRepository = AuthFirebaeRepository()
+    private val authFirebaseRepository: AuthFirebaseRepository = AuthFirebaseRepository()
 
     // Get user from Firebase
     suspend fun getUserFromFirebase(userId: String): User? {
@@ -51,7 +47,7 @@ class UserFirestoreRepository(
     suspend fun updateUserInFirebase(user: User) {
         try {
             //val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-            val userId = authFirebaeRepository.getCurrentUser()?.uid ?: return
+            val userId = authFirebaseRepository.getCurrentUser()?.uid ?: return
                 val updates = mapOf(
                     //UserCollection.FIELD_ID to user.id,
                     UserCollection.FIELD_NAME to user.name,

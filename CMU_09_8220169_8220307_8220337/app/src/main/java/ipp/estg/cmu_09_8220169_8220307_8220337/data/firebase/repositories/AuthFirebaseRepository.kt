@@ -10,7 +10,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.Collectio
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models.UserCollection
 import kotlinx.coroutines.tasks.await
 
-class AuthFirebaeRepository(
+class AuthFirebaseRepository(
     private val firebaseAuth: FirebaseAuth = Firebase.auth,
     private val firestore: FirebaseFirestore = Firebase.firestore
 ) {

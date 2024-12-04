@@ -15,11 +15,11 @@ class WorkoutFirestoreRepository(
     private val firestore: FirebaseFirestore = Firebase.firestore
 ) {
 
-    private val authFirebaeRepository: AuthFirebaeRepository = AuthFirebaeRepository()
+    private val authFirebaseRepository: AuthFirebaseRepository = AuthFirebaseRepository()
 
     suspend fun insertWorkoutInFirebase(workoutId: Long, trainedBodyParts: List<String>) {
         try {
-            val userId = authFirebaeRepository.getCurrentUser()?.uid
+            val userId = authFirebaseRepository.getCurrentUser()?.uid
             val converter = Converter()
             val exercisedBodyPartsString = converter.fromStringList(trainedBodyParts)
 
@@ -95,7 +95,7 @@ class WorkoutFirestoreRepository(
     //get all workouts from Firebase by user ID
     suspend fun getAllWorkoutsFromFirebaseByUser(): List<Workout> {
         return try {
-            val userId = authFirebaeRepository.getCurrentUser()?.uid
+            val userId = authFirebaseRepository.getCurrentUser()?.uid
             val result = firestore.collection(CollectionsNames.workoutCollection)
                 .whereEqualTo(WorkoutCollection.FIELD_USER_ID, userId)
                 .get()

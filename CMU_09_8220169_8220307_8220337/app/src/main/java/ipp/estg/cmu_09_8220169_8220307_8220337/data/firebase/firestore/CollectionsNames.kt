@@ -7,5 +7,6 @@ class CollectionsNames {
         val userCollection = "user"
         val workoutCollection = "workout"
         val dailyTasksCollection = "dailyTasks"
+        val runningCollection = "running"
     }
 }

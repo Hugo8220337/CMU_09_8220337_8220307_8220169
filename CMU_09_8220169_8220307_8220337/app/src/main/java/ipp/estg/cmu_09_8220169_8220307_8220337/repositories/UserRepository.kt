@@ -1,13 +1,13 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.AuthFirebaeRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.AuthFirebaseRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.UserFirestoreRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.UserDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
 
 class UserRepository(
     private val userDao: UserDao,
-    private val authFirebaseRepository: AuthFirebaeRepository
+    private val authFirebaseRepository: AuthFirebaseRepository
 ) {
 
     private val userFirestoreRepository: UserFirestoreRepository = UserFirestoreRepository()

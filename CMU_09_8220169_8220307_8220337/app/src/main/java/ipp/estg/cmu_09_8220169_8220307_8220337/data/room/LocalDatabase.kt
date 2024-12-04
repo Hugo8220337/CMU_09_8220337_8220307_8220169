@@ -10,8 +10,10 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Quote
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.DailyTasksDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.QuoteDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.RunningDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.UserDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.WorkoutDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Running
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.LOCAL_DB_NAME
 
@@ -21,7 +23,8 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Constants.LOCAL_DB_NAME
         BodyPart::class,
         DailyTasks::class,
         Quote::class,
-        User::class
+        User::class,
+        Running::class
     ],
     version = 1,
     exportSchema = false
@@ -31,6 +34,7 @@ abstract class LocalDatabase : RoomDatabase() {
     abstract val workoutDao: WorkoutDao
     abstract val dailyTaskCompletionDao: DailyTasksDao
     abstract val quotesDao: QuoteDao
+    abstract val runningDao: RunningDao
 
     companion object{
         private var INSTANCE: LocalDatabase?=null

@@ -1,14 +1,14 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.auth.AuthStatus
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.AuthFirebaeRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.AuthFirebaseRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.UserDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
 
 class AuthRepository(
     private val userDao: UserDao
 ) {
-    private val authFirebaseRepository: AuthFirebaeRepository = AuthFirebaeRepository()
+    private val authFirebaseRepository: AuthFirebaseRepository = AuthFirebaseRepository()
 
     suspend fun login(email: String, password: String): AuthStatus {
         val result = authFirebaseRepository.login(email, password)
