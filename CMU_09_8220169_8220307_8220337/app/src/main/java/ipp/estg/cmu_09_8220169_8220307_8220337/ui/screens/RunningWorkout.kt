@@ -7,24 +7,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.DirectionsRun
-import androidx.compose.material.icons.filled.Directions
-import androidx.compose.material.icons.filled.DirectionsRun
-import androidx.compose.material.icons.filled.Speed
-import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
+import com.google.maps.android.compose.Polyline
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -33,16 +21,11 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -50,26 +33,15 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.maps.android.compose.rememberMarkerState
-import com.mapbox.geojson.LineString
-import com.mapbox.geojson.Point
-import com.mapbox.maps.extension.compose.MapEffect
-import com.mapbox.maps.plugin.Plugin
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
-import com.mapbox.maps.extension.compose.MapboxMap
-import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
-import com.mapbox.maps.extension.compose.style.sources.generated.rememberGeoJsonSourceState
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.ControlButton
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.RunDetailItem
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.RunDetails
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.formatTime
@@ -150,14 +122,19 @@ fun RunningWorkoutScreen(
 private fun MapSection(runningViewModel: RunningViewModel, locationPermission: PermissionState) {
 
     val currentLocation by runningViewModel.currentLocation.collectAsState()
-    val cameraPositionState = rememberCameraPositionState()
+    val path by runningViewModel.path.collectAsState()
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), 14f) // Initial zoom level (default)
+    }
 
     LaunchedEffect(currentLocation) {
-        // Move the camera to the new location when it changes
         currentLocation?.let {
-            cameraPositionState.position = CameraPosition.fromLatLngZoom(
-                LatLng(it.latitude, it.longitude),
-                19f
+            // Keep the zoom level as is, but update the position to the new location
+            cameraPositionState.position = CameraPosition(
+                LatLng(it.latitude, it.longitude), // target
+                cameraPositionState.position.zoom, // keep zoom
+                cameraPositionState.position.tilt, // keep tilt
+                cameraPositionState.position.bearing // keep bearing
             )
         }
     }
@@ -183,6 +160,13 @@ private fun MapSection(runningViewModel: RunningViewModel, locationPermission: P
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState
             ) {
+                // Draw the user's path as a polyline
+                Polyline(
+                    points = path,
+                    color = Color.Blue,
+                    width = 5f
+                )
+
                 // Update Marker position dynamically
                 currentLocation?.let {
                     Marker(

@@ -24,6 +24,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.CancellationTokenSource
 import ipp.estg.cmu_09_8220169_8220307_8220337.services.StepCounterService
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Timer
@@ -51,6 +52,9 @@ class RunningViewModel(
     private val batteryManager: BatteryManager by lazy {
         application.getSystemService(Application.BATTERY_SERVICE) as BatteryManager
     }
+
+    private val _path = MutableStateFlow<List<LatLng>>(emptyList())
+    val path: StateFlow<List<LatLng>> = _path
 
     /**
      * FusedLocationProviderClient is used to get the last known location of the device.
@@ -175,6 +179,11 @@ class RunningViewModel(
         val elapsedSeconds = getElapsedTime() // Calculate elapsed seconds
         _time.value = elapsedSeconds.toInt()
 
+        // Update the path with the new location
+        locationList.lastOrNull()?.let {
+            _path.value = _path.value + LatLng(it.latitude, it.longitude)
+        }
+
         // Calculate pace (minutes/km)
         _pace.value = if (_distance.value > 0) {
             (elapsedSeconds / 60) / _distance.value
@@ -209,6 +218,7 @@ class RunningViewModel(
     fun resetTimer() {
         _time.value = 0 // Reset the timer to 0
     }
+
 
     /**
      * Is called when the ViewModel is no longer used and is about to be destroyed.
