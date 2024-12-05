@@ -14,21 +14,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.Run
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Running
 
 @Composable
 fun RunCardItem(
-    run: Run,
-    onItemClick: (Run) -> Unit = {}
+    running: Running,
+    onItemClick: (Running) -> Unit = {}
 ) {
     ElevatedCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier
-            .clickable { onItemClick(run) }
+            .clickable { onItemClick(running) }
             .padding(vertical = 4.dp, horizontal = 16.dp)
     ) {
         RunItem(
-            run = run,
+            running = running,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -38,18 +38,28 @@ fun RunCardItem(
 
 @Composable
 private fun RunItem(
-    run: Run,
+    running: Running,
     modifier: Modifier = Modifier
 ) {
+    println("Running data: $running") // Adicione este log para depuração
     Column(modifier = modifier) {
-        Text(text = run.date, style = MaterialTheme.typography.bodySmall)
+        Text(text = running.date, style = MaterialTheme.typography.bodySmall)
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = run.distance,
+            text = "${running.distance} km",
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = "${run.calories}  ${run.speed}", style = MaterialTheme.typography.bodySmall)
+        Text(
+            text = "${running.calories} cal,  ${running.duration} segundos",
+            style = MaterialTheme.typography.bodySmall
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = "${running.steps} passos",
+            style = MaterialTheme.typography.bodySmall
+        )
     }
 }
+

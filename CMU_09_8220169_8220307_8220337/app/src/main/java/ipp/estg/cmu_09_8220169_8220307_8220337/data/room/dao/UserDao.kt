@@ -15,10 +15,4 @@ interface UserDao {
 
     @Query("SELECT * FROM user WHERE id = :id")
     suspend fun getUser(id: String): User
-
-//    @Query("SELECT * FROM user WHERE id = :userId")
-//    suspend fun getUserById(userId: String): User?
-//
-//    @Update
-//    suspend fun updateUser(user: User)
 }

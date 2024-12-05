@@ -1,7 +1,7 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models
 
 class RunningCollection(
-    val fieldId: Long = 0,
+    val fieldId: String = "",
     val fieldUserId : String = "",
     val fieldDistance: Double = 0.0,
     val fieldDuration: String = "",

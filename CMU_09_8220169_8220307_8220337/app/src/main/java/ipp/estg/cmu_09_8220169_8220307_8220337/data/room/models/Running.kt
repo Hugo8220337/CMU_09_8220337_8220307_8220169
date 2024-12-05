@@ -7,10 +7,10 @@ import java.time.LocalDate
 
 @Entity(tableName = "running")
 class Running (
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    @PrimaryKey
+    val id: String = "",
     val distance: Double,
-    val duration: String,
+    val duration: String = "",
     val steps: Int,
     val calories: Double,
     val date: String = LocalDate.now().toString()

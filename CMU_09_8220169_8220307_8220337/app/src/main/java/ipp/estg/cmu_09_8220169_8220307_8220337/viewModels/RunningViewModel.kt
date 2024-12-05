@@ -12,12 +12,14 @@ import android.hardware.SensorManager
 import android.location.Location
 import android.os.BatteryManager
 import android.os.Looper
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -26,10 +28,15 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.CancellationTokenSource
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.RunningFirestoreRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.ExerciseItemDataResponse
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Running
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.RunningRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.services.StepCounterService
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Timer
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.WorkoutViewModel.ScreenState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,6 +52,22 @@ class RunningViewModel(
     private val runningRepository: RunningRepository = RunningRepository(
         runningDao = LocalDatabase.getDatabase(application).runningDao
     )
+
+    private val runningFirestoreRepository: RunningFirestoreRepository = RunningFirestoreRepository()
+
+    private val _running = MutableStateFlow<List<Running?>>(emptyList())
+    val running = _running.asStateFlow()
+
+    // Estado de carregamento
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    // Estado de erro
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage = _errorMessage.asStateFlow()
+
+//    var state by mutableStateOf(ScreenState())
+//        private set
 
     private val LOCATION_UPDATE_INTERVAL_MS = 5000L
     private val LOCATION_MIN_UPDATE_INTERVAL_MS = 2000L
@@ -144,8 +167,7 @@ class RunningViewModel(
         _time.value = 0
         _pace.value = 0.0
         _stepCounter.value = 0
-        _path.value = emptyList()
-
+//        _path.value = emptyList()
         startTime = null
 
     }
@@ -251,5 +273,37 @@ class RunningViewModel(
     override fun onCleared() {
         super.onCleared()
     }
+
+
+    // get all running workouts from Firebase by user ID
+    fun getRunningWorkoutsFromFirebaseByUserID() {
+
+        _isLoading.value = true
+        _errorMessage.value = null // Clear previous error messages
+
+        viewModelScope.launch {
+            try {
+                val runninWorkouts = runningFirestoreRepository.getRunningFromFirebaseByUserId()
+
+                if (runninWorkouts.isNullOrEmpty()) {
+                    _running.value = emptyList() // Update to empty list
+                    _errorMessage.value = "No data available" // Error message
+                } else {
+                    _running.value = runninWorkouts
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = e.localizedMessage ?: "An unexpected error occurred"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+
+//    data class ScreenState(
+//        val isLoading: Boolean = false,
+//        val error: String? = null,
+//        val storedRunnings : List<Running> = emptyList() // running workouts stored on the local database
+//    )
 
 }

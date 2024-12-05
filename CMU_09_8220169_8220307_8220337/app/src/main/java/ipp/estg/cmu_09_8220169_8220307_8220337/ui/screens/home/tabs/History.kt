@@ -1,17 +1,12 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -19,23 +14,17 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import coil3.request.crossfade
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Running
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.DropDownList
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.EmptyPicturesState
@@ -53,14 +42,14 @@ enum class EnumEntries(val value: String) {
     PHOTOS("Photos");
 }
 
-// Dados de uma corrida
-data class Run(
-    val date: String,
-    val distance: String,
-    val calories: String,
-    val speed: String,
-    val img: Bitmap? = null
-)
+//// Dados de uma corrida
+//data class Run(
+//    val date: String,
+//    val distance: String,
+//    val calories: String,
+//    val speed: String,
+//    val img: Bitmap? = null
+//)
 
 data class DailyPicture(
     val date: LocalDate,
@@ -74,35 +63,38 @@ fun WorkoutHistoryPage(
     runningViewModel: RunningViewModel = viewModel()
 ) {
     // Dados estáticos para visualização de corridas
-    val staticRunList = listOf(
-        Run(
-            date = "August 04, 2024",
-            distance = "0.849 km",
-            calories = "35 kcal",
-            speed = "24.45 km/hr"
-        ),
-        Run(
-            date = "August 04, 2024",
-            distance = "1.185 km",
-            calories = "49 kcal",
-            speed = "15.13 km/hr"
-        ),
-        Run(
-            date = "August 04, 2024",
-            distance = "1.56 km",
-            calories = "64 kcal",
-            speed = "73.89 km/hr"
-        )
-    )
-
-    // Obter os dados dos treinos
-    LaunchedEffect(Unit) {
-        //workoutViewModel.getWorkouts()
-        workoutViewModel.getWorkoutsFromFirebaseByUserID()
-    }
+//    val staticRunList = listOf(
+//        Run(
+//            date = "August 04, 2024",
+//            distance = "0.849 km",
+//            calories = "35 kcal",
+//            speed = "24.45 km/hr"
+//        ),
+//        Run(
+//            date = "August 04, 2024",
+//            distance = "1.185 km",
+//            calories = "49 kcal",
+//            speed = "15.13 km/hr"
+//        ),
+//        Run(
+//            date = "August 04, 2024",
+//            distance = "1.56 km",
+//            calories = "64 kcal",
+//            speed = "73.89 km/hr"
+//        )
+//    )
 
     val workouts = workoutViewModel.state.storedWorkouts
+    val runnings by runningViewModel.running.collectAsState(emptyList())
     var selectedTab by rememberSaveable { mutableStateOf(EnumEntries.RUUNING) }
+
+    // Obter os dados dos treinos
+    // Carregando dados ao iniciar a página
+    LaunchedEffect(Unit) {
+        workoutViewModel.getWorkoutsFromFirebaseByUserID()
+        runningViewModel.getRunningWorkoutsFromFirebaseByUserID()
+    }
+
 
     Column {
         // Título da página e botão de ordenação
@@ -123,7 +115,7 @@ fun WorkoutHistoryPage(
 
         // Conteúdo da página
         when (selectedTab) {
-            EnumEntries.RUUNING -> RunningHistoryScreenContentStatic(runItems = staticRunList)
+            EnumEntries.RUUNING -> RunningHistoryScreenContentStatic(runnings = runnings)
             EnumEntries.WORKOUTS -> WorkoutHistory(workouts = workouts)
             EnumEntries.PHOTOS -> DailyPicturesHistory()
         }
@@ -133,16 +125,27 @@ fun WorkoutHistoryPage(
 
 @Composable
 private fun RunningHistoryScreenContentStatic(
-    runItems: List<Run>,
-    onSortOrderSelected: (EnumEntries) -> Unit = {},
-    onItemClick: (Run) -> Unit = {},
+    runnings: List<Running?>,
+    onItemClick: (Running) -> Unit = {}
 ) {
-
-    Box {
-        RunningListStatic(
-            runItems = runItems,
-            onItemClick = onItemClick
+    if (runnings.isEmpty()) {
+        Text(
+            text = "No running workouts yet",
+            modifier = Modifier.fillMaxSize(),
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center
         )
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            items(runnings) { running ->
+                if (running != null) {
+                    RunCardItem(running = running, onItemClick = onItemClick)
+                }
+            }
+        }
     }
 }
 
@@ -151,31 +154,33 @@ private fun WorkoutHistory(
     workouts: List<Workout>,
     onItemClick: (Workout) -> Unit = {}
 ) {
-    Box {
+    if (workouts.isEmpty()) {
+        Text(
+            text = "No workouts yet",
+            modifier = Modifier.fillMaxSize(),
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center
+        )
+    } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 8.dp)
+            contentPadding = PaddingValues(8.dp)
         ) {
             items(workouts) { workout ->
                 WorkoutCardItem(workout = workout, onItemClick = onItemClick)
             }
         }
     }
-}
-
-@Composable
-private fun RunningListStatic(
-    runItems: List<Run>,
-    onItemClick: (Run) -> Unit
-) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 8.dp)
-    ) {
-        items(runItems) { run ->
-            RunCardItem(run = run, onItemClick = onItemClick)
-        }
-    }
+//    Box {
+//        LazyColumn(
+//            modifier = Modifier.fillMaxSize(),
+//            contentPadding = PaddingValues(bottom = 8.dp)
+//        ) {
+//            items(workouts) { workout ->
+//                WorkoutCardItem(workout = workout, onItemClick = onItemClick)
+//            }
+//        }
+//    }
 }
 
 @Composable
