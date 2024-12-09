@@ -31,6 +31,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.EmptyPicturesState
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.DailyPictureCard
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.RunCardItem
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.WorkoutCardItem
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.DropDownButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.WorkoutViewModel
 import java.time.LocalDate
@@ -171,16 +172,6 @@ private fun WorkoutHistory(
             }
         }
     }
-//    Box {
-//        LazyColumn(
-//            modifier = Modifier.fillMaxSize(),
-//            contentPadding = PaddingValues(bottom = 8.dp)
-//        ) {
-//            items(workouts) { workout ->
-//                WorkoutCardItem(workout = workout, onItemClick = onItemClick)
-//            }
-//        }
-//    }
 }
 
 @Composable
@@ -214,29 +205,6 @@ fun DailyPicturesHistory(
     }
 }
 
-@Composable
-fun DropDownButton(onSortOrderSelected: (EnumEntries) -> Unit) {
-    var isDropDownExpanded by rememberSaveable { mutableStateOf(false) }
-    val sortOrderList = remember { EnumEntries.entries }
 
-    Column {
-        Button(
-            onClick = { isDropDownExpanded = !isDropDownExpanded },
-        ) {
-            Text(text = stringResource(id = R.string.sort_by), style = MaterialTheme.typography.labelLarge)
-            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = stringResource(id = R.string.sort_by))
-        }
-        DropDownList(
-            list = sortOrderList,
-            onItemSelected = {
-                onSortOrderSelected(it)
-                isDropDownExpanded = false
-            },
-            request = { isDropDownExpanded = it },
-            isOpened = isDropDownExpanded,
-            modifier = Modifier.padding(end = 8.dp)
-        )
-    }
-}
 
 

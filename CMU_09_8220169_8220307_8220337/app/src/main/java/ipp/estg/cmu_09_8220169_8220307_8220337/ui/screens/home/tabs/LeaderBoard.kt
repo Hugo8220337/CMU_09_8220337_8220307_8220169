@@ -19,66 +19,176 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.LeaderboardEntry.LeaderboardEntryCalories
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.LeaderboardEntry.LeaderboardEntryExerciseTime
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.LeaderboardEntry.LeaderboardEntrySteps
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.LeaderboardDropDownButton
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.LeaderboardViewModel
 
-// Updated data model for calories burned
-data class LeaderboardEntry(
-    val userName: String,
-    val caloriesBurned: Int,  // Changed to represent calories burned
-    val userId: String? = null
-)
+
+enum class EnumLeaderboardEntries(val value: String) {
+    CALORIES("Calorias Queimadas"),
+    EXERCISE_TIME("Tempo de Exercício"),
+    Steps("Números de passos");
+}
 
 @Composable
-fun LeaderboardPage() {
-    // TODO: Replace with real data (e.g., from ViewModel or Firebase)
-    val caloriesEntries = listOf(
-        LeaderboardEntry("João Silva", 1500),
-        LeaderboardEntry("Maria Souza", 1350),
-        LeaderboardEntry("Pedro Santos", 1200),
-        LeaderboardEntry("Ana Oliveira", 1100),
-        LeaderboardEntry("Carlos Pereira", 950)
-    )
+fun LeaderboardPage(
+    leaderboardViewModel: LeaderboardViewModel = viewModel()
+) {
+
+    // Obter o leaderboard por calorias
+    val leaderboardState by leaderboardViewModel.leaderboardState.collectAsState()
+    // Obter o leaderboard por tempo de exercício
+    val leaderboardStateExerciseTime by leaderboardViewModel.leaderboardStateExerciseTime.collectAsState()
+    // Obter o leaderboard por nível de atividade
+    val leaderboardStateSteps by leaderboardViewModel.leaderboardStateSteps.collectAsState()
+
+    val isLoading by leaderboardViewModel.isLoading.collectAsState()
+    val errorMessage by leaderboardViewModel.errorMessage.collectAsState()
+
+    // Controlar qual tab está selecionada
+    var selectedTab by rememberSaveable { mutableStateOf(EnumLeaderboardEntries.CALORIES) }
+
+    // Carregar dados ao abrir a tela
+    LaunchedEffect(Unit) {
+            leaderboardViewModel.getLeaderboardByCalories()
+            leaderboardViewModel.getLeaderboardByExerciseTime()
+            leaderboardViewModel.getLeaderboardBySteps()
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            LeaderboardDropDownButton(onSortOrderSelected = { selectedTab = it })
+        }
+
         Text(
-            text = "Top Calorias Queimadas",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 16.dp)
+            text = selectedTab.value,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, top = 8.dp, bottom = 8.dp),
+            textAlign = TextAlign.Center
         )
 
-        LeaderboardList(caloriesEntries)
+        when (selectedTab) {
+            EnumLeaderboardEntries.CALORIES -> {
+                if (isLoading) {
+                    Text(text = "Carregando...")
+                } else if (errorMessage?.isNotEmpty() == true) {
+                    Text(text = errorMessage.toString())
+                } else {
+                    LeaderboardList(entries = leaderboardState)
+                }
+            }
+            EnumLeaderboardEntries.EXERCISE_TIME -> {
+                if (isLoading) {
+                    Text(text = "Carregando...")
+                } else if (errorMessage?.isNotEmpty() == true) {
+                    Text(text = errorMessage.toString())
+                } else {
+                    LeaderboardListExerciseTime(entries = leaderboardStateExerciseTime)
+                }
+            }
+            EnumLeaderboardEntries.Steps -> {
+                if (isLoading) {
+                    Text(text = "Carregando...")
+                } else if (errorMessage?.isNotEmpty() == true) {
+                    Text(text = errorMessage.toString())
+                } else {
+                    LeaderboardListSteps(entries = leaderboardStateSteps)
+                }
+            }
+        }
     }
 }
 
 @Composable
-fun LeaderboardList(entries: List<LeaderboardEntry>) {
+fun LeaderboardList(entries: List<LeaderboardEntryCalories>) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        itemsIndexed(entries.sortedByDescending { it.caloriesBurned }) { index, entry ->
+        itemsIndexed(entries.sortedByDescending { it.calories }) { index, entry ->
+            LeaderboardItem(
+                rank = index + 1,
+                userName = entry.name,
+                LeaderboardData = entry.calories.toString()
+            )
+        }
+    }
+}
+
+@Composable
+fun LeaderboardListExerciseTime(entries: List<LeaderboardEntryExerciseTime>) {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        itemsIndexed(entries.sortedByDescending { it.exerciseTime }) { index, entry ->
+            LeaderboardItem(
+                rank = index + 1,
+                userName = entry.name,
+                LeaderboardData = formatDuration(entry.exerciseTime)
+            )
+        }
+    }
+}
+
+// Função para formatar a duração (em segundos) para horas, minutos e segundos
+fun formatDuration(exerciseTime: Double): String {
+    val hours = (exerciseTime / 3600).toInt()  // Calcula as horas (3600 segundos em uma hora)
+    val minutes = ((exerciseTime % 3600) / 60).toInt()  // Calcula os minutos restantes
+    val seconds = (exerciseTime % 60).toInt()  // Calcula os segundos restantes
+
+    // Exibe as horas, minutos e segundos no formato "Xh Ym Zs"
+    return if (hours > 0) {
+        "${hours}h ${minutes}m ${seconds}s"
+    } else if (minutes > 0) {
+        "${minutes}m ${seconds}s"
+    } else {
+        "${seconds}s"
+    }
+}
+
+@Composable
+fun LeaderboardListSteps(entries: List<LeaderboardEntrySteps>) {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        itemsIndexed(entries.sortedByDescending { it.steps }) { index, entry ->
             LeaderboardItem(
                 rank = index + 1,
                 userName = entry.userName,
-                caloriesBurned = entry.caloriesBurned
+                LeaderboardData = entry.steps.toDouble().toString()
             )
         }
     }
@@ -88,7 +198,7 @@ fun LeaderboardList(entries: List<LeaderboardEntry>) {
 fun LeaderboardItem(
     rank: Int,
     userName: String,
-    caloriesBurned: Int
+    LeaderboardData: String
 ) {
     // Gradientes base para os efeitos metálicos
     val baseBrush = when (rank) {
@@ -156,9 +266,8 @@ fun LeaderboardItem(
                 modifier = Modifier.weight(1f)
             )
 
-            // Calorias queimadas
             Text(
-                text = "$caloriesBurned cal",
+                text = LeaderboardData,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
@@ -166,6 +275,9 @@ fun LeaderboardItem(
         }
     }
 }
+
+
+
 
 
 

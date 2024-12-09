@@ -33,7 +33,7 @@ class RunningFirestoreRepository(
                 RunningCollection.FIELD_DISTANCE to running.distance + 1.0,
                 RunningCollection.FIELD_DURATION to running.duration,
                 RunningCollection.FIELD_STEPS to running.steps + 1,
-                RunningCollection.FIELD_CALORIES to running.calories + 1.0,
+                RunningCollection.FIELD_CALORIES to running.calories + 120.5,
                 RunningCollection.FIELD_DATE to LocalDate.now().toString()
             )
 
@@ -129,4 +129,73 @@ class RunningFirestoreRepository(
         return "${userId}_${timestamp}_${random}"
     }
 
+    // Get calories burned by user
+    suspend fun getHighestCaloriesBurnedByUser(userId: String): Double {
+        return try {
+            // Obter os documentos da coleção 'runningCollection' para o usuário
+            val result = firestore.collection(CollectionsNames.runningCollection)
+                .whereEqualTo(RunningCollection.FIELD_USER_ID, userId)
+                .get()
+                .await()
+
+            // Verificar se o resultado não está vazio e mapear as calorias
+            if (result.isEmpty) {
+                0.0  // Se não houver documentos, retorna 0.0
+            } else {
+                result.documents.mapNotNull { document ->
+                    // Tenta pegar o campo 'calories' e garantir que seja um número
+                    (document[RunningCollection.FIELD_CALORIES] as? Number)?.toDouble()
+                }.maxOrNull() ?: 0.0  // Retorna o maior valor ou 0.0 se não encontrar
+            }
+        } catch (e: Exception) {
+            Log.d("RunningFirestoreRepository", "Error getting highest calories burned by user from Firebase", e)
+            0.0  // Em caso de erro, retorna 0.0
+        }
+    }
+
+    suspend fun getTotalExerciseTimeByUser(userId: String): Double {
+        return try {
+            val result = firestore.collection(CollectionsNames.runningCollection)
+                .whereEqualTo(RunningCollection.FIELD_USER_ID, userId)
+                .get()
+                .await()
+
+            if (result.isEmpty) {
+                0.0
+            } else {
+                result.documents.sumOf { document ->
+                    val durationString = document[RunningCollection.FIELD_DURATION] as? String
+                    val duration = durationString?.toDoubleOrNull() ?: 0.0 // Converte para Double ou usa 0.0 se falhar
+
+                    Log.d("RunningFirestoreRepository", "Duration found in document: $duration")
+
+                    duration
+                }
+            }
+        } catch (e: Exception) {
+            Log.d("RunningFirestoreRepository", "Error getting total exercise time by user from Firebase", e)
+            0.0
+        }
+    }
+
+    // Get highest steps by user
+    suspend fun getHighestStepsByUser(userId: String): Double {
+        return try {
+            val result = firestore.collection(CollectionsNames.runningCollection)
+                .whereEqualTo(RunningCollection.FIELD_USER_ID, userId)
+                .get()
+                .await()
+
+            if (result.isEmpty) {
+                0.0
+            } else {
+                result.documents.mapNotNull { document ->
+                    (document[RunningCollection.FIELD_STEPS] as? Number)?.toDouble()
+                }.maxOrNull() ?: 0.0
+            }
+        } catch (e: Exception) {
+            Log.d("RunningFirestoreRepository", "Error getting highest steps by user from Firebase", e)
+            0.0
+        }
+    }
 }

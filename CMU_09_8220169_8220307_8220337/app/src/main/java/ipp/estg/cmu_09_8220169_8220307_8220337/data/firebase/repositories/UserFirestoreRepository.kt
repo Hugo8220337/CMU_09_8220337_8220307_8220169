@@ -29,7 +29,6 @@ class UserFirestoreRepository(
                 User(
                     id = document.getString("id") ?: "",
                     name = document.getString("name") ?: "",
-                    //email = document.getString("email") ?: "",
                     birthDate = document.getString("birthDate") ?: "",
                     weight = document.getDouble("weight") ?: 0.0,
                     height = document.getDouble("height") ?: 0.0
@@ -64,6 +63,38 @@ class UserFirestoreRepository(
         } catch (e: Exception) {
             // Handle the exception (e.g., log the error)
             Log.e("UpdateUserError", "Failed to update user: ${e.message}")
+        }
+    }
+
+    //get all users from Firebase, return a list of users
+    suspend fun getAllUsers(): List<User> {
+        return try {
+
+            val result = firestore.collection(CollectionsNames.userCollection)
+                .get()
+                .await()
+
+            Log.d("UserFirestoreRepository", "Número de documentos: ${result.documents.size}")
+
+            if (result.isEmpty){
+                // Caso não haja documentos
+                return emptyList()
+            }else{
+                result.documents.map { document ->
+                    Log.d("UserFirestoreRepository", "Document: ${document.data}")
+
+                    val id = document.get("id")?.let { it.toString() } ?: ""  // Convertendo o valor para String, independente do tipo
+                    val name = document.getString("name") ?: ""
+
+                    // Retorna um par (id, name) para cada usuário
+                    Pair(id, name)
+                }
+            }.map { (id, name) ->
+                User(id = id, name = name)
+            }
+        } catch (e: Exception) {
+            Log.e("UserFirestoreRepository", "Error getting users: ${e.message}")
+            emptyList()
         }
     }
 }
