@@ -26,8 +26,6 @@ class WorkoutViewModel(
         workoutDao = LocalDatabase.getDatabase(application).workoutDao
     )
 
-    private val workoutFirestoreRepository: WorkoutFirestoreRepository = WorkoutFirestoreRepository()
-
     // Estado de workout
     private val _workout = MutableStateFlow<List<Workout?>>(emptyList())
     val workout = _workout.asStateFlow()
@@ -76,11 +74,11 @@ class WorkoutViewModel(
     }
 
     //get all workouts from Firebase by user ID
-    fun getWorkoutsFromFirebaseByUserID() {
+    fun getWorkoutsByUserID() {
         viewModelScope.launch {
             state = state.copy(isLoading = true)
 
-            val workouts = workoutFirestoreRepository.getAllWorkoutsFromFirebaseByUser()
+            val workouts = workoutRepository.getWorkoutsByUserID()
 
             if(workouts.isNotEmpty()) {
                 state = state.copy(storedWorkouts = workouts)

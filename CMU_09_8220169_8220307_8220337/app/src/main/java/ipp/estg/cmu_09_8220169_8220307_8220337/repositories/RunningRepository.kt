@@ -18,7 +18,7 @@ class RunningRepository(
         steps: Int
     ) {
         try {
-            //Inserir treino de corrida no Room
+            // Inserir treino de corrida no Room
             val running = Running(
                 distance = distance,
                 duration = duration.toString(),
@@ -28,7 +28,7 @@ class RunningRepository(
             //Inserir na base de dados local
             runningDao.insertRunning(running)
 
-            //inserir na base de dados remota
+            //inserir na base de dados remota (Firebase)
             runningFirestoreRepository.insertRunningInFirebase(running)
         } catch (e: Exception) {
             Log.e("RunningRepository", "Error inserting running workout", e)
@@ -84,6 +84,16 @@ class RunningRepository(
             }
         } catch (e: Exception) {
             Log.e("RunningRepository", "Error syncing running workouts from Firebase", e)
+        }
+    }
+
+    suspend fun getRunningByUserID(): List<Running> {
+        try {
+            val runnings = runningFirestoreRepository.getRunningFromFirebaseByUserId()
+            return runnings
+        } catch (e: Exception) {
+            Log.e("RunningRepository", "Error getting running workouts by user id", e)
+            return emptyList()
         }
     }
 }

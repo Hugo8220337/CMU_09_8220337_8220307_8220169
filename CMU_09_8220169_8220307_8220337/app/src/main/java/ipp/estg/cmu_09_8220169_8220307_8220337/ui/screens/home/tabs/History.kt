@@ -91,8 +91,8 @@ fun WorkoutHistoryPage(
     // Obter os dados dos treinos
     // Carregando dados ao iniciar a página
     LaunchedEffect(Unit) {
-        workoutViewModel.getWorkoutsFromFirebaseByUserID()
-        runningViewModel.getRunningWorkoutsFromFirebaseByUserID()
+        workoutViewModel.getWorkoutsByUserID()
+        runningViewModel.getRunningWorkoutsByUserID()
     }
 
 

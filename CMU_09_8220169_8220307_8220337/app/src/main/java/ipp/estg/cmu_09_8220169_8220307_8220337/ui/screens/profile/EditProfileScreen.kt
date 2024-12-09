@@ -97,13 +97,13 @@ fun EditProfileScreen(
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    // Email field
+                    // Email field (read-only)
                     OutlinedTextField(
                         value = email,
-                        onValueChange = { email = it },
+                        onValueChange = {}, // Não permite alterações
                         label = { Text("Email") },
                         modifier = Modifier.fillMaxWidth(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                        enabled = false // Torna o campo somente leitura
                     )
 
                     // Birth date field

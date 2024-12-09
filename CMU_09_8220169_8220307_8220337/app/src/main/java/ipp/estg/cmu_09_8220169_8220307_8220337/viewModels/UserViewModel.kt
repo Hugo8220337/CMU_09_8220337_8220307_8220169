@@ -44,38 +44,9 @@ class UserViewModel(
 
         viewModelScope.launch {
             try {
-                val userFromRoom = userRepository.getUserFromRoom()
+                val user = userRepository.getUserById()
 
-                // Se não houver utilizador no Room, tentar procurar no Firebase
-                if (userFromRoom == null) {
-                    val userFromFirebase = userRepository.getUserFromFirebase()
-
-                    // Se encontrar no Firebase, guarda no Room
-                    userFromFirebase?.let {
-                        userRepository.saveUserToRoom(it)
-                    }
-
-                    _user.value = userFromFirebase
-                } else {
-                    _user.value = userFromRoom
-                }
-            } catch (e: Exception) {
-                _errorMessage.value = e.message
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
-    // Função para sincronizar os dados do Firebase para o Room
-    private fun syncUserData() {
-        _isLoading.value = true
-        _errorMessage.value = null
-
-        viewModelScope.launch {
-            try {
-                userRepository.syncUserData()
-                getUser() // Depois de sincronizar, obter novamente o usuário
+                _user.value = user
             } catch (e: Exception) {
                 _errorMessage.value = e.message
             } finally {
@@ -91,8 +62,7 @@ class UserViewModel(
 
         viewModelScope.launch {
             try {
-                userRepository.updateUserInFirebase(user)
-                userRepository.updateUserInRoom(user)
+                userRepository.updateUser(user)
 
                 // Atualiza o estado do utilizador
                 _user.value = user

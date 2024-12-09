@@ -39,6 +39,12 @@ class UserRepository(
         userFromFirebase?.let { userDao.insertUser(it) }
     }
 
+    //Sincronizar dados do Room para Firebase
+    suspend fun syncUserDataToFirebase() {
+        val userFromRoom = getUserFromRoom()
+        userFromRoom?.let { userFirestoreRepository.updateUserInFirebase(it) }
+    }
+
     // Atualizar dados do usuário no Firebase
     suspend fun updateUserInFirebase(user: User) {
         userFirestoreRepository.updateUserInFirebase(user)
@@ -52,4 +58,37 @@ class UserRepository(
         userDao.insertUser(user)
     }
 
+    suspend fun getUserById(): User? {
+
+        val userId = authFirebaseRepository.getCurrentUser()?.uid ?: return null
+        var user = userFirestoreRepository.getUserFromFirebase(userId)
+
+        // se não existir no firebase, tenta buscar do Room
+        if (user == null) {
+            user = getUserFromRoom()
+            // sincroniza os dados do Room para o Firebase
+            syncUserDataToFirebase()
+        }
+
+        // sincroniza os dados do Firebase para o Room
+        syncUserData()
+
+        // Retorna um novo objeto User com o email do utilizador atual
+        if (user != null) {
+            user  = User(
+                name = user?.name ?: "",
+                email = authFirebaseRepository.getCurrentUser()?.email ?: "",
+                birthDate = user?.birthDate ?: "",
+                weight = user?.weight ?: 0.0,
+                height = user.height
+            )
+        }
+
+        return user
+    }
+
+
+    suspend fun updateUser(user: User) {
+        updateUserInFirebase(user)
+    }
 }

@@ -52,8 +52,9 @@ class WorkoutRepository(
 
         // Insert trained body parts in cache on a different thread
         withContext(Dispatchers.IO) {
-            //insertWorkoutInCache(bodyParts)
-            insertWorkoutInCacheAndFirebase(bodyParts)
+            val generatedId = insertWorkoutInCache(bodyParts)
+            insertWorkoutInFirebase(bodyParts, generatedId)
+            //insertWorkoutInCacheAndFirebase(bodyParts)
         }
 
         return allExercises
@@ -64,7 +65,7 @@ class WorkoutRepository(
         return workoutDao.getWorkouts()
     }
 
-    private suspend fun insertWorkoutInCache(trainedBodyParts: List<String>) {
+    private suspend fun insertWorkoutInCache(trainedBodyParts: List<String>): Long {
         try {
             val converter = Converter()
             val exercisedBodyPartsString = converter.fromStringList(trainedBodyParts)
@@ -72,9 +73,21 @@ class WorkoutRepository(
             // Cria o Workout
             val workoutToInsert = Workout(trainedBodyParts = exercisedBodyPartsString)
 
-            workoutDao.insertWorkout(workoutToInsert)
+            val generatedId = workoutDao.insertWorkout(workoutToInsert)
+
+            return generatedId
+
         } catch (e: Exception) {
             Log.d("WorkoutRepository", "Error inserting workout in cache")
+            return -1
+        }
+    }
+
+    private suspend fun insertWorkoutInFirebase(trainedBodyParts: List<String>, workoutId: Long) {
+        try {
+            workoutFirestoreRepository.insertWorkoutInFirebase(workoutId, trainedBodyParts)
+        } catch (e: Exception) {
+            Log.d("WorkoutRepository", "Error inserting workout in Firebase")
         }
     }
 
@@ -125,6 +138,17 @@ class WorkoutRepository(
             }
         } catch (e: Exception) {
             Log.d("WorkoutRepository", "Error syncing workouts from Firebase", e)
+        }
+    }
+
+    suspend fun getWorkoutsByUserID(): List<Workout> {
+        try {
+            val firebaseWorkouts = workoutFirestoreRepository.getAllWorkoutsFromFirebaseByUser()
+
+            return firebaseWorkouts
+        } catch (e: Exception) {
+            Log.d("WorkoutRepository", "Error syncing workouts from Firebase", e)
+            return emptyList()
         }
     }
 

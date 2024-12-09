@@ -53,8 +53,6 @@ class RunningViewModel(
         runningDao = LocalDatabase.getDatabase(application).runningDao
     )
 
-    private val runningFirestoreRepository: RunningFirestoreRepository = RunningFirestoreRepository()
-
     private val _running = MutableStateFlow<List<Running?>>(emptyList())
     val running = _running.asStateFlow()
 
@@ -276,14 +274,14 @@ class RunningViewModel(
 
 
     // get all running workouts from Firebase by user ID
-    fun getRunningWorkoutsFromFirebaseByUserID() {
+    fun getRunningWorkoutsByUserID() {
 
         _isLoading.value = true
         _errorMessage.value = null // Clear previous error messages
 
         viewModelScope.launch {
             try {
-                val runninWorkouts = runningFirestoreRepository.getRunningFromFirebaseByUserId()
+                val runninWorkouts = runningRepository.getRunningByUserID()
 
                 if (runninWorkouts.isNullOrEmpty()) {
                     _running.value = emptyList() // Update to empty list
