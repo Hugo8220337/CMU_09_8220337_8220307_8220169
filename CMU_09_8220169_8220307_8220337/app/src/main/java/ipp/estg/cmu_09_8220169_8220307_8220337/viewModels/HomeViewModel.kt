@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import coil3.Bitmap
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
@@ -22,6 +23,8 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.services.DailyRemeinderService
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.getImageFromFile
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.saveImageToFile
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.saveImageToGallery
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -35,10 +38,10 @@ class HomeViewModel(
     val settingsPreferencesRepository: SettingsPreferencesRepository =
         SettingsPreferencesRepository(application)
 
-    val dailyTasksRepository: DailyTasksRepository =
+    private val dailyTasksRepository: DailyTasksRepository =
         DailyTasksRepository(LocalDatabase.getDatabase(application).dailyTaskCompletionDao)
 
-    var quotesRepository: QuotesRepository =
+    private var quotesRepository: QuotesRepository =
         QuotesRepository(
             RemoteApis.getQuotesApi(),
             LocalDatabase.getDatabase(application).quotesDao
@@ -49,11 +52,15 @@ class HomeViewModel(
      * Informação Mutável
      */
     var state: ScreenState by mutableStateOf(ScreenState())
-    var tasksLiveData: LiveData<DailyTasks>
 
+
+    private val _dailyQuote = MutableStateFlow("")
+    val dailyQuote = _dailyQuote.asStateFlow()
+
+    var dailyTasks: LiveData<DailyTasks> = MutableLiveData()
 
     init {
-        // Configura o idioma baseado na preferência salva
+        // Configura o idioma baseado na preferência guardada
         val savedLanguage = settingsPreferencesRepository.getLanguagePreference()
         settingsPreferencesRepository.updateLocale(application, savedLanguage)
 
@@ -63,17 +70,10 @@ class HomeViewModel(
 
 
         // Obter as tasks de hoje
-        tasksLiveData = dailyTasksRepository.getTodayTasks()
-        loadTodaysProgressPicture()
-
-        // Obtem o streak atual
-        updateDailyStreak()
-
-        // Obtem a quote do dia
-        loadDailyQuote()
+//        tasksLiveData = dailyTasksRepository.getTodayTasks()
     }
 
-    private fun loadTodaysProgressPicture() {
+    fun loadTodaysProgressPicture() {
         viewModelScope.launch {
             // Load da fotografia de hoje, se existir
             val todayProgressPicturePath = dailyTasksRepository.getTodaysProgressPicture();
@@ -84,18 +84,23 @@ class HomeViewModel(
         }
     }
 
+    fun loadTodayTasks() {
+        viewModelScope.launch {
+            dailyTasks = dailyTasksRepository.getTodayTasks()
+        }
+    }
 
-    private fun updateDailyStreak() {
+    fun updateDailyStreak() {
         viewModelScope.launch {
             val streak = dailyTasksRepository.getStreak()
             state = state.copy(streak = streak)
         }
     }
 
-    private fun loadDailyQuote() {
+    fun loadDailyQuote() {
         viewModelScope.launch {
             val dailyQuote = quotesRepository.getTodaysQuote().quote
-            state = state.copy(dailyQuote = dailyQuote)
+            _dailyQuote.value = dailyQuote
         }
     }
 
@@ -174,7 +179,7 @@ class HomeViewModel(
         val fileAbsolutePath = saveImageToFile(getApplication(), bitmap)
 
         // Atualizar a task
-        val dailyTasks = tasksLiveData.value
+        val dailyTasks = dailyTasks.value
         if (dailyTasks != null) {
             val newTasks = dailyTasks.copy(takeProgressPicture = fileAbsolutePath)
             setTasksValue(newTasks)
@@ -196,7 +201,6 @@ class HomeViewModel(
         val streak: Int = 0,
         val error: String? = null,
         val hasCameraPermission: Boolean = false,
-        val dailyQuote: String = "",
         val imageBitmap: Bitmap? = null,
     )
 }

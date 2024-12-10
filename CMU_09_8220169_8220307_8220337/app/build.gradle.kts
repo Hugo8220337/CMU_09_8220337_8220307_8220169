@@ -140,11 +140,6 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx:23.1.0")
 
-    // MapBox
-    implementation("com.mapbox.maps:android:11.8.0")
-    implementation("com.mapbox.extension:maps-compose:11.8.0")
-
-
     // Google Maps
     implementation("com.google.maps.android:maps-compose:2.7.3")
     implementation("com.google.android.gms:play-services-maps:18.0.2")

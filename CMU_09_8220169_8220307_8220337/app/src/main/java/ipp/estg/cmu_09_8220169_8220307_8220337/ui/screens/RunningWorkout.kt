@@ -62,8 +62,10 @@ fun RunningWorkoutScreen(
 
     val pedometerPermission =
         rememberPermissionState(android.Manifest.permission.ACTIVITY_RECOGNITION)
-    val locationPermission =
+    val fineLocationPermission =
         rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+    val coarseLocationPermission =
+        rememberPermissionState(android.Manifest.permission.ACCESS_COARSE_LOCATION)
 
     LaunchedEffect(pedometerPermission.status) {
         if (!pedometerPermission.status.isGranted) {
@@ -71,9 +73,15 @@ fun RunningWorkoutScreen(
         }
     }
 
-    LaunchedEffect(locationPermission.status.isGranted) {
-        if (!locationPermission.status.isGranted) {
-            locationPermission.launchPermissionRequest()
+    LaunchedEffect(fineLocationPermission.status.isGranted) {
+        if (!fineLocationPermission.status.isGranted) {
+            fineLocationPermission.launchPermissionRequest()
+        }
+    }
+
+    LaunchedEffect(coarseLocationPermission.status.isGranted) {
+        if (!coarseLocationPermission.status.isGranted) {
+            coarseLocationPermission.launchPermissionRequest()
         }
     }
 
@@ -95,7 +103,7 @@ fun RunningWorkoutScreen(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                MapSection(runningViewModel, locationPermission)
+                MapSection(runningViewModel, fineLocationPermission)
 
                 RunDetails(
                     distance = String.format("%.2f", distance), // Format to 2 decimal places
@@ -119,7 +127,7 @@ fun RunningWorkoutScreen(
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun MapSection(runningViewModel: RunningViewModel, locationPermission: PermissionState) {
+private fun MapSection(runningViewModel: RunningViewModel, fineLocationPermission: PermissionState) {
 
     val currentLocation by runningViewModel.currentLocation.collectAsState()
     val path by runningViewModel.path.collectAsState()
@@ -155,7 +163,7 @@ private fun MapSection(runningViewModel: RunningViewModel, locationPermission: P
         contentAlignment = Alignment.Center
     ) {
 
-        if(locationPermission.status.isGranted) {
+        if(fineLocationPermission.status.isGranted) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState

@@ -38,6 +38,8 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +64,18 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 
 @Composable
 fun MainContent(homeViewModel: HomeViewModel) {
+
+    val streak = homeViewModel.state.streak
+    val tasks by homeViewModel.dailyTasks.observeAsState()
+    val dailyQuote by homeViewModel.dailyQuote.collectAsState()
+
+    LaunchedEffect(Unit) {
+        homeViewModel.loadTodayTasks()
+        homeViewModel.updateDailyStreak()
+        homeViewModel.loadTodaysProgressPicture()
+        homeViewModel.loadDailyQuote()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,12 +86,15 @@ fun MainContent(homeViewModel: HomeViewModel) {
     ) {
 
         // Progress Overview Section
-        ProgressSection(homeViewModel.state.streak)
+        ProgressSection(streak)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // Daily Task Checklist
-        TaskChecklist(homeViewModel)
+        TaskChecklist(
+            tasks = tasks ?: DailyTasks(),
+            homeViewModel = homeViewModel
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -87,7 +104,7 @@ fun MainContent(homeViewModel: HomeViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Motivational Quote
-        MotivationalQuote(homeViewModel.state.dailyQuote)
+        MotivationalQuote(dailyQuote)
 
         homeViewModel.state.error?.let {
             Text(
@@ -119,10 +136,7 @@ private fun ProgressSection(streak: Int) {
 }
 
 @Composable
-private fun TaskChecklist(homeViewModel: HomeViewModel) {
-
-    val tasks by homeViewModel.tasksLiveData.observeAsState()
-
+private fun TaskChecklist(tasks: DailyTasks, homeViewModel: HomeViewModel) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -143,41 +157,37 @@ private fun TaskChecklist(homeViewModel: HomeViewModel) {
             // Lista de tarefas com acesso ao estado persistente
             TaskItemCard(
                 task = stringResource(id = R.string.drink_4l_water),
-                isTaskCompleted = tasks?.gallonOfWater ?: false,
+                isTaskCompleted = tasks.gallonOfWater,
                 onTaskToggle = { isCompleted ->
                     homeViewModel.setTasksValue(
-                        tasks?.copy(gallonOfWater = isCompleted)
-                            ?: DailyTasks(gallonOfWater = isCompleted)
+                        tasks.copy(gallonOfWater = isCompleted)
                     )
                 }
             )
             TaskItemCard(
                 task = stringResource(id = R.string.complete_2_workouts),
-                isTaskCompleted = tasks?.twoWorkouts ?: false,
+                isTaskCompleted = tasks.twoWorkouts,
                 onTaskToggle = { isCompleted ->
                     homeViewModel.setTasksValue(
-                        tasks?.copy(twoWorkouts = isCompleted)
-                            ?: DailyTasks(twoWorkouts = isCompleted)
+                        tasks.copy(twoWorkouts = isCompleted)
                     )
                 }
             )
             TaskItemCard(
                 task = stringResource(id = R.string.follow_diet),
-                isTaskCompleted = tasks?.followDiet ?: false,
+                isTaskCompleted = tasks.followDiet,
                 onTaskToggle = { isCompleted ->
                     homeViewModel.setTasksValue(
-                        tasks?.copy(followDiet = isCompleted)
-                            ?: DailyTasks(followDiet = isCompleted)
+                        tasks.copy(followDiet = isCompleted)
                     )
                 }
             )
             TaskItemCard(
                 task = stringResource(id = R.string.read_10_pages),
-                isTaskCompleted = tasks?.readTenPages ?: false,
+                isTaskCompleted = tasks.readTenPages,
                 onTaskToggle = { isCompleted ->
                     homeViewModel.setTasksValue(
-                        tasks?.copy(readTenPages = isCompleted)
-                            ?: DailyTasks(readTenPages = isCompleted)
+                        tasks.copy(readTenPages = isCompleted)
                     )
                 }
             )

@@ -42,7 +42,6 @@ class DailyTasksRepository(
 
       fun getTodayTasks(): LiveData<DailyTasks> {
          val currentDate = LocalDate.now().toString()
-          //syncDailyTasksFromFirebase()
          return dailyTasksDao.getTasksByDate(currentDate)
     }
 

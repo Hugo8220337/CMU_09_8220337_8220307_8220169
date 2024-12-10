@@ -43,6 +43,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.LeaderboardEntry
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.LeaderboardEntry.LeaderboardEntrySteps
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.LeaderboardDropDownButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.LeaderboardViewModel
+import ipp.estg.mobile.ui.components.utils.Loading
 
 
 enum class EnumLeaderboardEntries(val value: String) {
@@ -101,7 +102,7 @@ fun LeaderboardPage(
         when (selectedTab) {
             EnumLeaderboardEntries.CALORIES -> {
                 if (isLoading) {
-                    Text(text = "Carregando...")
+                    Loading()
                 } else if (errorMessage?.isNotEmpty() == true) {
                     Text(text = errorMessage.toString())
                 } else {
@@ -110,7 +111,7 @@ fun LeaderboardPage(
             }
             EnumLeaderboardEntries.EXERCISE_TIME -> {
                 if (isLoading) {
-                    Text(text = "Carregando...")
+                    Loading()
                 } else if (errorMessage?.isNotEmpty() == true) {
                     Text(text = errorMessage.toString())
                 } else {
@@ -119,7 +120,7 @@ fun LeaderboardPage(
             }
             EnumLeaderboardEntries.Steps -> {
                 if (isLoading) {
-                    Text(text = "Carregando...")
+                    Loading()
                 } else if (errorMessage?.isNotEmpty() == true) {
                     Text(text = errorMessage.toString())
                 } else {
@@ -140,7 +141,7 @@ fun LeaderboardList(entries: List<LeaderboardEntryCalories>) {
             LeaderboardItem(
                 rank = index + 1,
                 userName = entry.name,
-                LeaderboardData = entry.calories.toString()
+                leaderboardData = entry.calories.toString()
             )
         }
     }
@@ -156,7 +157,7 @@ fun LeaderboardListExerciseTime(entries: List<LeaderboardEntryExerciseTime>) {
             LeaderboardItem(
                 rank = index + 1,
                 userName = entry.name,
-                LeaderboardData = formatDuration(entry.exerciseTime)
+                leaderboardData = formatDuration(entry.exerciseTime)
             )
         }
     }
@@ -188,7 +189,7 @@ fun LeaderboardListSteps(entries: List<LeaderboardEntrySteps>) {
             LeaderboardItem(
                 rank = index + 1,
                 userName = entry.userName,
-                LeaderboardData = entry.steps.toDouble().toString()
+                leaderboardData = entry.steps.toDouble().toString()
             )
         }
     }
@@ -198,7 +199,7 @@ fun LeaderboardListSteps(entries: List<LeaderboardEntrySteps>) {
 fun LeaderboardItem(
     rank: Int,
     userName: String,
-    LeaderboardData: String
+    leaderboardData: String
 ) {
     // Gradientes base para os efeitos metálicos
     val baseBrush = when (rank) {
@@ -259,7 +260,6 @@ fun LeaderboardItem(
                 modifier = Modifier.width(40.dp)
             )
 
-            // Nome do usuário
             Text(
                 text = userName,
                 fontSize = 16.sp,
@@ -267,7 +267,7 @@ fun LeaderboardItem(
             )
 
             Text(
-                text = LeaderboardData,
+                text = leaderboardData,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
@@ -275,12 +275,3 @@ fun LeaderboardItem(
         }
     }
 }
-
-
-
-
-
-
-
-
-
