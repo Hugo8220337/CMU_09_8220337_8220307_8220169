@@ -59,6 +59,9 @@ class HomeViewModel(
 
     var dailyTasks: LiveData<DailyTasks> = MutableLiveData()
 
+    private var _allDailyTasks = MutableStateFlow<List<DailyTasks>>(emptyList())
+    val allDailyTasks = _allDailyTasks.asStateFlow()
+
     init {
         // Configura o idioma baseado na preferência guardada
         val savedLanguage = settingsPreferencesRepository.getLanguagePreference()
@@ -67,10 +70,6 @@ class HomeViewModel(
 
         // TODO Não está a funcionar
         buildForegroundDailyRemeinderNotifications()
-
-
-        // Obter as tasks de hoje
-//        tasksLiveData = dailyTasksRepository.getTodayTasks()
     }
 
     fun loadTodaysProgressPicture() {
@@ -101,6 +100,12 @@ class HomeViewModel(
         viewModelScope.launch {
             val dailyQuote = quotesRepository.getTodaysQuote().quote
             _dailyQuote.value = dailyQuote
+        }
+    }
+
+    fun loadAllTasks() {
+        viewModelScope.launch {
+            _allDailyTasks.value = dailyTasksRepository.getAllTasks()
         }
     }
 

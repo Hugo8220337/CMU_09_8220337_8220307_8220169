@@ -2,6 +2,7 @@ package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.DailyTasksFirestoreRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.DailyTasksDao
@@ -9,9 +10,10 @@ import java.time.LocalDate
 
 class DailyTasksRepository(
     private val dailyTasksDao: DailyTasksDao
-){
+) {
 
-    private val dailyTasksFirestoreRepository: DailyTasksFirestoreRepository = DailyTasksFirestoreRepository()
+    private val dailyTasksFirestoreRepository: DailyTasksFirestoreRepository =
+        DailyTasksFirestoreRepository()
 
     suspend fun insertTasks(
         gallonOfWater: Boolean,
@@ -40,12 +42,12 @@ class DailyTasksRepository(
         }
     }
 
-      fun getTodayTasks(): LiveData<DailyTasks> {
-         val currentDate = LocalDate.now().toString()
-         return dailyTasksDao.getTasksByDate(currentDate)
+    fun getTodayTasks(): LiveData<DailyTasks> {
+        val currentDate = LocalDate.now().toString()
+        return dailyTasksDao.getTasksByDate(currentDate)
     }
 
-     fun areTodaysTasksDone(): Boolean {
+    fun areTodaysTasksDone(): Boolean {
         val dailyTasks = getTodayTasks()
 
         val diet = dailyTasks.value?.followDiet
@@ -62,7 +64,7 @@ class DailyTasksRepository(
         val currentDate = LocalDate.now().toString()
         val progressPicture = dailyTasksDao.getProgressPathPictureByDate(currentDate)
 
-        if(progressPicture == null) {
+        if (progressPicture == null) {
             return ""
         }
 
@@ -78,7 +80,7 @@ class DailyTasksRepository(
             val taskDate = LocalDate.parse(task.date)
 
             // Verifica se todas as tarefas foram concluídas nesse dia
-            if (task.gallonOfWater && task.twoWorkouts && task.followDiet && task.readTenPages   ) {
+            if (task.gallonOfWater && task.twoWorkouts && task.followDiet && task.readTenPages) {
                 if (previousDate == null || taskDate == previousDate.minusDays(1)) {
                     streak++
                     previousDate = taskDate
@@ -93,8 +95,12 @@ class DailyTasksRepository(
         return streak
     }
 
-    private suspend fun syncDailyTasksFromFirebase(){
-        try{
+    suspend fun getAllTasks(): List<DailyTasks> {
+        return dailyTasksDao.getAllTasks()
+    }
+
+    private suspend fun syncDailyTasksFromFirebase() {
+        try {
             val firebaseDailyTasks = dailyTasksFirestoreRepository.getAllDailyTasksFromFirebase()
             // Save each workout from Firebase to Room if it doesn't already exist
             if (firebaseDailyTasks != null) {

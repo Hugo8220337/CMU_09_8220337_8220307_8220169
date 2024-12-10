@@ -2,9 +2,9 @@ package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.RunningFirestoreRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.UserFirestoreRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.LeaderboardEntry.LeaderboardEntryCalories
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.LeaderboardEntry.LeaderboardEntryExerciseTime
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.LeaderboardEntry.LeaderboardEntrySteps
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderboardEntry.LeaderboardEntryCalories
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderboardEntry.LeaderboardEntryExerciseTime
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderboardEntry.LeaderboardEntrySteps
 
 
 class LeaderboardRepository {

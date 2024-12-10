@@ -56,6 +56,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.StreakLinearProgressIndicator
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.MotivationalQuoteCard
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.TaskItemCard
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.GoldColor
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.checkCameraPermission
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.launchCamera
@@ -86,7 +89,7 @@ fun MainContent(homeViewModel: HomeViewModel) {
     ) {
 
         // Progress Overview Section
-        ProgressSection(streak)
+        StreakLinearProgressIndicator(streak)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -104,7 +107,7 @@ fun MainContent(homeViewModel: HomeViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Motivational Quote
-        MotivationalQuote(dailyQuote)
+        MotivationalQuoteCard(dailyQuote)
 
         homeViewModel.state.error?.let {
             Text(
@@ -113,25 +116,6 @@ fun MainContent(homeViewModel: HomeViewModel) {
             )
         }
 
-    }
-}
-
-@Composable
-private fun ProgressSection(streak: Int) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Day $streak of 75", style = MaterialTheme.typography.bodyMedium)
-
-        LinearProgressIndicator(
-            progress = {
-                streak / 75f // Dynamic based on progress
-            },
-            color = if (streak <= 75) MaterialTheme.colorScheme.primary else GoldColor,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-        )
     }
 }
 
@@ -195,69 +179,6 @@ private fun TaskChecklist(tasks: DailyTasks, homeViewModel: HomeViewModel) {
     }
 }
 
-
-@Composable
-private fun TaskItemCard(
-    task: String,
-    isTaskCompleted: Boolean,
-    onTaskToggle: (Boolean) -> Unit
-) {
-    val backgroundColor =
-        if (isTaskCompleted) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
-    val textColor =
-        if (isTaskCompleted) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-            .clickable {
-                onTaskToggle(!isTaskCompleted)
-            },
-        colors = CardDefaults.cardColors(containerColor = backgroundColor),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.elevatedCardElevation()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = isTaskCompleted,
-                onCheckedChange = {
-                    onTaskToggle(!isTaskCompleted)
-                },
-                colors = CheckboxDefaults.colors(MaterialTheme.colorScheme.primary)
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-
-            Icon(
-                imageVector = when (task) {
-                    stringResource(id = R.string.drink_4l_water) -> Icons.Default.LocalDrink
-                    stringResource(id = R.string.complete_2_workouts) -> Icons.Default.FitnessCenter
-                    stringResource(id = R.string.follow_diet) -> Icons.Default.Restaurant
-                    stringResource(id = R.string.read_10_pages) -> Icons.Default.Book
-                    else -> Icons.Default.Check
-                },
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Text(
-                text = task,
-                style = MaterialTheme.typography.bodyLarge,
-                color = textColor
-            )
-        }
-    }
-}
-
 @Composable
 fun DailyPhotoSection(homeViewModel: HomeViewModel) {
     val context = LocalContext.current
@@ -292,9 +213,6 @@ fun DailyPhotoSection(homeViewModel: HomeViewModel) {
             style = MaterialTheme.typography.bodyMedium
         )
 
-        Row {
-
-        }
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -340,29 +258,6 @@ private fun SaveButton(homeViewModel: HomeViewModel, context: Context) {
             imageVector = Icons.Outlined.Save,
             contentDescription = stringResource(id = R.string.save),
             tint = MaterialTheme.colorScheme.onBackground
-        )
-    }
-}
-
-
-@Composable
-private fun MotivationalQuote(quote: String) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.elevatedCardElevation()
-    ) {
-        Text(
-            text = "\"$quote\"",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            textAlign = TextAlign.Center
         )
     }
 }

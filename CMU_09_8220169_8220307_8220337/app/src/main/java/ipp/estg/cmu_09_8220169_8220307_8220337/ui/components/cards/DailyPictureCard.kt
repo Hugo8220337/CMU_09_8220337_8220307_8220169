@@ -1,5 +1,6 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -39,18 +41,14 @@ fun DailyPictureCard(picture: DailyPicture) {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Image
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(picture.imageUri)
-                    .crossfade(true)
-                    .build(),
+            Image(
+                bitmap = picture.imageBitMap!!.asImageBitmap(),
                 contentDescription = picture.description ?: "Daily Picture",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(180.dp)
                     .clip(MaterialTheme.shapes.medium),
-                contentScale = ContentScale.Crop
             )
 
             // Date and Description
@@ -64,17 +62,11 @@ fun DailyPictureCard(picture: DailyPicture) {
                 Column {
                     Text(
                         text = picture.date.toString(),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-                    picture.description?.let {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                        )
-                    }
                 }
             }
         }

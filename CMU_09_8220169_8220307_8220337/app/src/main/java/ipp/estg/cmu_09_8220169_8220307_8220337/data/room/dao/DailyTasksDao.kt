@@ -17,10 +17,10 @@ interface DailyTasksDao {
     @Query("SELECT * FROM dailyTasks WHERE date = :date")
     fun getTasksByDate(date: String): LiveData<DailyTasks>
 
-    @Query("SELECT * FROM DailyTasks ORDER BY date DESC")
+    @Query("SELECT * FROM dailyTasks ORDER BY date DESC")
     suspend fun getAllTasks(): List<DailyTasks>
 
-    @Query("SELECT takeProgressPicture FROM DailyTasks WHERE date = :date")
+    @Query("SELECT takeProgressPicture FROM dailyTasks WHERE date = :date")
     suspend fun getProgressPathPictureByDate(date: String): String
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

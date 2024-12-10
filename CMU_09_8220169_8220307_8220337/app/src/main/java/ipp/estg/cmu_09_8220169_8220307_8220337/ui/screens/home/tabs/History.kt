@@ -19,11 +19,14 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.Bitmap
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Running
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.DropDownList
@@ -32,6 +35,8 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.DailyPictureC
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.RunCardItem
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.WorkoutCardItem
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.DropDownButton
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.getImageFromFile
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.WorkoutViewModel
 import java.time.LocalDate
@@ -43,57 +48,30 @@ enum class EnumEntries(val value: String) {
     PHOTOS("Photos");
 }
 
-//// Dados de uma corrida
-//data class Run(
-//    val date: String,
-//    val distance: String,
-//    val calories: String,
-//    val speed: String,
-//    val img: Bitmap? = null
-//)
-
 data class DailyPicture(
     val date: LocalDate,
-    val imageUri: String,
-    val description: String? = null
+    val imageBitMap: Bitmap? = null
 )
 
 @Composable
 fun WorkoutHistoryPage(
+    homeViewModel: HomeViewModel = viewModel(),
     workoutViewModel: WorkoutViewModel = viewModel(),
     runningViewModel: RunningViewModel = viewModel()
 ) {
-    // Dados estáticos para visualização de corridas
-//    val staticRunList = listOf(
-//        Run(
-//            date = "August 04, 2024",
-//            distance = "0.849 km",
-//            calories = "35 kcal",
-//            speed = "24.45 km/hr"
-//        ),
-//        Run(
-//            date = "August 04, 2024",
-//            distance = "1.185 km",
-//            calories = "49 kcal",
-//            speed = "15.13 km/hr"
-//        ),
-//        Run(
-//            date = "August 04, 2024",
-//            distance = "1.56 km",
-//            calories = "64 kcal",
-//            speed = "73.89 km/hr"
-//        )
-//    )
 
+    var selectedTab by rememberSaveable { mutableStateOf(EnumEntries.RUUNING) }
+
+    val allTasks by homeViewModel.allDailyTasks.collectAsState()
     val workouts = workoutViewModel.state.storedWorkouts
     val runnings by runningViewModel.running.collectAsState(emptyList())
-    var selectedTab by rememberSaveable { mutableStateOf(EnumEntries.RUUNING) }
 
     // Obter os dados dos treinos
     // Carregando dados ao iniciar a página
     LaunchedEffect(Unit) {
         workoutViewModel.getWorkoutsByUserID()
         runningViewModel.getRunningWorkoutsByUserID()
+        homeViewModel.loadAllTasks()
     }
 
 
@@ -118,7 +96,7 @@ fun WorkoutHistoryPage(
         when (selectedTab) {
             EnumEntries.RUUNING -> RunningHistoryScreenContentStatic(runnings = runnings)
             EnumEntries.WORKOUTS -> WorkoutHistory(workouts = workouts)
-            EnumEntries.PHOTOS -> DailyPicturesHistory()
+            EnumEntries.PHOTOS -> DailyPicturesHistory(tasks = allTasks)
         }
     }
 }
@@ -176,19 +154,18 @@ private fun WorkoutHistory(
 
 @Composable
 fun DailyPicturesHistory(
-    pictures: List<DailyPicture> = listOf(
-        DailyPicture(
-            date = LocalDate.of(2024, 8, 4),
-            imageUri = "https://img.freepik.com/fotos-gratis/um-leao-com-uma-juba-de-arco-iris-e-olhos-azuis_1340-39421.jpg",
-            description = "Morning run"
-        ),
-        DailyPicture(
-            date = LocalDate.of(2024, 8, 5),
-            imageUri = "https://example.com/sample2.jpg",
-            description = "Sunset view"
-        )
-    )
+    tasks: List<DailyTasks>
 ) {
+    val pictures = mutableListOf<DailyPicture>()
+    tasks.forEach {  task ->
+        pictures.add(
+            DailyPicture(
+                date = LocalDate.parse(task.date),
+                imageBitMap = getImageFromFile(task.takeProgressPicture)
+            )
+        )
+
+    }
     if (pictures.isEmpty()) {
         EmptyPicturesState()
     } else {

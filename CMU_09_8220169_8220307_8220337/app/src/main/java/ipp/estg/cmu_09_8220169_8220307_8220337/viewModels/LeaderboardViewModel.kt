@@ -3,9 +3,9 @@ package ipp.estg.cmu_09_8220169_8220307_8220337.viewModels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.LeaderboardEntry.LeaderboardEntryCalories
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.LeaderboardEntry.LeaderboardEntryExerciseTime
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.LeaderboardEntry.LeaderboardEntrySteps
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderboardEntry.LeaderboardEntryCalories
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderboardEntry.LeaderboardEntryExerciseTime
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderboardEntry.LeaderboardEntrySteps
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.LeaderboardRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,7 +41,6 @@ class LeaderboardViewModel (
 
     // Método para obter o leaderboard por calorias
     suspend fun getLeaderboardByCalories() {
-
         _isLoading.value = true
         _errorMessage.value = null
 
