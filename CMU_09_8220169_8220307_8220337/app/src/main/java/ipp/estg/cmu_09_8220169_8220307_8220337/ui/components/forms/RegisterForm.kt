@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -60,14 +61,16 @@ fun RegisterFields(
         value = username,
         onValueChange = { onUsernameChange(it) },
         label = { Text(stringResource(id = R.string.username)) },
-        modifier = Modifier.fillMaxWidth(0.85f),
+        modifier = Modifier.fillMaxWidth(0.85f)
+            .testTag("usernameField"),
     )
 
     TextField(
         value = email,
         onValueChange = { onEmailChange(it) },
         label = { Text(stringResource(id = R.string.email)) },
-        modifier = Modifier.fillMaxWidth(0.85f),
+        modifier = Modifier.fillMaxWidth(0.85f)
+            .testTag("emailField"),
     )
 
     TextField(
@@ -75,7 +78,8 @@ fun RegisterFields(
         onValueChange = { onPasswordChange(it) },
         label = { Text(stringResource(id = R.string.password)) },
         visualTransformation = PasswordVisualTransformation(),
-        modifier = Modifier.fillMaxWidth(0.85f),
+        modifier = Modifier.fillMaxWidth(0.85f)
+            .testTag("passwordField"),
     )
 
     ReadonlyTextField(
@@ -89,6 +93,7 @@ fun RegisterFields(
         },
         modifier = Modifier
             .fillMaxWidth(0.85f)
+            .testTag("birthDateField"),
     )
 
 
@@ -102,7 +107,8 @@ fun RegisterFields(
         },
         label = { Text(stringResource(id = R.string.weight)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        modifier = Modifier.fillMaxWidth(0.85f),
+        modifier = Modifier.fillMaxWidth(0.85f)
+            .testTag("weightField"),
     )
 
 
@@ -116,7 +122,8 @@ fun RegisterFields(
         },
         label = { Text(stringResource(id = R.string.height)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        modifier = Modifier.fillMaxWidth(0.85f),
+        modifier = Modifier.fillMaxWidth(0.85f)
+            .testTag("heightField"),
     )
 
     Button(
@@ -125,7 +132,8 @@ fun RegisterFields(
         },
         modifier = Modifier
             .fillMaxWidth(0.85f)
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
+            .testTag("registerButton"),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = Color.White
