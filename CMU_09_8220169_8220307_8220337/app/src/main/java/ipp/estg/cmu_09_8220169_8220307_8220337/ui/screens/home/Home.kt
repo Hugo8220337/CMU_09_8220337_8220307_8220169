@@ -1,5 +1,6 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home
 
+import DoubtsScreen
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -125,6 +126,14 @@ fun HomeScreen(
             unselectedIcon = Icons.Outlined.Settings,
             content = {
                 SettingsScreen(navController)
+            }
+        ),
+        NavigationItem(
+            title = stringResource(id = R.string.questions),
+            selectedIcon = Icons.Filled.Microwave,
+            unselectedIcon = Icons.Outlined.Microwave,
+            content = {
+                DoubtsScreen()
             }
         )
     )

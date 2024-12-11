@@ -43,7 +43,11 @@ class DailyTasksRepository(
         }
     }
 
-    fun getTodayTasks(): LiveData<DailyTasks> {
+    suspend fun getTodayTasks(): LiveData<DailyTasks> {
+        // Sincronizar tarefas diárias do Firebase
+        syncDailyTasksFromFirebase()
+
+        // Obter tarefas diárias de hoje
         val currentDate = LocalDate.now().toString()
         return dailyTasksDao.getTasksByDate(currentDate)
     }
@@ -97,6 +101,7 @@ class DailyTasksRepository(
     }
 
     suspend fun getAllTasks(): List<DailyTasks> {
+        syncDailyTasksFromFirebase()
         return dailyTasksDao.getAllTasks()
     }
 
