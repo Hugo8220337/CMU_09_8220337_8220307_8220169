@@ -38,9 +38,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderboardEntry.LeaderboardEntryCalories
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderboardEntry.LeaderboardEntryExerciseTime
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderboardEntry.LeaderboardEntrySteps
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderBoardEntries.LeaderboardEntryCalories
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderBoardEntries.LeaderboardEntryExerciseTime
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderBoardEntries.LeaderboardEntrySteps
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.LeaderboardDropDownButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.LeaderboardViewModel
 import ipp.estg.mobile.ui.components.utils.Loading
@@ -189,7 +189,7 @@ fun LeaderboardListSteps(entries: List<LeaderboardEntrySteps>) {
             LeaderboardItem(
                 rank = index + 1,
                 userName = entry.userName,
-                leaderboardData = entry.steps.toDouble().toString()
+                leaderboardData = entry.steps.toString()
             )
         }
     }

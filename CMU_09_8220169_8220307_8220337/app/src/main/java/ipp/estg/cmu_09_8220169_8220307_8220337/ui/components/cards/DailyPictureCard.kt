@@ -43,7 +43,7 @@ fun DailyPictureCard(picture: DailyPicture) {
         ) {
             Image(
                 bitmap = picture.imageBitMap!!.asImageBitmap(),
-                contentDescription = picture.description ?: "Daily Picture",
+                contentDescription = "Daily Picture",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()

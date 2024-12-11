@@ -96,11 +96,19 @@ fun HomeScreen(
             }
         ),
         NavigationItem(
-            title = stringResource(id = R.string.settings),
-            selectedIcon = Icons.Filled.Settings,
-            unselectedIcon = Icons.Outlined.Settings,
+            title = stringResource(id = R.string.history),
+            selectedIcon = Icons.Filled.DateRange,
+            unselectedIcon = Icons.Outlined.DateRange,
             content = {
-                SettingsScreen(navController)
+                WorkoutHistoryPage(homeViewModel = homeViewModel)
+            }
+        ),
+        NavigationItem(
+            title = stringResource(id = R.string.leaderboard),
+            selectedIcon = Icons.Filled.AllInclusive,
+            unselectedIcon = Icons.Outlined.AllInclusive,
+            content = {
+                LeaderboardPage()
             }
         ),
         NavigationItem(
@@ -112,19 +120,11 @@ fun HomeScreen(
             }
         ),
         NavigationItem(
-            title = stringResource(id = R.string.history),
-            selectedIcon = Icons.Filled.DateRange,
-            unselectedIcon = Icons.Outlined.DateRange,
+            title = stringResource(id = R.string.settings),
+            selectedIcon = Icons.Filled.Settings,
+            unselectedIcon = Icons.Outlined.Settings,
             content = {
-                WorkoutHistoryPage()
-            }
-        ),
-        NavigationItem(
-            title = stringResource(id = R.string.leaderboard),
-            selectedIcon = Icons.Filled.AllInclusive,
-            unselectedIcon = Icons.Outlined.AllInclusive,
-            content = {
-                LeaderboardPage()
+                SettingsScreen(navController)
             }
         )
     )
@@ -178,15 +178,4 @@ fun HomeScreen(
             }
         }
     }
-}
-
-
-
-@RequiresApi(Build.VERSION_CODES.Q)
-@Preview(showBackground = true)
-@Composable
-fun PreviewMainScreen() {
-    val navController = rememberNavController()
-
-    HomeScreen(navController)
 }

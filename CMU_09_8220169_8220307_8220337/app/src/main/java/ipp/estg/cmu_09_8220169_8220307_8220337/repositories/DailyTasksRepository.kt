@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.DailyTasksFirestoreRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.DailyTasksDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.awaitValue
 import java.time.LocalDate
 
 class DailyTasksRepository(
@@ -47,13 +48,13 @@ class DailyTasksRepository(
         return dailyTasksDao.getTasksByDate(currentDate)
     }
 
-    fun areTodaysTasksDone(): Boolean {
-        val dailyTasks = getTodayTasks()
+    suspend fun areTodaysTasksDone(): Boolean {
+        val dailyTasks = getTodayTasks().awaitValue()
 
-        val diet = dailyTasks.value?.followDiet
-        val workouts = dailyTasks.value?.twoWorkouts
-        val tenPages = dailyTasks.value?.readTenPages
-        val water = dailyTasks.value?.gallonOfWater
+        val diet = dailyTasks?.followDiet
+        val workouts = dailyTasks?.twoWorkouts
+        val tenPages = dailyTasks?.readTenPages
+        val water = dailyTasks?.gallonOfWater
 
         val condition = (diet == true && workouts == true && tenPages == true && water == true)
 

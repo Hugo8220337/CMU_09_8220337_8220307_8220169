@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -48,9 +49,7 @@ class HomeViewModel(
         )
 
 
-    /**
-     * Informação Mutável
-     */
+
     var state: ScreenState by mutableStateOf(ScreenState())
 
 
@@ -66,10 +65,6 @@ class HomeViewModel(
         // Configura o idioma baseado na preferência guardada
         val savedLanguage = settingsPreferencesRepository.getLanguagePreference()
         settingsPreferencesRepository.updateLocale(application, savedLanguage)
-
-
-        // TODO Não está a funcionar
-        buildForegroundDailyRemeinderNotifications()
     }
 
     fun loadTodaysProgressPicture() {
@@ -109,54 +104,32 @@ class HomeViewModel(
         }
     }
 
-    /**
-     * Começa o DailyRemeinderService que vai mandar notificações com a app fechada
-     * quando o utilizador não realiza o treino
-     * TODO NÃO ESTÁ A FUNCIONAR
-     */
-    private fun buildForegroundDailyRemeinderNotifications() {
-        val channel = NotificationChannel(
-            DailyRemeinderService.TIMER_SERVICE_NOTIICATION_CHANNEL_ID,
-            DailyRemeinderService.TIMER_SERVICE_NOTIICATION_CHANNEL_ID,
-            NotificationManager.IMPORTANCE_HIGH
-        ).apply {
-            description = "Lembretes diários para exercícios"
-            enableLights(true)
-            enableVibration(true)
+
+    fun buildNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                DailyRemeinderService.TIMER_SERVICE_NOTIICATION_CHANNEL_ID,
+                "Workout Notification",
+                NotificationManager.IMPORTANCE_LOW
+            )
+            val application = getApplication<Application>()
+            val notificationManager =
+                application.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            notificationManager.createNotificationChannel(channel)
+
+
+            // start Service
+            Intent(application, DailyRemeinderService::class.java).also {
+                application.startForegroundService(it)
+            }
         }
+    }
 
-        val application = this.getApplication<Application>()
-        val notificationManager =
-            application.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
-
-        // Start the service
-        val serviceIntent = Intent(application, DailyRemeinderService::class.java).apply {
-            action = DailyRemeinderService.Actions.START.toString()
+    fun stopNotificationService() {
+        Intent(getApplication(), DailyRemeinderService::class.java).also {
+            getApplication<Application>().stopService(it)
         }
-
-        application.startForegroundService(serviceIntent)
-
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//            val channel = NotificationChannel(
-//                DailyRemeinderService.TIMER_SERVICE_NOTIICATION_CHANNEL_ID,
-//                "Workout Notification",
-//                NotificationManager.IMPORTANCE_HIGH
-//            )
-//            val application = getApplication<Application>()
-//            val notificationManager =
-//                application.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//            notificationManager.createNotificationChannel(channel)
-//
-//            // start Service
-//            val serviceIntent = Intent(application, DailyRemeinderService::class.java).also {
-//                it.action = DailyRemeinderService.Actions.START.toString()
-//                application.startForegroundService(it)
-//            }
-//        }
-
-
     }
 
     fun setTasksValue(dailyTasks: DailyTasks) {

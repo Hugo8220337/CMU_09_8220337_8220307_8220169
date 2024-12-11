@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
-// TODO apagar porque isto é temporário
 @Entity(tableName = "user")
 data class User(
     @PrimaryKey

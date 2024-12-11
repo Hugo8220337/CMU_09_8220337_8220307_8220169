@@ -132,18 +132,6 @@ private fun TopAppBar(
 private fun WorkoutContent(navController: NavController, exercises: List<ExerciseItemDataResponse>) {
     var currentExercise by remember { mutableIntStateOf(0) }
 
-//    LazyColumn(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(16.dp),
-//        verticalArrangement = Arrangement.spacedBy(16.dp),
-//        contentPadding = PaddingValues(bottom = 80.dp)
-//    ) {
-//        items(exercises) { exercise ->
-//            ExerciseCard(exercise)
-//        }
-//    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()

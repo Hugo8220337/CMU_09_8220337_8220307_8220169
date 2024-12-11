@@ -38,6 +38,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,6 +55,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.StreakLinearProgressIndicator
@@ -65,9 +69,11 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.utils.launchCamera
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.requestCameraPermission
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MainContent(homeViewModel: HomeViewModel) {
-
+    val notificationPermission = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+    
     val streak = homeViewModel.state.streak
     val tasks by homeViewModel.dailyTasks.observeAsState()
     val dailyQuote by homeViewModel.dailyQuote.collectAsState()
@@ -78,6 +84,15 @@ fun MainContent(homeViewModel: HomeViewModel) {
         homeViewModel.loadTodaysProgressPicture()
         homeViewModel.loadDailyQuote()
     }
+
+    LaunchedEffect(Unit, notificationPermission.status) {
+        if (!notificationPermission.status.isGranted) {
+            notificationPermission.launchPermissionRequest()
+        } else {
+//            homeViewModel.buildNotificationChannel()
+        }
+    }
+
 
     Column(
         modifier = Modifier
