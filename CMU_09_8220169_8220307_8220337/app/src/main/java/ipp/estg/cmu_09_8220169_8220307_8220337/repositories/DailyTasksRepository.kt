@@ -2,11 +2,12 @@ package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewmodel.compose.viewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.DailyTasksFirestoreRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.DailyTasksDao
-import ipp.estg.cmu_09_8220169_8220307_8220337.utils.awaitValue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class DailyTasksRepository(
@@ -43,7 +44,7 @@ class DailyTasksRepository(
         }
     }
 
-    suspend fun getTodayTasksLiveData(): LiveData<DailyTasks> {
+    fun getTodayTasksLiveData(): LiveData<DailyTasks> {
         // Sincronizar tarefas diárias do Firebase
         syncDailyTasksFromFirebase()
 
@@ -54,6 +55,9 @@ class DailyTasksRepository(
 
     fun getTodayTasks(): DailyTasks {
         val currentDate = LocalDate.now().toString()
+
+        syncDailyTasksByUserIdAndDateFromFirebase(currentDate)
+
         return dailyTasksDao.getTasksByDate(currentDate)
     }
 
@@ -110,20 +114,45 @@ class DailyTasksRepository(
         return dailyTasksDao.getAllTasks()
     }
 
-    private suspend fun syncDailyTasksFromFirebase() {
-        try {
-            val firebaseDailyTasks = dailyTasksFirestoreRepository.getAllDailyTasksFromFirebase()
-            // Save each workout from Firebase to Room if it doesn't already exist
-            if (firebaseDailyTasks != null) {
-                for (firebaseDailyTask in firebaseDailyTasks) {
-                    val localDailyTask = dailyTasksDao.getTasksByDate(firebaseDailyTask.date)
-                    if (localDailyTask == null) {
-                        dailyTasksDao.insertTasks(firebaseDailyTask)
+    private  fun syncDailyTasksFromFirebase() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val firebaseDailyTasks =
+                    dailyTasksFirestoreRepository.getAllDailyTasksFromFirebase()
+                // Save each workout from Firebase to Room if it doesn't already exist
+                if (firebaseDailyTasks != null) {
+                    for (firebaseDailyTask in firebaseDailyTasks) {
+                        val localDailyTask = dailyTasksDao.getTasksByDate(firebaseDailyTask.date)
+                        if (localDailyTask == null) {
+                            dailyTasksDao.insertTasks(firebaseDailyTask)
+                        }
                     }
                 }
+            } catch (e: Exception) {
+                Log.e("DailyTasksRepository", "Error syncing daily tasks from Firebase", e)
             }
-        } catch (e: Exception) {
-            Log.e("DailyTasksRepository", "Error syncing daily tasks from Firebase", e)
+        }
+    }
+
+    private fun syncDailyTasksByUserIdAndDateFromFirebase(date: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+
+            try {
+                val firebaseDailyTasks = dailyTasksFirestoreRepository.getDailyTasksByUserAndDateFromFirebase(date)
+
+                // Save each daily task from Firebase to Room if it doesn't already exist
+                if (firebaseDailyTasks != null) {
+                    for (firebaseDailyTask in firebaseDailyTasks) {
+                        val localDailyTask = dailyTasksDao.getTasksByDate(firebaseDailyTask.date)
+                        if (localDailyTask == null) {
+                            dailyTasksDao.insertTasks(firebaseDailyTask)
+                        }
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.e("DailyTasksRepository", "Error syncing daily tasks from Firebase", e)
+            }
         }
     }
 }

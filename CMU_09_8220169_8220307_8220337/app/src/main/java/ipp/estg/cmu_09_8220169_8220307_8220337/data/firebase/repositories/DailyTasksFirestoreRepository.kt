@@ -153,4 +153,40 @@ class DailyTasksFirestoreRepository(
         }
     }
 
+    // get daily tasks by user Id and date from Firebase
+    suspend fun getDailyTasksByUserAndDateFromFirebase(date: String): List<DailyTasks>? {
+        return try {
+            val userId = authFirebaseRepository.getCurrentUser()?.uid
+
+            val result = firestore.collection(CollectionsNames.dailyTasksCollection)
+                .document("$userId$date")
+                .get()
+                .await()
+
+            if (result != null && result.exists()) {
+                val document = result.data
+                val gallonOfWater = document?.get(DailyTasksCollection.FIELD_GALLON_OF_WATER) as Boolean
+                val twoWorkouts = document.get(DailyTasksCollection.FIELD_TWO_WORKOUTS) as Boolean
+                val followDiet = document.get(DailyTasksCollection.FIELD_FOLLOW_DIET) as Boolean
+                val readTenPages = document.get(DailyTasksCollection.FIELD_READ_TEN_PAGES) as Boolean
+                val takeProgressPicture = document.get(DailyTasksCollection.FIELD_TAKE_PROGRESS_PICTURE) as String
+
+                // Return a list of DailyTasks
+                listOf(
+                    DailyTasks(
+                        gallonOfWater = gallonOfWater,
+                        twoWorkouts = twoWorkouts,
+                        followDiet = followDiet,
+                        readTenPages = readTenPages,
+                        takeProgressPicture = takeProgressPicture
+                    )
+                )
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
 }

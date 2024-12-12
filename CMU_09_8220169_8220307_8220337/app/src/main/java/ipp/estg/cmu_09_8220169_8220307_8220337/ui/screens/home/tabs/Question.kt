@@ -21,7 +21,7 @@ import androidx.compose.foundation.clickable
 @Composable
 fun DoubtsScreen() {
     val context = LocalContext.current
-    val companyEmail = "empresa@email.com"
+    val companyEmail = "empresa@gmail.com"
 
     Column(
         modifier = Modifier
