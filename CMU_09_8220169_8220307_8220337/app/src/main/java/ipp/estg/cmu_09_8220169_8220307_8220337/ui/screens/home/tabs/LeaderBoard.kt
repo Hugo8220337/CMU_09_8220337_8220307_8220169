@@ -49,7 +49,7 @@ import ipp.estg.mobile.ui.components.utils.Loading
 enum class EnumLeaderboardEntries(val value: String) {
     CALORIES("Calorias Queimadas"),
     EXERCISE_TIME("Tempo de Exercício"),
-    Steps("Números de passos");
+    STEPS("Números de passos");
 }
 
 @Composable
@@ -118,7 +118,7 @@ fun LeaderboardPage(
                     LeaderboardListExerciseTime(entries = leaderboardStateExerciseTime)
                 }
             }
-            EnumLeaderboardEntries.Steps -> {
+            EnumLeaderboardEntries.STEPS -> {
                 if (isLoading) {
                     Loading()
                 } else if (errorMessage?.isNotEmpty() == true) {
