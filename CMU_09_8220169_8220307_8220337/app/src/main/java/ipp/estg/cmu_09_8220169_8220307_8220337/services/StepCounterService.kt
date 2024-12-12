@@ -7,6 +7,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.IBinder
+import android.util.Log
 
 class StepCounterService : Service(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
@@ -31,10 +32,10 @@ class StepCounterService : Service(), SensorEventListener {
         if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
             val totalSteps = event.values[0].toInt()
             if (initialStepCount == null) {
-                // Salve o valor inicial na primeira vez
                 initialStepCount = totalSteps
             }
             val stepsInSession = totalSteps - (initialStepCount ?: totalSteps)
+            Log.d("StepCounterService", "Steps in session: $stepsInSession")  // Log to verify
             onStepDetected?.invoke(stepsInSession)
         }
     }

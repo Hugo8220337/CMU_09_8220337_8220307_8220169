@@ -1,6 +1,8 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.viewModels
 
 import android.app.Application
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.util.Log
@@ -98,6 +100,7 @@ class RunningViewModel(
         }
     }
 
+
     // Location request configuration
     private val locationRequest = LocationRequest.Builder(
         Priority.PRIORITY_HIGH_ACCURACY,
@@ -106,9 +109,14 @@ class RunningViewModel(
 
     fun startRun() {
         isRunning = true
-        startStepCounterService()
-        startLocationTracking()
         startTimer()
+        startLocationTracking()
+        startStepCounterService()
+        Log.d("RunningViewModel", "Run started")
+        StepCounterService.onStepDetected = { steps ->
+            _stepCounter.value = steps
+            Log.d("RunningViewModel", "Step detected: $steps")
+        }
     }
 
     fun pauseRun() {
@@ -154,6 +162,7 @@ class RunningViewModel(
         val intent = Intent(getApplication(), StepCounterService::class.java)
         getApplication<Application>().stopService(intent)
     }
+
 
     private fun startLocationTracking() {
         try {

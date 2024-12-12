@@ -7,7 +7,7 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET"/> <!-- Para poder ter acesso à NET e fazer pedidos HTTP -->
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/> <!-- Para poder aceder ao Activity Recognition -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/> <!-- Para poder aceder ao Activity Recognition, neste caso o conta passos -->
 
     <!-- Permissões para aceder à galeria e à camara -->
     <uses-permission android:name="android.permission.CAMERA" />

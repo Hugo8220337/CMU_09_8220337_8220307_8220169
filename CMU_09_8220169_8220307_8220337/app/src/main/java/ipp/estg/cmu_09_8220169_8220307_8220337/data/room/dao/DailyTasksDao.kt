@@ -15,7 +15,10 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 interface DailyTasksDao {
 
     @Query("SELECT * FROM dailyTasks WHERE date = :date")
-    fun getTasksByDate(date: String): LiveData<DailyTasks>
+    fun getTasksByDateLiveData(date: String): LiveData<DailyTasks>
+
+    @Query("SELECT * FROM dailyTasks WHERE date = :date")
+    fun getTasksByDate(date: String): DailyTasks
 
     @Query("SELECT * FROM dailyTasks ORDER BY date DESC")
     suspend fun getAllTasks(): List<DailyTasks>

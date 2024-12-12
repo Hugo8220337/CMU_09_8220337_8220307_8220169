@@ -1,25 +1,33 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.services
 
 import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import com.google.android.gms.common.api.internal.ListenerHolder.Notifier
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.DailyTasksRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.lang.Thread.sleep
 
 class DailyRemeinderService : Service() {
     companion object {
-        const val TIMER_SERVICE_NOTIFICATION_ID = 1
-        const val TIMER_SERVICE_NOTIICATION_CHANNEL_ID = "DailyReminders"
+        const val CHANNEL_ID = "DailyReminders"
+        const val CHANNEL_NAME = "Daily Reminders"
+        const val FOREGROUND_ID = 1
+        const val NOTIFICATION_ID = 2
         const val NOTIFICATION_INTERVAL = 10000L // 10 seconds
     }
 
@@ -29,50 +37,82 @@ class DailyRemeinderService : Service() {
     }
 
 
-    private val serviceScope = CoroutineScope(Dispatchers.Main)
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+
+    private fun startServiceInForeground() {
+        val notification = Notification.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.mipmap.ic_launcher_75hard_challange_logo_foreground)
+            .setContentTitle("Serviço de notificações em foreground")
+            .setContentText("Não perca o foco, continue a sua jornada.\nTu és uma alface do Lidl!")
+            .build()
+
+        startForeground(FOREGROUND_ID, notification)
+    }
 
 
     override fun onCreate() {
         super.onCreate()
-        val notification = Notification.Builder(this, TIMER_SERVICE_NOTIICATION_CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher_75hard_challange_logo_foreground)
-            .setContentTitle("Não esqueça do desafio")
-            .setContentText("Não perca o foco, continue a sua jornada.\nTu és uma alface do Lidl!")
-            .build()
-
-        startForeground(TIMER_SERVICE_NOTIFICATION_ID, notification)
+        createNotificationChannel()
 
         // Initialize the dailyTasksRepository
         dailyTasksRepository = DailyTasksRepository(
             LocalDatabase.getDatabase(applicationContext).dailyTaskCompletionDao
         )
+
+        // Start the notification thread
+//        notificationThread.start()
     }
 
+
     private fun showNotification() {
-        val notification = Notification.Builder(this, TIMER_SERVICE_NOTIICATION_CHANNEL_ID)
+        val notification = Notification.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher_75hard_challange_logo_foreground)
             .setContentTitle("Não esqueça do desafio")
             .setContentText("Não perca o foco, continue a sua jornada.\nTu és uma alface do Lidl!")
             .build()
 
-        notificationManager.notify(TIMER_SERVICE_NOTIFICATION_ID, notification)
+        notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
-    private suspend fun areTodaysTasksCompleted(): Boolean {
+    private fun areTodaysTasksCompleted(): Boolean {
         return dailyTasksRepository.areTodaysTasksDone()
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        serviceScope.launch {
-            while (true) {
-                if (!areTodaysTasksCompleted()) {
-                    showNotification()
+
+    private fun notificationLooper() {
+        val handler = Handler(Looper.getMainLooper())
+        val runnable = object : Runnable {
+            override fun run() {
+                CoroutineScope(Dispatchers.IO).launch {
+                    while (true) {
+                        if (!areTodaysTasksCompleted()) {
+                            showNotification()
+                        }
+                        delay(NOTIFICATION_INTERVAL)
+                    }
                 }
-                delay(NOTIFICATION_INTERVAL) // Use delay instead of sleep
+                handler.post(this)
             }
         }
+        handler.post(runnable)
+    }
 
-        return START_STICKY // Service will be restarted if it is killed by the system
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        startServiceInForeground()
+
+        notificationLooper()
+
+        return START_STICKY // Ensures the service restarts if terminated by the system
     }
 
     override fun onBind(intent: Intent?): IBinder? {

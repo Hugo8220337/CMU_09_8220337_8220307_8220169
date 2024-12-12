@@ -85,7 +85,7 @@ fun MainContent(homeViewModel: HomeViewModel) {
         homeViewModel.loadDailyQuote()
     }
 
-    LaunchedEffect(Unit, notificationPermission.status) {
+    LaunchedEffect(Unit) {
         if (!notificationPermission.status.isGranted) {
             notificationPermission.launchPermissionRequest()
         } else {

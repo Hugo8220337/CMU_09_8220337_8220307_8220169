@@ -43,24 +43,29 @@ class DailyTasksRepository(
         }
     }
 
-    suspend fun getTodayTasks(): LiveData<DailyTasks> {
+    suspend fun getTodayTasksLiveData(): LiveData<DailyTasks> {
         // Sincronizar tarefas diárias do Firebase
         syncDailyTasksFromFirebase()
 
         // Obter tarefas diárias de hoje
         val currentDate = LocalDate.now().toString()
+        return dailyTasksDao.getTasksByDateLiveData(currentDate)
+    }
+
+    fun getTodayTasks(): DailyTasks {
+        val currentDate = LocalDate.now().toString()
         return dailyTasksDao.getTasksByDate(currentDate)
     }
 
-    suspend fun areTodaysTasksDone(): Boolean {
-        val dailyTasks = getTodayTasks().awaitValue()
+    fun areTodaysTasksDone(): Boolean {
+        val dailyTasks = getTodayTasks()
 
-        val diet = dailyTasks?.followDiet
-        val workouts = dailyTasks?.twoWorkouts
-        val tenPages = dailyTasks?.readTenPages
-        val water = dailyTasks?.gallonOfWater
+        val diet = dailyTasks.followDiet
+        val workouts = dailyTasks.twoWorkouts
+        val tenPages = dailyTasks.readTenPages
+        val water = dailyTasks.gallonOfWater
 
-        val condition = (diet == true && workouts == true && tenPages == true && water == true)
+        val condition = (diet && workouts && tenPages && water)
 
         return condition
     }
