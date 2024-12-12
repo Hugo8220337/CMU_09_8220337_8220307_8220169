@@ -64,7 +64,7 @@ fun WorkoutHistoryPage(
 
     val allTasks by homeViewModel.allDailyTasks.collectAsState()
     val workouts = workoutViewModel.state.storedWorkouts
-    val runnings by runningViewModel.running.collectAsState(emptyList())
+    val runnings by runningViewModel.runnings.collectAsState(emptyList())
 
     // Obter os dados dos treinos
     // Carregando dados ao iniciar a página

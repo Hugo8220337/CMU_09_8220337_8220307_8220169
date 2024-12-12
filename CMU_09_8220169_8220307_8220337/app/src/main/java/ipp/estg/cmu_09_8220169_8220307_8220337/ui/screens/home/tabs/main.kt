@@ -89,7 +89,7 @@ fun MainContent(homeViewModel: HomeViewModel) {
         if (!notificationPermission.status.isGranted) {
             notificationPermission.launchPermissionRequest()
         } else {
-//            homeViewModel.buildNotificationChannel()
+            homeViewModel.buildNotificationChannel()
         }
     }
 

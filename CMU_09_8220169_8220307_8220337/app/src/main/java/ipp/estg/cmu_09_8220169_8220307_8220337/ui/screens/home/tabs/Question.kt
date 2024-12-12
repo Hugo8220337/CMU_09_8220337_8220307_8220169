@@ -1,4 +1,3 @@
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -85,7 +84,7 @@ fun DoubtsScreen() {
 
         // Seção de desenvolvedores
         Text(
-            text = "Equipe de Desenvolvimento",
+            text = "Equipa de Desenvolvimento",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(16.dp)
         )
