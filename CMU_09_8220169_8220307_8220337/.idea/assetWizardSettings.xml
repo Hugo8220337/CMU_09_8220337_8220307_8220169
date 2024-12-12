@@ -80,7 +80,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\User\Desktop\minilogo.png" />
+                                                <entry key="imagePath" value="C:\Users\User\GitHub\CMU_09_8220337_8220307_8220169\logo\MiniLogo.png" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -112,6 +112,8 @@
                                   </option>
                                   <option name="values">
                                     <map>
+                                      <entry key="backgroundAssetType" value="COLOR" />
+                                      <entry key="backgroundColor" value="fd2e62" />
                                       <entry key="outputName" value="ic_launcher_75hard_challange_logo" />
                                     </map>
                                   </option>
