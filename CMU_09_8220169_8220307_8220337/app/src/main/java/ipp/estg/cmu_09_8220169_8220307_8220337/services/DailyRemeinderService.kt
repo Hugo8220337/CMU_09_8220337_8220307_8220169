@@ -23,13 +23,11 @@ import kotlinx.coroutines.launch
 import java.lang.Thread.sleep
 
 class DailyRemeinderService : Service() {
-    companion object {
-        const val CHANNEL_ID = "DailyReminders"
-        const val CHANNEL_NAME = "Daily Reminders"
-        const val FOREGROUND_ID = 1
-        const val NOTIFICATION_ID = 2
-        const val NOTIFICATION_INTERVAL = 30000L // 10 seconds
-    }
+    private val CHANNEL_ID = "DailyReminders"
+    private val CHANNEL_NAME = "Daily Reminders"
+    private val FOREGROUND_ID = 1
+    private val NOTIFICATION_ID = 2
+    private val NOTIFICATION_INTERVAL = 600000L // 5 minutess
 
     private lateinit var dailyTasksRepository: DailyTasksRepository
     private val notificationManager: NotificationManager by lazy {

@@ -61,6 +61,10 @@ class RunningViewModel(
     // Last known location
     private var lastLocation: Location? = null
 
+
+    private val _lastRun = MutableStateFlow<Running?>(null)
+    val lastRun = _lastRun.asStateFlow()
+
     private val _runnings = MutableStateFlow<List<Running?>>(emptyList())
     val runnings = _runnings.asStateFlow()
 
@@ -196,6 +200,22 @@ class RunningViewModel(
                 } else {
                     _runnings.value = runninWorkouts
                 }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun getLastRun() {
+        _isLoading.value = true
+
+        viewModelScope.launch {
+            try {
+                val lastRun = runningRepository.getLastRun()
+
+                _lastRun.value = lastRun
             } catch (e: Exception) {
                 _error.value = e.localizedMessage
             } finally {

@@ -50,7 +50,6 @@ class HomeViewModel(
         )
 
 
-
     var state: ScreenState by mutableStateOf(ScreenState())
 
 
@@ -106,7 +105,6 @@ class HomeViewModel(
     }
 
 
-    // TODO
     fun buildNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val application = getApplication<Application>()

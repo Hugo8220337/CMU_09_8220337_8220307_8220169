@@ -10,13 +10,14 @@ import android.os.IBinder
 import android.util.Log
 
 class StepCounterService : Service(), SensorEventListener {
+    companion object {
+        var onStepDetected: ((Int) -> Unit)? = null // Callback para comunicação com o ViewModel
+    }
+
     private lateinit var sensorManager: SensorManager
     private var stepCounterSensor: Sensor? = null
     private var initialStepCount: Int? = null
 
-    companion object {
-        var onStepDetected: ((Int) -> Unit)? = null // Callback para comunicação com o ViewModel
-    }
 
     override fun onCreate() {
         super.onCreate()
@@ -24,7 +25,11 @@ class StepCounterService : Service(), SensorEventListener {
         stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         stepCounterSensor?.let {
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST)
-        }
+        } ?: Log.e("StepCounterService", "Step sensor not available!")
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return START_STICKY
     }
 
 
