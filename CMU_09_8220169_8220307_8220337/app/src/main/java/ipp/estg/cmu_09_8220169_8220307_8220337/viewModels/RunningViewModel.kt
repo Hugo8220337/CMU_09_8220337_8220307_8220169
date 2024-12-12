@@ -189,7 +189,6 @@ class RunningViewModel(
     // get all running workouts from Firebase by user ID
     fun getRunningWorkoutsByUserID() {
         _isLoading.value = true
-        _error.value = null
 
         viewModelScope.launch {
             try {

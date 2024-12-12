@@ -62,8 +62,8 @@ fun WorkoutHistoryPage(
 
     var selectedTab by rememberSaveable { mutableStateOf(EnumEntries.RUUNING) }
 
-    val allTasks by homeViewModel.allDailyTasks.collectAsState()
     val workouts = workoutViewModel.state.storedWorkouts
+    val allTasks by homeViewModel.allDailyTasks.collectAsState(emptyList())
     val runnings by runningViewModel.runnings.collectAsState(emptyList())
 
     // Obter os dados dos treinos
@@ -157,7 +157,7 @@ fun DailyPicturesHistory(
     tasks: List<DailyTasks>
 ) {
     val pictures = mutableListOf<DailyPicture>()
-    tasks.forEach {  task ->
+    tasks.forEach { task ->
         pictures.add(
             DailyPicture(
                 date = LocalDate.parse(task.date),
@@ -176,7 +176,9 @@ fun DailyPicturesHistory(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(pictures) { picture ->
-                DailyPictureCard(picture)
+                if (picture.imageBitMap != null) {
+                    DailyPictureCard(picture)
+                }
             }
         }
     }
