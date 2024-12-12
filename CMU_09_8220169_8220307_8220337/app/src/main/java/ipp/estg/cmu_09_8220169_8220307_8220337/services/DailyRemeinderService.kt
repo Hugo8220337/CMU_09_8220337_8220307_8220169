@@ -28,7 +28,7 @@ class DailyRemeinderService : Service() {
         const val CHANNEL_NAME = "Daily Reminders"
         const val FOREGROUND_ID = 1
         const val NOTIFICATION_ID = 2
-        const val NOTIFICATION_INTERVAL = 10000L // 10 seconds
+        const val NOTIFICATION_INTERVAL = 30000L // 10 seconds
     }
 
     private lateinit var dailyTasksRepository: DailyTasksRepository
@@ -88,20 +88,16 @@ class DailyRemeinderService : Service() {
         return dailyTasksRepository.areTodaysTasksDone()
     }
 
-
     private fun notificationLooper() {
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
             override fun run() {
                 CoroutineScope(Dispatchers.IO).launch {
-                    while (true) {
-                        if (!areTodaysTasksCompleted()) {
-                            showNotification()
-                        }
-                        delay(NOTIFICATION_INTERVAL)
+                    if (!areTodaysTasksCompleted()) {
+                        showNotification()
                     }
                 }
-                handler.post(this)
+                handler.postDelayed(this, NOTIFICATION_INTERVAL)
             }
         }
         handler.post(runnable)
