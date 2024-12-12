@@ -12,6 +12,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.DailyTasksRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Thread.sleep
 
@@ -30,21 +31,9 @@ class DailyRemeinderService : Service() {
 
     private val serviceScope = CoroutineScope(Dispatchers.Main)
 
-    /**
-     * Runnable to show a notification every 10 seconds
-     * if the user hasn't completed the daily tasks
-     * and the notification hasn't been shown yet
-     */
-    private val notificationRunnable = object : Runnable {
-        override fun run() {
-
-            //handler.postDelayed(this, NOTIFICATION_INTERVAL)
-        }
-    }
 
     override fun onCreate() {
         super.onCreate()
-
         val notification = Notification.Builder(this, TIMER_SERVICE_NOTIICATION_CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher_75hard_challange_logo_foreground)
             .setContentTitle("Não esqueça do desafio")
@@ -57,13 +46,6 @@ class DailyRemeinderService : Service() {
         dailyTasksRepository = DailyTasksRepository(
             LocalDatabase.getDatabase(applicationContext).dailyTaskCompletionDao
         )
-
-
-    }
-
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     private fun showNotification() {
@@ -76,18 +58,18 @@ class DailyRemeinderService : Service() {
         notificationManager.notify(TIMER_SERVICE_NOTIFICATION_ID, notification)
     }
 
-    suspend fun areTodaysTasksCompleted(): Boolean {
+    private suspend fun areTodaysTasksCompleted(): Boolean {
         return dailyTasksRepository.areTodaysTasksDone()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        while(true) {
-            serviceScope.launch { //TODO error here
+        serviceScope.launch {
+            while (true) {
                 if (!areTodaysTasksCompleted()) {
                     showNotification()
                 }
+                delay(NOTIFICATION_INTERVAL) // Use delay instead of sleep
             }
-            sleep(100000);
         }
 
         return START_STICKY // Service will be restarted if it is killed by the system

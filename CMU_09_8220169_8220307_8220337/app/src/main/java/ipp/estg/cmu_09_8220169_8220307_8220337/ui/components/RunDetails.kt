@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 
 @Composable
-fun RunDetails(distance: String, time: String, pace: String, steps: Int) {
+fun RunDetails(distance: String, time: String, steps: Int) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -42,11 +42,6 @@ fun RunDetails(distance: String, time: String, pace: String, steps: Int) {
                 label = stringResource(id = R.string.duration),
                 value = time,
                 icon = Icons.Filled.Timer
-            )
-            RunDetailItem(
-                label = stringResource(id = R.string.pace),
-                value = "$pace min/km",
-                icon = Icons.Filled.Speed
             )
             RunDetailItem(
                 label = stringResource(id = R.string.steps),

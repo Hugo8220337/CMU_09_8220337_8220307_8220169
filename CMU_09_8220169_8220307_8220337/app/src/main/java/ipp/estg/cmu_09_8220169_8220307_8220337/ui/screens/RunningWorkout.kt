@@ -56,7 +56,6 @@ fun RunningWorkoutScreen(
 ) {
     val distance by runningViewModel.distance.collectAsState()
     val time by runningViewModel.time.collectAsState()
-    val pace by runningViewModel.pace.collectAsState()
     val stepCount by runningViewModel.stepCounter.collectAsState()
 
 
@@ -108,7 +107,6 @@ fun RunningWorkoutScreen(
                 RunDetails(
                     distance = String.format("%.2f", distance), // Format to 2 decimal places
                     time = formatTime(time), // Format seconds to "mm:ss"
-                    pace = String.format("%.2f", pace), // Format to 2 decimal places
                     steps = stepCount
                 )
 

@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,14 +36,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.BatteryManager
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 
 @Composable
 fun RunningWorkoutStartScreen(
     navController: NavController,
-    runningViewModel: RunningViewModel = viewModel()
+    batteryManager: BatteryManager = BatteryManager(LocalContext.current)
 ) {
-    val batteryLevel = runningViewModel.getBatteryLevel()
+    val batteryLevel = batteryManager.getBatteryLevel()
 
     Box(
         modifier = Modifier

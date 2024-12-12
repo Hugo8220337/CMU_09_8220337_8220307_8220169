@@ -105,25 +105,26 @@ class HomeViewModel(
     }
 
 
+    // TODO
     fun buildNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                DailyRemeinderService.TIMER_SERVICE_NOTIICATION_CHANNEL_ID,
-                "Workout Notification",
-                NotificationManager.IMPORTANCE_LOW
-            )
-            val application = getApplication<Application>()
-            val notificationManager =
-                application.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-            notificationManager.createNotificationChannel(channel)
-
-
-            // start Service
-            Intent(application, DailyRemeinderService::class.java).also {
-                application.startForegroundService(it)
-            }
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            val channel = NotificationChannel(
+//                DailyRemeinderService.TIMER_SERVICE_NOTIICATION_CHANNEL_ID,
+//                "Workout Notification",
+//                NotificationManager.IMPORTANCE_HIGH
+//            )
+//            val application = getApplication<Application>()
+//            val notificationManager =
+//                application.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//
+//            notificationManager.createNotificationChannel(channel)
+//
+//
+//            // start Service
+//            Intent(application, DailyRemeinderService::class.java).also {
+//                application.startForegroundService(it)
+//            }
+//        }
     }
 
     fun stopNotificationService() {
