@@ -82,7 +82,7 @@ class DailyRemeinderService : Service() {
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
-    private fun areTodaysTasksCompleted(): Boolean {
+    private suspend fun areTodaysTasksCompleted(): Boolean {
         return dailyTasksRepository.areTodaysTasksDone()
     }
 

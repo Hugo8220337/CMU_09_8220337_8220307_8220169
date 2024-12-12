@@ -44,7 +44,7 @@ class DailyTasksRepository(
         }
     }
 
-    fun getTodayTasksLiveData(): LiveData<DailyTasks> {
+    suspend fun getTodayTasksLiveData(): LiveData<DailyTasks> {
         // Sincronizar tarefas diárias do Firebase
         syncDailyTasksFromFirebase()
 
@@ -53,7 +53,7 @@ class DailyTasksRepository(
         return dailyTasksDao.getTasksByDateLiveData(currentDate)
     }
 
-    fun getTodayTasks(): DailyTasks {
+    suspend fun getTodayTasks(): DailyTasks {
         val currentDate = LocalDate.now().toString()
 
         syncDailyTasksByUserIdAndDateFromFirebase(currentDate)
@@ -61,7 +61,7 @@ class DailyTasksRepository(
         return dailyTasksDao.getTasksByDate(currentDate)
     }
 
-    fun areTodaysTasksDone(): Boolean {
+    suspend fun areTodaysTasksDone(): Boolean {
         val dailyTasks = getTodayTasks()
 
         val diet = dailyTasks.followDiet
@@ -114,8 +114,8 @@ class DailyTasksRepository(
         return dailyTasksDao.getAllTasks()
     }
 
-    private  fun syncDailyTasksFromFirebase() {
-        CoroutineScope(Dispatchers.IO).launch {
+    private suspend fun syncDailyTasksFromFirebase() {
+        //CoroutineScope(Dispatchers.IO).launch {
             try {
                 val firebaseDailyTasks =
                     dailyTasksFirestoreRepository.getAllDailyTasksFromFirebase()
@@ -131,11 +131,11 @@ class DailyTasksRepository(
             } catch (e: Exception) {
                 Log.e("DailyTasksRepository", "Error syncing daily tasks from Firebase", e)
             }
-        }
+        //}
     }
 
-    private fun syncDailyTasksByUserIdAndDateFromFirebase(date: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+    private suspend fun syncDailyTasksByUserIdAndDateFromFirebase(date: String) {
+        //CoroutineScope(Dispatchers.IO).launch {
 
             try {
                 val firebaseDailyTasks = dailyTasksFirestoreRepository.getDailyTasksByUserAndDateFromFirebase(date)
@@ -153,6 +153,6 @@ class DailyTasksRepository(
             } catch (e: Exception) {
                 Log.e("DailyTasksRepository", "Error syncing daily tasks from Firebase", e)
             }
-        }
+        //}
     }
 }
