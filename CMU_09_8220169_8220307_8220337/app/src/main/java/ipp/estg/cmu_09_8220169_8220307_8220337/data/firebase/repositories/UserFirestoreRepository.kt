@@ -98,4 +98,22 @@ class UserFirestoreRepository(
             emptyList()
         }
     }
+
+    suspend fun updateFirstRun() {
+        val userId = authFirebaseRepository.getCurrentUser()?.uid ?: return
+        try {
+            val updates = mapOf(
+                UserCollection.FIELD_IS_FIRST_RUN to false
+            )
+            firestore.collection(CollectionsNames.userCollection)
+                .document(userId)
+                .set(updates, SetOptions.merge()) // Usa merge para manter outros campos inalterados
+                .await()
+
+            Log.d("UpdateFirstRun", "First run updated successfully")
+        } catch (e: Exception) {
+            // Handle the exception (e.g., log the error)
+            Log.e("UpdateFirstRunError", "Failed to update first run: ${e.message}")
+        }
+    }
 }

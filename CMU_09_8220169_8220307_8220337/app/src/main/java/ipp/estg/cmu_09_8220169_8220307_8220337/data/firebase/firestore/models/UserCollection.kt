@@ -5,7 +5,8 @@ class UserCollection(
     val fieldName: String = "",
     val fieldBirthDate: String = "",
     val fieldWeight: Double = 0.0,
-    val fieldHeight: Double = 0.0
+    val fieldHeight: Double = 0.0,
+    val fieldIsFirstRun: Boolean = true
 ) {
     companion object {
         const val FIELD_ID = "id"
@@ -13,5 +14,6 @@ class UserCollection(
         const val FIELD_BIRTH_DATE = "birthDate"
         const val FIELD_WEIGHT = "weight"
         const val FIELD_HEIGHT = "height"
+        const val FIELD_IS_FIRST_RUN = "isFirstRun"
     }
 }

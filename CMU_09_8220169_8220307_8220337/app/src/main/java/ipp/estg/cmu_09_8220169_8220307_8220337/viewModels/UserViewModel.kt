@@ -38,7 +38,10 @@ class UserViewModel(
     val errorMessage = _errorMessage.asStateFlow()
 
     // Função para obter o usuário do Room ou Firebase
-    fun getUser() {
+    fun getUser(
+        onSuccess: (user: User) -> Unit = {},
+        onError: (String) -> Unit = {}
+    ) {
         _isLoading.value = true
         _errorMessage.value = null
 
@@ -47,8 +50,13 @@ class UserViewModel(
                 val user = userRepository.getUserById()
 
                 _user.value = user
+
+                if (user != null) {
+                    onSuccess(user)
+                }
             } catch (e: Exception) {
                 _errorMessage.value = e.message
+                onError(_errorMessage.value!!)
             } finally {
                 _isLoading.value = false
             }
@@ -66,6 +74,22 @@ class UserViewModel(
 
                 // Atualiza o estado do utilizador
                 _user.value = user
+            } catch (e: Exception) {
+                _errorMessage.value = e.message
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateFirstRun() {
+        _isLoading.value = true
+        _errorMessage.value = null
+
+        viewModelScope.launch {
+            try {
+                userRepository.updateFirstRun()
+
             } catch (e: Exception) {
                 _errorMessage.value = e.message
             } finally {

@@ -13,4 +13,5 @@ data class User(
     val birthDate: String = "",
     val weight: Double = 0.0,
     val height: Double = 0.0,
+    val isFirstRun: Boolean = true
 )

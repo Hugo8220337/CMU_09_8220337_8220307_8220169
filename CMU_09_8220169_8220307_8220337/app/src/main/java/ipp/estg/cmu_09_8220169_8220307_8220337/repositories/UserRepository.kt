@@ -13,7 +13,7 @@ class UserRepository(
     private val userFirestoreRepository: UserFirestoreRepository = UserFirestoreRepository()
 
     // Obter usuário do Room
-    suspend fun getUserFromRoom(): User? {
+    private suspend fun getUserFromRoom(): User? {
         val userId = authFirebaseRepository.getCurrentUser()?.uid ?: return null
         return try {
             userDao.getUser(userId)
@@ -23,7 +23,7 @@ class UserRepository(
     }
 
     // Obter utilizador do Firebase
-    suspend fun getUserFromFirebase(): User? {
+    private suspend fun getUserFromFirebase(): User? {
         val userId = authFirebaseRepository.getCurrentUser()?.uid ?: return null
         return userFirestoreRepository.getUserFromFirebase(userId)
     }
@@ -34,27 +34,27 @@ class UserRepository(
     }
 
     // Sincronizar dados do Firebase para Room
-    suspend fun syncUserData() {
+    private suspend fun syncUserData() {
         val userFromFirebase = getUserFromFirebase()
         userFromFirebase?.let { userDao.insertUser(it) }
     }
 
     //Sincronizar dados do Room para Firebase
-    suspend fun syncUserDataToFirebase() {
+    private suspend fun syncUserDataToFirebase() {
         val userFromRoom = getUserFromRoom()
         userFromRoom?.let { userFirestoreRepository.updateUserInFirebase(it) }
     }
 
-    // Atualizar dados do usuário no Firebase
-    suspend fun updateUserInFirebase(user: User) {
+    // Atualizar dados do utilizador no Firebase
+    private suspend fun updateUserInFirebase(user: User) {
         userFirestoreRepository.updateUserInFirebase(user)
 
         // Atualizar dados do utilizador no Room
         updateUserInRoom(user)
     }
 
-    // Atualizar dados do usuário no Room (usando insert com replace)
-    suspend fun updateUserInRoom(user: User) {
+    // Atualizar dados do usurious no Room (usando insert com replace)
+    private suspend fun updateUserInRoom(user: User) {
         userDao.insertUser(user)
     }
 
@@ -76,15 +76,19 @@ class UserRepository(
         // Retorna um novo objeto User com o email do utilizador atual
         if (user != null) {
             user  = User(
-                name = user?.name ?: "",
+                name = user.name,
                 email = authFirebaseRepository.getCurrentUser()?.email ?: "",
-                birthDate = user?.birthDate ?: "",
-                weight = user?.weight ?: 0.0,
+                birthDate = user.birthDate,
+                weight = user.weight,
                 height = user.height
             )
         }
 
         return user
+    }
+
+    suspend fun updateFirstRun() {
+        userFirestoreRepository.updateFirstRun()
     }
 
 

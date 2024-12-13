@@ -80,7 +80,6 @@ class HomeViewModel(
 
     fun loadTodayTasks() {
         viewModelScope.launch {
-
             dailyTasks = dailyTasksRepository.getTodayTasksLiveData()
         }
     }
@@ -108,8 +107,9 @@ class HomeViewModel(
     }
 
 
-    fun buildNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    fun startNotificationService() {
+        val notificationPreference = settingsPreferencesRepository.getNotificationsPreference()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationPreference) {
             val application = getApplication<Application>()
             // start Service
             Intent(application, DailyRemeinderService::class.java).also {

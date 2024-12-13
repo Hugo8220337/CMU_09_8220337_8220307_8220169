@@ -32,12 +32,14 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.auth.AuthStatus
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.forms.LoginFields
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthViewModel
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.UserViewModel
 import ipp.estg.mobile.ui.components.utils.Loading
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel = viewModel(),
+    userViewModel: UserViewModel = viewModel()
 ) {
 
     val context = LocalContext.current
@@ -61,7 +63,8 @@ fun LoginScreen(
                 Image(
                     painter = painterResource(id = R.drawable.minilogo),
                     contentDescription = stringResource(id = R.string.app_name),
-                    modifier = Modifier.size(200.dp)
+                    modifier = Modifier
+                        .size(200.dp)
                         .testTag("logo")
                 )
 
@@ -78,7 +81,15 @@ fun LoginScreen(
                             email = email,
                             password = password,
                             onSuccess = {
-                                navController.navigate(Screen.Home.route)
+                                userViewModel.getUser(
+                                    onSuccess = {
+                                        if (it.isFirstRun) {
+                                            navController.navigate(Screen.Onboarding.route)
+                                        } else {
+                                            navController.navigate(Screen.Home.route)
+                                        }
+                                    }
+                                )
                             },
                             onError = { error ->
                                 Toast.makeText(
