@@ -75,6 +75,7 @@ fun MainContent(homeViewModel: HomeViewModel) {
     val notificationPermission = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
     
     val streak = homeViewModel.state.streak
+    val isLoading = homeViewModel.state.isLoading
     val tasks by homeViewModel.dailyTasks.observeAsState()
     val dailyQuote by homeViewModel.dailyQuote.collectAsState()
 

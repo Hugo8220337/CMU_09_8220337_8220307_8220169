@@ -29,4 +29,7 @@ interface DailyTasksDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTasks(tasks: DailyTasks): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTasks(tasks: List<DailyTasks>)
+
 }

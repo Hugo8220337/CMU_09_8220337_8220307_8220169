@@ -12,6 +12,9 @@ interface RunningDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRunning(running: Running) : Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRunnings(runnings: List<Running>)
+
     @Query("SELECT * FROM running")
     suspend fun getRunnings(): List<Running>
 

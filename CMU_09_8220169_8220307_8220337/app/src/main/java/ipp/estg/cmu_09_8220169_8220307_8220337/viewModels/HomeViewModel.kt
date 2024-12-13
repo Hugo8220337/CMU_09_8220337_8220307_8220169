@@ -80,6 +80,7 @@ class HomeViewModel(
 
     fun loadTodayTasks() {
         viewModelScope.launch {
+
             dailyTasks = dailyTasksRepository.getTodayTasksLiveData()
         }
     }
@@ -100,7 +101,9 @@ class HomeViewModel(
 
     fun loadAllTasks() {
         viewModelScope.launch {
+            state = state.copy(isLoading = true)
             _allDailyTasks.value = dailyTasksRepository.getAllTasks()
+            state = state.copy(isLoading = false)
         }
     }
 

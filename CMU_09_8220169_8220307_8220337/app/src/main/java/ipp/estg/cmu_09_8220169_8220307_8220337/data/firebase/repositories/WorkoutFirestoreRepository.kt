@@ -92,10 +92,9 @@ class WorkoutFirestoreRepository(
         }
     }
 
-    //get all workouts from Firebase by user ID
-    suspend fun getAllWorkoutsFromFirebaseByUser(): List<Workout> {
+    suspend fun getAllUserWorkoutsFromFirebase(): List<Workout> {
+        val userId = authFirebaseRepository.getCurrentUser()?.uid
         return try {
-            val userId = authFirebaseRepository.getCurrentUser()?.uid
             val result = firestore.collection(CollectionsNames.workoutCollection)
                 .whereEqualTo(WorkoutCollection.FIELD_USER_ID, userId)
                 .get()
@@ -104,14 +103,9 @@ class WorkoutFirestoreRepository(
             // Convert the result into a list of Workout objects
             result.documents.mapNotNull { document ->
                 val id = document.getLong(WorkoutCollection.FIELD_ID) // Fetch the ID
-                val trainedBodyPartsString =
-                    document.getString(WorkoutCollection.FIELD_TRAINED_BODY_PARTS)
+                val trainedBodyPartsString = document.getString(WorkoutCollection.FIELD_TRAINED_BODY_PARTS) // Fetch the body parts
 
                 if (id != null && trainedBodyPartsString != null) {
-                    // Use the Converter to parse the trainedBodyParts string
-                    val converter = Converter()
-                    val trainedBodyParts = converter.toStringList(trainedBodyPartsString)
-
                     Workout(
                         id = id,
                         trainedBodyParts = trainedBodyPartsString // Keep the raw string in the model

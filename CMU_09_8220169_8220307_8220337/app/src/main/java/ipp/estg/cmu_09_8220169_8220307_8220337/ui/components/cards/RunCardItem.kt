@@ -41,18 +41,19 @@ private fun RunItem(
     running: Running,
     modifier: Modifier = Modifier
 ) {
-    println("Running data: $running") // Adicione este log para depuração
+    val distance: Double = "%.2f".format(running.distance).toDouble()
+    val calories: Int = running.calories.toInt()
     Column(modifier = modifier) {
         Text(text = running.date, style = MaterialTheme.typography.bodySmall)
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "${running.distance} km",
+            text = "$distance km",
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "${running.calories} cal,  ${running.duration} segundos",
+            text = "$calories cal,  ${running.duration} segundos",
             style = MaterialTheme.typography.bodySmall
         )
         Spacer(modifier = Modifier.height(4.dp))

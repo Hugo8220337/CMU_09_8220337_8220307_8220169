@@ -41,25 +41,25 @@ class UserFirestoreRepository(
         }
     }
 
-    
+
     // Update user information in Firebase
     suspend fun updateUserInFirebase(user: User) {
         try {
             //val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
             val userId = authFirebaseRepository.getCurrentUser()?.uid ?: return
-                val updates = mapOf(
-                    //UserCollection.FIELD_ID to user.id,
-                    UserCollection.FIELD_NAME to user.name,
-                    UserCollection.FIELD_BIRTH_DATE to user.birthDate,
-                    UserCollection.FIELD_WEIGHT to user.weight,
-                    UserCollection.FIELD_HEIGHT to user.height
-                )
-                firestore.collection(CollectionsNames.userCollection)
-                    .document(userId)
-                    .set(updates, SetOptions.merge()) // Usa merge para manter outros campos inalterados
-                    .await()
+            val updates = mapOf(
+                //UserCollection.FIELD_ID to user.id,
+                UserCollection.FIELD_NAME to user.name,
+                UserCollection.FIELD_BIRTH_DATE to user.birthDate,
+                UserCollection.FIELD_WEIGHT to user.weight,
+                UserCollection.FIELD_HEIGHT to user.height
+            )
+            firestore.collection(CollectionsNames.userCollection)
+                .document(userId)
+                .set(updates, SetOptions.merge()) // Usa merge para manter outros campos inalterados
+                .await()
 
-                Log.d("UpdateUser", "User updated successfully")
+            Log.d("UpdateUser", "User updated successfully")
         } catch (e: Exception) {
             // Handle the exception (e.g., log the error)
             Log.e("UpdateUserError", "Failed to update user: ${e.message}")
@@ -76,14 +76,15 @@ class UserFirestoreRepository(
 
             Log.d("UserFirestoreRepository", "Número de documentos: ${result.documents.size}")
 
-            if (result.isEmpty){
+            if (result.isEmpty) {
                 // Caso não haja documentos
                 return emptyList()
-            }else{
+            } else {
                 result.documents.map { document ->
                     Log.d("UserFirestoreRepository", "Document: ${document.data}")
 
-                    val id = document.get("id")?.let { it.toString() } ?: ""  // Convertendo o valor para String, independente do tipo
+                    val id = document.get("id")?.let { it.toString() }
+                        ?: ""  // Convertendo o valor para String, independente do tipo
                     val name = document.getString("name") ?: ""
 
                     // Retorna um par (id, name) para cada usuário

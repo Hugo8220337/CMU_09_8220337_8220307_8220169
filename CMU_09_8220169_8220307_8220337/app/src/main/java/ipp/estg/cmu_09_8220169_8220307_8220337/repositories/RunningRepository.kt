@@ -25,10 +25,10 @@ class RunningRepository(
                 steps = steps,
                 calories = distance * 0.05 + 0.02 * steps // 0.05 calorias por metro + 1 caloria por passo
             )
-            //Inserir na base de dados local
+            // Inserir na base de dados local
             runningDao.insertRunning(running)
 
-            //inserir na base de dados remota (Firebase)
+            // Inserir na base de dados remota (Firebase)
             runningFirestoreRepository.insertRunningInFirebase(running)
         } catch (e: Exception) {
             Log.e("RunningRepository", "Error inserting running workout", e)
@@ -37,10 +37,10 @@ class RunningRepository(
 
     suspend fun getAllRunningWorkouts(): List<Running> {
         try {
-            //Sincronizar treinos de corrida da base de dados remota
+            // Sincronizar treinos de corrida da base de dados remota
             syncRunningWorkoutsFromFirebase()
 
-            //Obter treinos de corrida da base de dados local
+            // Obter treinos de corrida da base de dados local
             return runningDao.getRunnings()
 
         } catch (e: Exception) {
@@ -51,17 +51,23 @@ class RunningRepository(
 
     suspend fun getLastRun(): Running? {
         try {
+            // Sincronizar treinos de corrida da base de dados remota
+            syncRunningWorkoutsFromFirebase()
+
             //Obter último treino de corrida da base de dados local
             return runningDao.getLastRun()
         } catch (e: Exception) {
             Log.e("RunningRepository", "Error getting last run", e)
         }
 
-        return null;
+        return null
     }
 
     suspend fun getRunningWorkoutsByUserId(): Running? {
         try {
+            // Sincronizar treinos de corrida da base de dados remota
+            syncRunningWorkoutsFromFirebase()
+
             val userId = authFirebaseRepository.getCurrentUser()?.uid
 
             //Obter treinos de corrida da base de dados local
@@ -74,27 +80,17 @@ class RunningRepository(
         return null
     }
 
-    suspend fun deleteRunningWorkout(running: Running) {
-        try {
-            //Eliminar treino de corrida da base de dados local
-            runningDao.deleteRunningById(running.id)
-        } catch (e: Exception) {
-            Log.e("RunningRepository", "Error deleting running workout", e)
-        }
-    }
-
     private suspend fun syncRunningWorkoutsFromFirebase() {
         try {
-            //Obter treinos de corrida da base de dados remota
-            val firebaseRunningWorkouts = runningFirestoreRepository.getAllRunningFromFirebase()
+            // Obter treinos de corrida da base de dados remota
+            val firebaseRunningWorkouts = runningFirestoreRepository.getAllUserRunningFromFirebase()
 
-            //Guardar cada treino de corrida da base de dados remota na base de dados local
-            for (firebaseRunningWorkout in firebaseRunningWorkouts) {
-                val localRunningWorkout = runningDao.getRunningById(firebaseRunningWorkout.id.toString())
-                if (localRunningWorkout == null) {
-                    runningDao.insertRunning(firebaseRunningWorkout)
-                }
+            if(firebaseRunningWorkouts.isEmpty()) {
+                return
             }
+
+            // Guardar cada treino de corrida da base de dados remota na base de dados local
+            runningDao.insertRunnings(firebaseRunningWorkouts)
         } catch (e: Exception) {
             Log.e("RunningRepository", "Error syncing running workouts from Firebase", e)
         }
@@ -102,7 +98,8 @@ class RunningRepository(
 
     suspend fun getRunningByUserID(): List<Running> {
         try {
-            val runnings = runningFirestoreRepository.getRunningFromFirebaseByUserId()
+            syncRunningWorkoutsFromFirebase()
+            val runnings = runningDao.getRunnings()
             return runnings
         } catch (e: Exception) {
             Log.e("RunningRepository", "Error getting running workouts by user id", e)

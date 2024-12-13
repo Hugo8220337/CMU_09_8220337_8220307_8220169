@@ -47,78 +47,62 @@ class RunningFirestoreRepository(
         }
     }
 
-    // Get running data from Firebase by user ID
-    suspend fun getRunningFromFirebaseByUserId(): List<Running> {
-        return try {
-            val userId = authFirebaseRepository.getCurrentUser()?.uid
-            Log.d("Firestore", "Fetching data for userId: $userId")
-
-            val result = firestore.collection(CollectionsNames.runningCollection)
-                .whereEqualTo(RunningCollection.FIELD_USER_ID, userId)
-                .get()
-                .await()
-
-            Log.d("Firestore", "Documents: ${result.documents}")
-
-            if (result != null && !result.isEmpty) {
-                result.documents.mapNotNull { document ->
-                    try {
-                        Running(
-                            id = document[RunningCollection.FIELD_ID] as String, // Atualizado para String
-                            distance = (document[RunningCollection.FIELD_DISTANCE] as Number).toDouble(),
-                            duration = document[RunningCollection.FIELD_DURATION] as String,
-                            steps = (document[RunningCollection.FIELD_STEPS] as Number).toInt(),
-                            calories = (document[RunningCollection.FIELD_CALORIES
-                            ] as Number).toDouble(),
-                            date = document[RunningCollection.FIELD_DATE] as String
-                        )
-                    } catch (e: Exception) {
-                        Log.d("Firestore", "Error parsing running data", e)
-                        null
-
-                    }
-                }
-            } else {
-                emptyList()
-            }
-        } catch (e: Exception) {
-            Log.d("RunningFirestoreRepository", "Error getting running from Firebase", e)
-            emptyList()
-        }
-}
     //get all running data from Firebase
-    suspend fun getAllRunningFromFirebase(): List<Running> {
-        return try{
+    suspend fun getAllRunningsFromFirebase(): List<Running> {
+        return try {
             val result = firestore.collection(CollectionsNames.runningCollection)
                 .get()
                 .await()
 
-            result.documents.mapNotNull { document ->
-                Running(
-                    id = document[RunningCollection.FIELD_ID] as String,
-                    distance = document[RunningCollection.FIELD_DISTANCE] as Double,
-                    duration = document[RunningCollection.FIELD_DURATION] as String,
-                    steps = document[RunningCollection.FIELD_STEPS] as Int,
-                    calories = document[RunningCollection.FIELD_CALORIES] as Double,
-                    date = document[RunningCollection.FIELD_DATE] as String
-                )
+            if(result.isEmpty) {
+                Log.d("RunningFirestoreRepository", "No documents found in the collection")
+                emptyList()
+            } else {
+                result.documents.mapNotNull { document ->
+                    Running(
+                        id = document.getString(RunningCollection.FIELD_ID) ?: "",
+                        distance = (document.getDouble(RunningCollection.FIELD_DISTANCE) ?: 0.0),
+                        duration = document.getString(RunningCollection.FIELD_DURATION) ?: "",
+                        steps = (document.getLong(RunningCollection.FIELD_STEPS)?.toInt() ?: 0),
+                        calories = (document.getDouble(RunningCollection.FIELD_CALORIES) ?: 0.0),
+                        date = document.getString(RunningCollection.FIELD_DATE) ?: ""
+                    )
+                }
             }
+
         } catch (e: Exception) {
             Log.d("RunningFirestoreRepository", "Error getting all running from Firebase", e)
             emptyList()
         }
     }
 
-
-    // Delete running data from Firebase by ID
-    suspend fun deleteRunningFromFirebaseById(runningId: Long) {
-        try {
-            firestore.collection(CollectionsNames.runningCollection)
-                .document(runningId.toString())
-                .delete()
+    suspend fun getAllUserRunningFromFirebase(): List<Running> {
+        val userId = authFirebaseRepository.getCurrentUser()?.uid
+        return try {
+            val result = firestore.collection(CollectionsNames.runningCollection)
+                .whereEqualTo(RunningCollection.FIELD_USER_ID, userId)
+                .get()
                 .await()
+
+            if(result.isEmpty) {
+                Log.d("RunningFirestoreRepository", "No documents found in the collection")
+                emptyList()
+            } else {
+                result.documents.mapNotNull { document ->
+                    Running(
+                        id = document.getString(RunningCollection.FIELD_ID) ?: "",
+                        distance = (document.getDouble(RunningCollection.FIELD_DISTANCE) ?: 0.0),
+                        duration = document.getString(RunningCollection.FIELD_DURATION) ?: "",
+                        steps = (document.getLong(RunningCollection.FIELD_STEPS)?.toInt() ?: 0),
+                        calories = (document.getDouble(RunningCollection.FIELD_CALORIES) ?: 0.0),
+                        date = document.getString(RunningCollection.FIELD_DATE) ?: ""
+                    )
+                }
+            }
+
         } catch (e: Exception) {
-            Log.d("RunningFirestoreRepository", "Error deleting running from Firebase", e)
+            Log.d("RunningFirestoreRepository", "Error getting all running from Firebase", e)
+            emptyList()
         }
     }
 

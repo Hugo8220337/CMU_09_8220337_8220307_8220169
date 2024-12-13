@@ -44,6 +44,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.LowBatteryCar
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.StatPreviewCard
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.BatteryManager
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.formatDuration
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 import ipp.estg.mobile.ui.components.utils.Loading
 
@@ -100,9 +101,11 @@ fun RunningWorkoutStartScreen(
             if (isLoading) {
                 Loading()
             } else {
+                val distance: Double = lastRun?.distance ?: 0.0
+                val duration: String = lastRun?.duration ?: "00:00"
                 StatsSection(
-                    distance = lastRun?.distance ?: 0.0,
-                    duration = lastRun?.duration ?: "00:00"
+                    distance =  "%.2f".format(distance).toDouble(),
+                    duration = formatDuration(duration)
                 )
             }
 

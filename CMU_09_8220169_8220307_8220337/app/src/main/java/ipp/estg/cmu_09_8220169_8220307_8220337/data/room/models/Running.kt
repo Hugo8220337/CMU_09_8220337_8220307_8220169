@@ -6,12 +6,27 @@ import java.time.LocalDate
 
 
 @Entity(tableName = "running")
-class Running (
+data class Running(
     @PrimaryKey
-    val id: String = "",
+    val id: String,
     val distance: Double,
-    val duration: String = "",
+    val duration: String,
     val steps: Int,
     val calories: Double,
-    val date: String = LocalDate.now().toString()
-)
+    val date: String
+) {
+    constructor(
+        id: String = "",
+        distance: Double,
+        duration: String = "",
+        steps: Int,
+        calories: Double
+    ) : this(
+        id = id,
+        distance = distance,
+        duration = duration,
+        steps = steps,
+        calories = calories,
+        date = LocalDate.now().toString()
+    )
+}

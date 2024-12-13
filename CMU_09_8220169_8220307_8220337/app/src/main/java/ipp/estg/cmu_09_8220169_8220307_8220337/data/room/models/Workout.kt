@@ -5,9 +5,18 @@ import androidx.room.PrimaryKey
 import java.time.LocalDate
 
 @Entity(tableName = "workout")
-class Workout(
+data class Workout(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
-    val trainedBodyParts: String, // isto é uma lista de body parts, vai-se usar o converter para guardar em String
-    val dateOfWorkout: String = LocalDate.now().toString()
-)
+    val id: Long,
+    val trainedBodyParts: String,
+    val dateOfWorkout: String
+) {
+    constructor(
+        id: Long = 0,
+        trainedBodyParts: String
+    ) : this(
+        id = id,
+        trainedBodyParts = trainedBodyParts,
+        dateOfWorkout = LocalDate.now().toString()
+    )
+}

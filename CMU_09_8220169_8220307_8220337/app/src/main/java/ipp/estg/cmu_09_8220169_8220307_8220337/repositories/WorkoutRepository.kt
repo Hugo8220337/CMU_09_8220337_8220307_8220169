@@ -127,15 +127,13 @@ class WorkoutRepository(
 
     private suspend fun syncWorkoutsFromFirebase() {
         try {
-            val firebaseWorkouts = workoutFirestoreRepository.getAllWorkoutsFromFirebase()
+            val firebaseWorkouts = workoutFirestoreRepository.getAllUserWorkoutsFromFirebase()
 
-            // Save each workout from Firebase to Room if it doesn't already exist
-            for (firebaseWorkout in firebaseWorkouts) {
-                val localWorkout = workoutDao.getWorkoutById(firebaseWorkout.id.toString())
-                if (localWorkout == null) {
-                    workoutDao.insertWorkout(firebaseWorkout)
-                }
+            if (firebaseWorkouts.isEmpty()) {
+                return
             }
+
+            workoutDao.insertWorkouts(firebaseWorkouts)
         } catch (e: Exception) {
             Log.d("WorkoutRepository", "Error syncing workouts from Firebase", e)
         }
@@ -143,7 +141,8 @@ class WorkoutRepository(
 
     suspend fun getWorkoutsByUserID(): List<Workout> {
         try {
-            val firebaseWorkouts = workoutFirestoreRepository.getAllWorkoutsFromFirebaseByUser()
+            syncWorkoutsFromFirebase()
+            val firebaseWorkouts = workoutDao.getWorkouts()
 
             return firebaseWorkouts
         } catch (e: Exception) {
