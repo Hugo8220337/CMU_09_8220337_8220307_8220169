@@ -61,6 +61,7 @@ class RunningFirestoreRepository(
                 result.documents.mapNotNull { document ->
                     Running(
                         id = document.getString(RunningCollection.FIELD_ID) ?: "",
+                        userId = document.getString(RunningCollection.FIELD_USER_ID) ?: "",
                         distance = (document.getDouble(RunningCollection.FIELD_DISTANCE) ?: 0.0),
                         duration = document.getString(RunningCollection.FIELD_DURATION) ?: "",
                         steps = (document.getLong(RunningCollection.FIELD_STEPS)?.toInt() ?: 0),
@@ -91,6 +92,7 @@ class RunningFirestoreRepository(
                 result.documents.mapNotNull { document ->
                     Running(
                         id = document.getString(RunningCollection.FIELD_ID) ?: "",
+                        userId = document.getString(RunningCollection.FIELD_USER_ID) ?: "",
                         distance = (document.getDouble(RunningCollection.FIELD_DISTANCE) ?: 0.0),
                         duration = document.getString(RunningCollection.FIELD_DURATION) ?: "",
                         steps = (document.getLong(RunningCollection.FIELD_STEPS)?.toInt() ?: 0),

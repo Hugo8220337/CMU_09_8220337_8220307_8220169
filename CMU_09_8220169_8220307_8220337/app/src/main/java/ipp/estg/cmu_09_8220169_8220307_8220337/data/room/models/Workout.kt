@@ -8,14 +8,17 @@ import java.time.LocalDate
 data class Workout(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
+    val userId: String = "",
     val trainedBodyParts: String,
     val dateOfWorkout: String
 ) {
     constructor(
         id: Long = 0,
+        userId: String = "",
         trainedBodyParts: String
     ) : this(
         id = id,
+        userId = userId,
         trainedBodyParts = trainedBodyParts,
         dateOfWorkout = LocalDate.now().toString()
     )

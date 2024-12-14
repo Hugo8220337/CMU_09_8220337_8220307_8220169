@@ -8,6 +8,7 @@ import java.time.LocalDate
 data class DailyTasks(
     @PrimaryKey
     val date: String,
+    val userId: String = "",
     val gallonOfWater: Boolean = false,
     val twoWorkouts: Boolean = false,
     val followDiet: Boolean = false,
@@ -15,6 +16,7 @@ data class DailyTasks(
     val takeProgressPicture: String = "",
 ) {
     constructor(
+        userId: String = "",
         gallonOfWater: Boolean = false,
         twoWorkouts: Boolean = false,
         followDiet: Boolean = false,
@@ -22,6 +24,7 @@ data class DailyTasks(
         takeProgressPicture: String = ""
     ) : this(
         date = LocalDate.now().toString(),
+        userId = userId,
         gallonOfWater = gallonOfWater,
         twoWorkouts = twoWorkouts,
         followDiet = followDiet,

@@ -65,6 +65,8 @@ fun RunningWorkoutScreen(
         rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
     val coarseLocationPermission =
         rememberPermissionState(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+    val foregroundLocationPermission =
+        rememberPermissionState(android.Manifest.permission.ACCESS_BACKGROUND_LOCATION)
 
     LaunchedEffect(pedometerPermission.status) {
         if (!pedometerPermission.status.isGranted) {
@@ -81,6 +83,12 @@ fun RunningWorkoutScreen(
     LaunchedEffect(coarseLocationPermission.status.isGranted) {
         if (!coarseLocationPermission.status.isGranted) {
             coarseLocationPermission.launchPermissionRequest()
+        }
+    }
+
+    LaunchedEffect(foregroundLocationPermission.status.isGranted) {
+        if (!foregroundLocationPermission.status.isGranted) {
+            foregroundLocationPermission.launchPermissionRequest()
         }
     }
 

@@ -9,6 +9,7 @@ import java.time.LocalDate
 data class Running(
     @PrimaryKey
     val id: String,
+    val userId: String = "",
     val distance: Double,
     val duration: String,
     val steps: Int,
@@ -17,6 +18,7 @@ data class Running(
 ) {
     constructor(
         id: String = "",
+        userId: String = "",
         distance: Double,
         duration: String = "",
         steps: Int,

@@ -49,8 +49,9 @@ class WorkoutFirestoreRepository(
 
             if (result != null && result.exists()) {
                 val document = result.data
-                val  dateOfWorkout = document?.get(WorkoutCollection.FIELD_DATE_WORKOUT) as String
-                val trainedBodyPartsString = document?.get(WorkoutCollection.FIELD_TRAINED_BODY_PARTS) as String
+                val trainedBodyPartsString =
+                    document?.get(WorkoutCollection.FIELD_TRAINED_BODY_PARTS) as String
+
                 val converter = Converter()
                 converter.toStringList(trainedBodyPartsString)
             } else {
@@ -71,15 +72,13 @@ class WorkoutFirestoreRepository(
             // Convert the result into a list of Workout objects
             result.documents.mapNotNull { document ->
                 val id = document.getLong(WorkoutCollection.FIELD_ID) // Fetch the ID
-                val trainedBodyPartsString = document.getString(WorkoutCollection.FIELD_TRAINED_BODY_PARTS) // Fetch the body parts
+                val trainedBodyPartsString =
+                    document.getString(WorkoutCollection.FIELD_TRAINED_BODY_PARTS) // Fetch the body parts
 
                 if (id != null && trainedBodyPartsString != null) {
-                    // Use the Converter to parse the trainedBodyParts string
-                    val converter = Converter()
-                    val trainedBodyParts = converter.toStringList(trainedBodyPartsString)
-
                     Workout(
                         id = id,
+                        userId = document.getString(WorkoutCollection.FIELD_USER_ID) ?: "",
                         trainedBodyParts = trainedBodyPartsString // Keep the raw string in the model
                     )
                 } else {
@@ -103,11 +102,13 @@ class WorkoutFirestoreRepository(
             // Convert the result into a list of Workout objects
             result.documents.mapNotNull { document ->
                 val id = document.getLong(WorkoutCollection.FIELD_ID) // Fetch the ID
-                val trainedBodyPartsString = document.getString(WorkoutCollection.FIELD_TRAINED_BODY_PARTS) // Fetch the body parts
+                val trainedBodyPartsString =
+                    document.getString(WorkoutCollection.FIELD_TRAINED_BODY_PARTS) // Fetch the body parts
 
                 if (id != null && trainedBodyPartsString != null) {
                     Workout(
                         id = id,
+                        userId = document.getString(WorkoutCollection.FIELD_USER_ID) ?: "",
                         trainedBodyParts = trainedBodyPartsString // Keep the raw string in the model
                     )
                 } else {

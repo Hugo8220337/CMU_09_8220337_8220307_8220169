@@ -60,6 +60,7 @@ class DailyTasksFirestoreRepository(
             // Convert the result into a list of Workout objects
             result.documents.mapNotNull { document ->
                 val date = document.get(DailyTasksCollection.FIELD_DATE) as String
+                val userId = document.get(DailyTasksCollection.FIELD_USER_ID) as String
                 val gallonOfWater = document.get(DailyTasksCollection.FIELD_GALLON_OF_WATER) as Boolean
                 val twoWorkouts = document.get(DailyTasksCollection.FIELD_TWO_WORKOUTS) as Boolean
                 val followDiet = document.get(DailyTasksCollection.FIELD_FOLLOW_DIET) as Boolean
@@ -68,6 +69,7 @@ class DailyTasksFirestoreRepository(
 
                 DailyTasks(
                     date = date,
+                    userId = userId,
                     gallonOfWater = gallonOfWater,
                     twoWorkouts = twoWorkouts,
                     followDiet = followDiet,
@@ -99,6 +101,7 @@ class DailyTasksFirestoreRepository(
 
                 DailyTasks(
                     date = date,
+                    userId = userId!!,
                     gallonOfWater = gallonOfWater,
                     twoWorkouts = twoWorkouts,
                     followDiet = followDiet,
@@ -124,17 +127,17 @@ class DailyTasksFirestoreRepository(
 
             if (result != null && result.exists()) {
                 val document = result.data
-                val date = document?.get(DailyTasksCollection.FIELD_DATE) as String
                 val gallonOfWater = document?.get(DailyTasksCollection.FIELD_GALLON_OF_WATER) as Boolean
-                val twoWorkouts = document.get(DailyTasksCollection.FIELD_TWO_WORKOUTS) as Boolean
-                val followDiet = document.get(DailyTasksCollection.FIELD_FOLLOW_DIET) as Boolean
-                val readTenPages = document.get(DailyTasksCollection.FIELD_READ_TEN_PAGES) as Boolean
-                val takeProgressPicture = document.get(DailyTasksCollection.FIELD_TAKE_PROGRESS_PICTURE) as String
+                val twoWorkouts = document[DailyTasksCollection.FIELD_TWO_WORKOUTS] as Boolean
+                val followDiet = document[DailyTasksCollection.FIELD_FOLLOW_DIET] as Boolean
+                val readTenPages = document[DailyTasksCollection.FIELD_READ_TEN_PAGES] as Boolean
+                val takeProgressPicture = document[DailyTasksCollection.FIELD_TAKE_PROGRESS_PICTURE] as String
 
                 // Return a list of DailyTasks
                 listOf(
                     DailyTasks(
                         date = date,
+                        userId = userId!!,
                         gallonOfWater = gallonOfWater,
                         twoWorkouts = twoWorkouts,
                         followDiet = followDiet,
