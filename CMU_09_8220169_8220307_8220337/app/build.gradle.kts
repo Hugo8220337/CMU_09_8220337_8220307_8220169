@@ -142,10 +142,10 @@ dependencies {
 
     // Google Maps
     implementation("com.google.maps.android:maps-compose:2.7.3")
-    implementation("com.google.android.gms:play-services-maps:18.0.2")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
 
     // Fiused Location Provider (google play service) - para obter a localização do utilizador
-    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     // KTX library utility
     // KTX for the Maps SDK for Android library

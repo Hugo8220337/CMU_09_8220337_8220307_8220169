@@ -27,4 +27,7 @@ interface RunningDao {
     @Query("DELETE FROM running WHERE id = :id")
     suspend fun deleteRunningById(id: String)
 
+    @Query("DELETE FROM running")
+    suspend fun deleteAllRunnings()
+
 }

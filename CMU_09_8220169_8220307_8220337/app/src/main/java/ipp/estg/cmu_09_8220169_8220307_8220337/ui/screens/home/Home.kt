@@ -67,7 +67,7 @@ fun HomeScreen(
     val streak by dailyTasksViewModel.streak.collectAsState()
 
     val startingNavItem by remember { mutableIntStateOf(0) }
-    
+
     val navItems = listOf(
         NavigationItem(
             title = stringResource(id = R.string.home),

@@ -13,7 +13,6 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 @Dao
 interface WorkoutDao {
 
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWorkout(workout: Workout) : Long
 
@@ -28,5 +27,8 @@ interface WorkoutDao {
 
     @Query("DELETE FROM workout WHERE id = :id")
     suspend fun deleteWorkoutById(id: String)
+
+    @Query("DELETE FROM workout")
+    suspend fun deleteAllWorkouts()
 
 }

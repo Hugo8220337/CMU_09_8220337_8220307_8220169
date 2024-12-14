@@ -1,5 +1,6 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories
 
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -75,6 +76,7 @@ class AuthFirebaseRepository(
                 AuthStatus.INVALID_LOGIN
             }
         } catch (e: Exception) {
+            Log.e("AuthFirebaseRepository", "Error on register", e)
             // return invalid login status
             AuthStatus.INVALID_LOGIN
         }

@@ -32,4 +32,7 @@ interface DailyTasksDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTasks(tasks: List<DailyTasks>)
 
+    @Query("DELETE FROM dailyTasks")
+    suspend fun deleteAllTasks()
+
 }
