@@ -55,11 +55,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Quote
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.StreakLinearProgressIndicator
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.MotivationalQuoteCard
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.TaskItemCard
@@ -68,22 +70,28 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.utils.checkCameraPermission
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.launchCamera
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.requestCameraPermission
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.QuoteViewModel
+import ipp.estg.mobile.ui.components.utils.Loading
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun MainContent(homeViewModel: HomeViewModel) {
+fun MainContent(
+    homeViewModel: HomeViewModel,
+    quoteViewModel: QuoteViewModel = viewModel()
+) {
     val notificationPermission = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
     
     val streak = homeViewModel.state.streak
     val isLoading = homeViewModel.state.isLoading
     val tasks by homeViewModel.dailyTasks.observeAsState()
-    val dailyQuote by homeViewModel.dailyQuote.collectAsState()
+    val dailyQuote by quoteViewModel.dailyQuote.collectAsState()
+    val isLoadingQuote by quoteViewModel.isLoading.collectAsState()
 
     LaunchedEffect(Unit) {
         homeViewModel.loadTodayTasks()
         homeViewModel.updateDailyStreak()
         homeViewModel.loadTodaysProgressPicture()
-        homeViewModel.loadDailyQuote()
+        quoteViewModel.loadDailyQuote()
     }
 
     LaunchedEffect(Unit) {
@@ -110,10 +118,14 @@ fun MainContent(homeViewModel: HomeViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Daily Task Checklist
-        TaskChecklist(
-            tasks = tasks ?: DailyTasks(),
-            homeViewModel = homeViewModel
-        )
+        if(isLoading) {
+            Loading()
+        } else {
+            TaskChecklist(
+                tasks = tasks ?: DailyTasks(),
+                homeViewModel = homeViewModel
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -123,7 +135,11 @@ fun MainContent(homeViewModel: HomeViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Motivational Quote
-        MotivationalQuoteCard(dailyQuote)
+        if (isLoadingQuote) {
+            Loading()
+        } else {
+            MotivationalQuoteCard(dailyQuote)
+        }
 
         homeViewModel.state.error?.let {
             Text(

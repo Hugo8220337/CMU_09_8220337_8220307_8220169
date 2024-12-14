@@ -53,18 +53,14 @@ class DailyTasksRepository(
         return dailyTasksDao.getTasksByDateLiveData(currentDate)
     }
 
-    suspend fun getTodayTasks(): DailyTasks {
+    fun getTodayTasks(): DailyTasks {
         val currentDate = LocalDate.now().toString()
 
         return dailyTasksDao.getTasksByDate(currentDate)
     }
 
-    suspend fun areTodaysTasksDone(): Boolean {
+    fun areTodaysTasksDone(): Boolean {
         val dailyTasks = getTodayTasks()
-
-        if(dailyTasks == null) {
-            return false
-        }
 
         val diet = dailyTasks.followDiet
         val workouts = dailyTasks.twoWorkouts

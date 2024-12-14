@@ -43,18 +43,12 @@ class HomeViewModel(
     private val dailyTasksRepository: DailyTasksRepository =
         DailyTasksRepository(LocalDatabase.getDatabase(application).dailyTaskCompletionDao)
 
-    private var quotesRepository: QuotesRepository =
-        QuotesRepository(
-            RemoteApis.getQuotesApi(),
-            LocalDatabase.getDatabase(application).quotesDao
-        )
 
 
     var state: ScreenState by mutableStateOf(ScreenState())
 
 
-    private val _dailyQuote = MutableStateFlow("")
-    val dailyQuote = _dailyQuote.asStateFlow()
+
 
     var dailyTasks: LiveData<DailyTasks> = MutableLiveData()
 
@@ -91,12 +85,6 @@ class HomeViewModel(
         }
     }
 
-    fun loadDailyQuote() {
-        viewModelScope.launch {
-            val dailyQuote = quotesRepository.getTodaysQuote().quote
-            _dailyQuote.value = dailyQuote
-        }
-    }
 
     fun loadAllTasks() {
         viewModelScope.launch {
