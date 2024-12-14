@@ -18,6 +18,7 @@ class DailyTasksRepository(
         DailyTasksFirestoreRepository()
 
     suspend fun insertTasks(
+        userId: String,
         gallonOfWater: Boolean,
         twoWorkouts: Boolean,
         followDiet: Boolean,
@@ -27,6 +28,7 @@ class DailyTasksRepository(
         try {
             // Inserir ou atualizar tarefas diárias
             val tasks = DailyTasks(
+                userId = userId,
                 gallonOfWater = gallonOfWater,
                 twoWorkouts = twoWorkouts,
                 followDiet = followDiet,
@@ -36,21 +38,21 @@ class DailyTasksRepository(
 
             // Inserir tarefas na base de dados local
             dailyTasksDao.insertTasks(tasks)
-            // Inserir tarefas na base de dados remota
 
+            // Inserir tarefas na base de dados remota
             dailyTasksFirestoreRepository.insertDailyTaskInFirebase(tasks)
         } catch (e: Exception) {
             throw e
         }
     }
 
-    suspend fun getTodayTasksLiveData(): LiveData<DailyTasks> {
+    suspend fun getTodayTasksLiveData(userId: String): LiveData<DailyTasks> {
         // Sincronizar tarefas diárias do Firebase
         syncDailyTasksFromFirebase()
 
         // Obter tarefas diárias de hoje
         val currentDate = LocalDate.now().toString()
-        return dailyTasksDao.getTasksByDateLiveData(currentDate)
+        return dailyTasksDao.getTasksByDateLiveData(currentDate, userId)
     }
 
     fun getTodayTasks(): DailyTasks {
@@ -110,6 +112,11 @@ class DailyTasksRepository(
     suspend fun getAllTasks(): List<DailyTasks> {
         syncDailyTasksFromFirebase()
         return dailyTasksDao.getAllTasks()
+    }
+
+    suspend fun getAllUserTasks(userId: String): List<DailyTasks> {
+        syncDailyTasksFromFirebase()
+        return dailyTasksDao.getAllUserTasks(userId)
     }
 
     private suspend fun syncDailyTasksFromFirebase() {

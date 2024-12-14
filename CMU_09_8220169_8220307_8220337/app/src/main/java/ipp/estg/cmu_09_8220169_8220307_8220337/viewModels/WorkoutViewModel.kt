@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.WorkoutFirestoreRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.UserPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.ExerciseItemDataResponse
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.WorkoutRepository
@@ -25,6 +26,7 @@ class WorkoutViewModel(
         exerciseDbApi = RemoteApis.getExerciseDbApi(),
         workoutDao = LocalDatabase.getDatabase(application).workoutDao
     )
+    private val userPreferencesRepository = UserPreferencesRepository(application)
 
     // Estado de workout
     private val _workout = MutableStateFlow<List<Workout?>>(emptyList())
@@ -63,7 +65,7 @@ class WorkoutViewModel(
         viewModelScope.launch {
             state = state.copy(isLoading = true)
 
-            val storedWorkouts = workoutRepository.getWorkouts()
+            val storedWorkouts = workoutRepository.getAllWorkouts()
 
             if(storedWorkouts.isNotEmpty()) {
                 state = state.copy(storedWorkouts = storedWorkouts)
@@ -75,10 +77,11 @@ class WorkoutViewModel(
 
     //get all workouts from Firebase by user ID
     fun getWorkoutsByUserID() {
+        val userId = userPreferencesRepository.getCurrentUserId()
         viewModelScope.launch {
             state = state.copy(isLoading = true)
 
-            val workouts = workoutRepository.getWorkoutsByUserID()
+            val workouts = workoutRepository.getWorkoutsByUserID(userId)
 
             if(workouts.isNotEmpty()) {
                 state = state.copy(storedWorkouts = workouts)

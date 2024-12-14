@@ -66,17 +66,16 @@ fun WorkoutHistoryPage(
     val allTasks by homeViewModel.allDailyTasks.collectAsState(emptyList())
     val runnings by runningViewModel.runnings.collectAsState(emptyList())
 
-    // Obter os dados dos treinos
-    // Carregando dados ao iniciar a página
+
     LaunchedEffect(Unit) {
         workoutViewModel.getWorkoutsByUserID()
         runningViewModel.getRunningWorkoutsByUserID()
-        homeViewModel.loadAllTasks()
+        homeViewModel.loadAllUserTasks()
     }
 
 
     Column {
-        // Título da página e botão de ordenação
+        // Título da página e botão para ordenação
         Row(
             modifier = Modifier
                 .fillMaxWidth()

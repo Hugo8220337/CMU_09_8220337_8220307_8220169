@@ -19,11 +19,14 @@ interface WorkoutDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWorkouts(workouts: List<Workout>)
 
-    @Query("SELECT * FROM workout")
-    suspend fun getWorkouts(): List<Workout>
+    @Query("SELECT * FROM workout WHERE userId = :userId")
+    suspend fun getWorkouts(userId: String): List<Workout>
 
     @Query("SELECT * FROM workout WHERE id = :id")
     suspend fun getWorkoutById(id: String): Workout?
+
+    @Query("SELECT * FROM workout")
+    suspend fun getAllWorkouts(): List<Workout>
 
     @Query("DELETE FROM workout WHERE id = :id")
     suspend fun deleteWorkoutById(id: String)

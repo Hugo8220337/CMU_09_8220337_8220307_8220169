@@ -14,14 +14,17 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 @Dao
 interface DailyTasksDao {
 
-    @Query("SELECT * FROM dailyTasks WHERE date = :date")
-    fun getTasksByDateLiveData(date: String): LiveData<DailyTasks>
+    @Query("SELECT * FROM dailyTasks WHERE date = :date AND userId = :userId")
+    fun getTasksByDateLiveData(date: String, userId: String): LiveData<DailyTasks>
 
     @Query("SELECT * FROM dailyTasks WHERE date = :date")
     fun getTasksByDate(date: String): DailyTasks
 
     @Query("SELECT * FROM dailyTasks ORDER BY date DESC")
     suspend fun getAllTasks(): List<DailyTasks>
+
+    @Query("SELECT * FROM dailyTasks WHERE userId = :userId ORDER BY date DESC")
+    suspend fun getAllUserTasks(userId: String): List<DailyTasks>
 
     @Query("SELECT takeProgressPicture FROM dailyTasks WHERE date = :date")
     suspend fun getProgressPathPictureByDate(date: String): String

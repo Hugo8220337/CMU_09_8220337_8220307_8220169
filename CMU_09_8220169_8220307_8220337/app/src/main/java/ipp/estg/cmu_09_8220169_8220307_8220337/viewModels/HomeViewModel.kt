@@ -18,6 +18,7 @@ import androidx.lifecycle.viewModelScope
 import coil3.Bitmap
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.SettingsPreferencesRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.UserPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.DailyTasksRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.QuotesRepository
@@ -41,6 +42,8 @@ class HomeViewModel(
     val settingsPreferencesRepository: SettingsPreferencesRepository =
         SettingsPreferencesRepository(application)
 
+    val userPreferencesRepository = UserPreferencesRepository(application)
+
     private val dailyTasksRepository: DailyTasksRepository =
         DailyTasksRepository(LocalDatabase.getDatabase(application).dailyTaskCompletionDao)
 
@@ -62,10 +65,11 @@ class HomeViewModel(
 
 
 
-    fun loadAllTasks() {
+    fun loadAllUserTasks() {
+        val userId = userPreferencesRepository.getCurrentUserId()
         viewModelScope.launch {
             _isLoading.value = true
-            _allDailyTasks.value = dailyTasksRepository.getAllTasks()
+            _allDailyTasks.value = dailyTasksRepository.getAllUserTasks(userId)
             _isLoading.value = false
         }
     }

@@ -19,6 +19,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.UserPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Running
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.RunningRepository
@@ -37,6 +38,7 @@ class RunningViewModel(
     private val runningRepository: RunningRepository = RunningRepository(
         runningDao = LocalDatabase.getDatabase(application).runningDao
     )
+    private val userPreferencesRepository = UserPreferencesRepository(application)
 
     // Location and Running Tracking
     private val fusedLocationClient: FusedLocationProviderClient =
@@ -197,9 +199,10 @@ class RunningViewModel(
     fun getRunningWorkoutsByUserID() {
         _isLoading.value = true
 
+        val userId = userPreferencesRepository.getCurrentUserId()
         viewModelScope.launch {
             try {
-                val runninWorkouts = runningRepository.getRunningByUserID()
+                val runninWorkouts = runningRepository.getRunningByUserID(userId)
 
                 if (runninWorkouts.isEmpty()) {
                     _runnings.value = emptyList() // Update to empty list
@@ -216,10 +219,11 @@ class RunningViewModel(
 
     fun getLastRun() {
         _isLoading.value = true
-
+        
+        val userId = userPreferencesRepository.getCurrentUserId()
         viewModelScope.launch {
             try {
-                val lastRun = runningRepository.getLastRun()
+                val lastRun = runningRepository.getLastRun(userId)
 
                 _lastRun.value = lastRun
             } catch (e: Exception) {

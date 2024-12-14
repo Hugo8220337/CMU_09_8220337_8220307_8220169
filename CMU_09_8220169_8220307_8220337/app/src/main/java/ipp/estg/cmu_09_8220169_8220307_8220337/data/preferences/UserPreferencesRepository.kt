@@ -13,7 +13,7 @@ class UserPreferencesRepository(
     private val EMAIL_PREFERENCE = "email"
     private val AGE_PREFERENCE = "age"
     private val WEIGHT_PREFERENCE = "weight"
-    private val PROFILE_IMAGE_URI_PREFERENCE = "profileImageUri"
+    private val currentUserId = "userId"
 
 
     private val userPreferences: SharedPreferences = context.getSharedPreferences(
@@ -75,13 +75,12 @@ class UserPreferencesRepository(
         userPreferences.edit().putFloat(WEIGHT_PREFERENCE, weight).apply()
     }
 
-    // Profile Image URI
-    fun getProfileImageUri(): String {
-        return userPreferences.getString(PROFILE_IMAGE_URI_PREFERENCE, "") ?: ""
+    fun getCurrentUserId(): String {
+        return userPreferences.getString(currentUserId, "") ?: ""
     }
 
-    fun setProfileImageUri(uri: String) {
-        userPreferences.edit().putString(PROFILE_IMAGE_URI_PREFERENCE, uri).apply()
+    fun setCurrentUserId(userId: String) {
+        userPreferences.edit().putString(currentUserId, userId).apply()
     }
 
     // Clear all user data
@@ -93,7 +92,6 @@ class UserPreferencesRepository(
             remove(EMAIL_PREFERENCE)
             remove(AGE_PREFERENCE)
             remove(WEIGHT_PREFERENCE)
-            remove(PROFILE_IMAGE_URI_PREFERENCE)
             apply()
         }
     }

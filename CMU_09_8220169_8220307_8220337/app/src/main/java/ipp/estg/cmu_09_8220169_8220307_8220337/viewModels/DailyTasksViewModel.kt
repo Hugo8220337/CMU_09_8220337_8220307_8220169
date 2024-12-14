@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.UserPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.DailyTasksRepository
@@ -23,6 +24,7 @@ class DailyTasksViewModel(
 
     private val dailyTasksRepository: DailyTasksRepository =
         DailyTasksRepository(LocalDatabase.getDatabase(application).dailyTaskCompletionDao)
+    private val userPreferencesRepository = UserPreferencesRepository(application)
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
@@ -36,9 +38,10 @@ class DailyTasksViewModel(
     var todaysTasks: LiveData<DailyTasks> = MutableLiveData()
 
     fun loadTodayTasks() {
+        val userId = userPreferencesRepository.getCurrentUserId()
         viewModelScope.launch {
             _isLoading.value = true
-            todaysTasks = dailyTasksRepository.getTodayTasksLiveData()
+            todaysTasks = dailyTasksRepository.getTodayTasksLiveData(userId)
             loadTodaysProgressPicture()
             _isLoading.value = false
         }
@@ -52,9 +55,12 @@ class DailyTasksViewModel(
     }
 
     fun setTasksValue(dailyTasks: DailyTasks) {
+        val userId = userPreferencesRepository.getCurrentUserId()
+
         // insert on room
         viewModelScope.launch {
             dailyTasksRepository.insertTasks(
+                userId,
                 dailyTasks.gallonOfWater,
                 dailyTasks.twoWorkouts,
                 dailyTasks.followDiet,

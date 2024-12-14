@@ -1,7 +1,9 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
+import androidx.compose.ui.platform.LocalContext
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.auth.AuthStatus
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.AuthFirebaseRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.UserPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.UserDao
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
 
@@ -61,5 +63,9 @@ class AuthRepository(
         )
 
         userDao.insertUser(newRoomUser)
+    }
+
+    fun getCurrentUserId(): String {
+        return authFirebaseRepository.getCurrentUser()?.uid ?: ""
     }
 }

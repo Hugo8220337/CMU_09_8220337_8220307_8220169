@@ -18,8 +18,11 @@ interface RunningDao {
     @Query("SELECT * FROM running")
     suspend fun getRunnings(): List<Running>
 
-    @Query("SELECT * FROM running ORDER BY date DESC, distance DESC LIMIT 1")
-    suspend fun getLastRun(): Running
+    @Query("SELECT * FROM running WHERE userId = :userId")
+    suspend fun getRunningsByUserId(userId: String): List<Running>
+
+    @Query("SELECT * FROM running WHERE userId = :userId ORDER BY date DESC, distance DESC LIMIT 1")
+    suspend fun getLastRun(userId: String): Running
 
     @Query("SELECT * FROM running WHERE id = :id")
     suspend fun getRunningById(id: String): Running?

@@ -54,15 +54,14 @@ class WorkoutRepository(
         withContext(Dispatchers.IO) {
             val generatedId = insertWorkoutInCache(bodyParts)
             insertWorkoutInFirebase(bodyParts, generatedId)
-            //insertWorkoutInCacheAndFirebase(bodyParts)
         }
 
         return allExercises
     }
 
-    suspend fun getWorkouts(): List<Workout> {
+    suspend fun getAllWorkouts(): List<Workout> {
         syncWorkoutsFromFirebase()
-        return workoutDao.getWorkouts()
+        return workoutDao.getAllWorkouts()
     }
 
     private suspend fun insertWorkoutInCache(trainedBodyParts: List<String>): Long {
@@ -139,10 +138,10 @@ class WorkoutRepository(
         }
     }
 
-    suspend fun getWorkoutsByUserID(): List<Workout> {
+    suspend fun getWorkoutsByUserID(userId: String): List<Workout> {
         try {
             syncWorkoutsFromFirebase()
-            val firebaseWorkouts = workoutDao.getWorkouts()
+            val firebaseWorkouts = workoutDao.getWorkouts(userId)
 
             return firebaseWorkouts
         } catch (e: Exception) {

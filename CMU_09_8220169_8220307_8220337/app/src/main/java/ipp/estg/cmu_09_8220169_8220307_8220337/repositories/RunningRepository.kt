@@ -10,7 +10,8 @@ class RunningRepository(
     private val runningDao: RunningDao,
 ) {
     private val authFirebaseRepository: AuthFirebaseRepository = AuthFirebaseRepository()
-    private val runningFirestoreRepository: RunningFirestoreRepository = RunningFirestoreRepository()
+    private val runningFirestoreRepository: RunningFirestoreRepository =
+        RunningFirestoreRepository()
 
     suspend fun insertRunningWorkout(
         distance: Double,
@@ -52,13 +53,13 @@ class RunningRepository(
         return emptyList()
     }
 
-    suspend fun getLastRun(): Running? {
+    suspend fun getLastRun(userId: String): Running? {
         try {
             // Sincronizar treinos de corrida da base de dados remota
             syncRunningWorkoutsFromFirebase()
 
             //Obter último treino de corrida da base de dados local
-            return runningDao.getLastRun()
+            return runningDao.getLastRun(userId)
         } catch (e: Exception) {
             Log.e("RunningRepository", "Error getting last run", e)
         }
@@ -66,17 +67,12 @@ class RunningRepository(
         return null
     }
 
-    suspend fun getRunningWorkoutsByUserId(): Running? {
+    suspend fun getRunningWorkoutsByUserId(userId: String): Running? {
         try {
             // Sincronizar treinos de corrida da base de dados remota
             syncRunningWorkoutsFromFirebase()
 
-            val userId = authFirebaseRepository.getCurrentUser()?.uid
-
-            //Obter treinos de corrida da base de dados local
-            if (userId != null) {
-                return runningDao.getRunningById(userId)
-            }
+            return runningDao.getRunningById(userId)
         } catch (e: Exception) {
             Log.e("RunningRepository", "Error getting running workouts by user id", e)
         }
@@ -88,7 +84,7 @@ class RunningRepository(
             // Obter treinos de corrida da base de dados remota
             val firebaseRunningWorkouts = runningFirestoreRepository.getAllUserRunningFromFirebase()
 
-            if(firebaseRunningWorkouts.isEmpty()) {
+            if (firebaseRunningWorkouts.isEmpty()) {
                 return
             }
 
@@ -99,10 +95,10 @@ class RunningRepository(
         }
     }
 
-    suspend fun getRunningByUserID(): List<Running> {
+    suspend fun getRunningByUserID(userId: String): List<Running> {
         try {
             syncRunningWorkoutsFromFirebase()
-            val runnings = runningDao.getRunnings()
+            val runnings = runningDao.getRunningsByUserId(userId)
             return runnings
         } catch (e: Exception) {
             Log.e("RunningRepository", "Error getting running workouts by user id", e)

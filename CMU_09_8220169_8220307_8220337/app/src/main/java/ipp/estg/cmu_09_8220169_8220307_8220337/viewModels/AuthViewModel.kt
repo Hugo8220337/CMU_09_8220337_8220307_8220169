@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.auth.AuthStatus
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.UserPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.AuthRepository
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,8 @@ class AuthViewModel(
     private val authRepository: AuthRepository = AuthRepository(
         LocalDatabase.getDatabase(application).userDao
     )
+    private val userPreferencesRepository: UserPreferencesRepository = UserPreferencesRepository(application)
+
 
     private val _authState: MutableStateFlow<AuthStatus> = MutableStateFlow(AuthStatus.LOADING)
     val authState: StateFlow<AuthStatus> get() = _authState
@@ -48,6 +51,7 @@ class AuthViewModel(
                 onError("Invalid login")
             }
             if (_authState.value == AuthStatus.LOGGED) {
+                userPreferencesRepository.setCurrentUserId(authRepository.getCurrentUserId())
                 onSuccess()
             }
         }
@@ -60,7 +64,6 @@ class AuthViewModel(
         birthDate: String,
         weight: Double,
         height: Double,
-        onSuccess: () -> Unit = {},
         onError: (String) -> Unit = {}
 
     ) {
