@@ -27,7 +27,7 @@ class DailyRemeinderService : Service() {
     private val CHANNEL_NAME = "Daily Reminders"
     private val FOREGROUND_ID = 1
     private val NOTIFICATION_ID = 2
-    private val NOTIFICATION_INTERVAL = 600000L // 5 minutess
+    private val NOTIFICATION_INTERVAL = 3600000L // 1 hora em milissegundos
 
     private lateinit var dailyTasksRepository: DailyTasksRepository
     private val notificationManager: NotificationManager by lazy {
@@ -66,9 +66,6 @@ class DailyRemeinderService : Service() {
         dailyTasksRepository = DailyTasksRepository(
             LocalDatabase.getDatabase(applicationContext).dailyTaskCompletionDao
         )
-
-        // Start the notification thread
-//        notificationThread.start()
     }
 
 
@@ -82,7 +79,7 @@ class DailyRemeinderService : Service() {
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
-    private suspend fun areTodaysTasksCompleted(): Boolean {
+    private fun areTodaysTasksCompleted(): Boolean {
         return dailyTasksRepository.areTodaysTasksDone()
     }
 

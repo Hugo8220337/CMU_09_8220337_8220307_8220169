@@ -69,6 +69,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.GoldColor
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.checkCameraPermission
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.launchCamera
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.requestCameraPermission
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.DailyTasksViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.QuoteViewModel
 import ipp.estg.mobile.ui.components.utils.Loading
@@ -77,20 +78,22 @@ import ipp.estg.mobile.ui.components.utils.Loading
 @Composable
 fun MainContent(
     homeViewModel: HomeViewModel,
-    quoteViewModel: QuoteViewModel = viewModel()
+    dailyTasksViewModel: DailyTasksViewModel
 ) {
-    val notificationPermission = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-    
-    val streak = homeViewModel.state.streak
-    val isLoading = homeViewModel.state.isLoading
-    val tasks by homeViewModel.dailyTasks.observeAsState()
+    val quoteViewModel: QuoteViewModel = viewModel()
+
+    val notificationPermission =
+        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+
+    val isLoaddingTasks by dailyTasksViewModel.isLoading.collectAsState()
+    val streak by dailyTasksViewModel.streak.collectAsState()
+    val tasks by dailyTasksViewModel.todaysTasks.observeAsState()
     val dailyQuote by quoteViewModel.dailyQuote.collectAsState()
     val isLoadingQuote by quoteViewModel.isLoading.collectAsState()
 
     LaunchedEffect(Unit) {
-        homeViewModel.loadTodayTasks()
-        homeViewModel.updateDailyStreak()
-        homeViewModel.loadTodaysProgressPicture()
+        dailyTasksViewModel.loadTodayTasks()
+        dailyTasksViewModel.updateDailyStreak()
         quoteViewModel.loadDailyQuote()
     }
 
@@ -117,20 +120,19 @@ fun MainContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Daily Task Checklist
-        if(isLoading) {
+        // Loding for daily tasks and daily progress picture
+        if (isLoaddingTasks) {
             Loading()
         } else {
             TaskChecklist(
                 tasks = tasks ?: DailyTasks(),
-                homeViewModel = homeViewModel
+                dailyTasksViewModel = dailyTasksViewModel
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            DailyPhotoSection(dailyTasksViewModel)
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Daily Photo Section
-        DailyPhotoSection(homeViewModel)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -141,18 +143,11 @@ fun MainContent(
             MotivationalQuoteCard(dailyQuote)
         }
 
-        homeViewModel.state.error?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error
-            )
-        }
-
     }
 }
 
 @Composable
-private fun TaskChecklist(tasks: DailyTasks, homeViewModel: HomeViewModel) {
+private fun TaskChecklist(tasks: DailyTasks, dailyTasksViewModel: DailyTasksViewModel) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -175,7 +170,7 @@ private fun TaskChecklist(tasks: DailyTasks, homeViewModel: HomeViewModel) {
                 task = stringResource(id = R.string.drink_4l_water),
                 isTaskCompleted = tasks.gallonOfWater,
                 onTaskToggle = { isCompleted ->
-                    homeViewModel.setTasksValue(
+                    dailyTasksViewModel.setTasksValue(
                         tasks.copy(gallonOfWater = isCompleted)
                     )
                 }
@@ -184,7 +179,7 @@ private fun TaskChecklist(tasks: DailyTasks, homeViewModel: HomeViewModel) {
                 task = stringResource(id = R.string.complete_2_workouts),
                 isTaskCompleted = tasks.twoWorkouts,
                 onTaskToggle = { isCompleted ->
-                    homeViewModel.setTasksValue(
+                    dailyTasksViewModel.setTasksValue(
                         tasks.copy(twoWorkouts = isCompleted)
                     )
                 }
@@ -193,7 +188,7 @@ private fun TaskChecklist(tasks: DailyTasks, homeViewModel: HomeViewModel) {
                 task = stringResource(id = R.string.follow_diet),
                 isTaskCompleted = tasks.followDiet,
                 onTaskToggle = { isCompleted ->
-                    homeViewModel.setTasksValue(
+                    dailyTasksViewModel.setTasksValue(
                         tasks.copy(followDiet = isCompleted)
                     )
                 }
@@ -202,7 +197,7 @@ private fun TaskChecklist(tasks: DailyTasks, homeViewModel: HomeViewModel) {
                 task = stringResource(id = R.string.read_10_pages),
                 isTaskCompleted = tasks.readTenPages,
                 onTaskToggle = { isCompleted ->
-                    homeViewModel.setTasksValue(
+                    dailyTasksViewModel.setTasksValue(
                         tasks.copy(readTenPages = isCompleted)
                     )
                 }
@@ -212,14 +207,15 @@ private fun TaskChecklist(tasks: DailyTasks, homeViewModel: HomeViewModel) {
 }
 
 @Composable
-fun DailyPhotoSection(homeViewModel: HomeViewModel) {
+fun DailyPhotoSection(dailyTasksViewModel: DailyTasksViewModel) {
     val context = LocalContext.current
     var hasCameraPermission by remember { mutableStateOf(false) }
+    val imageBitmap by dailyTasksViewModel.imageBitmap.collectAsState()
 
     // Reusing permission and camera launch functions
     val cameraLauncher = launchCamera { bitmap ->
         if (bitmap != null) {
-            homeViewModel.updateProgressPicture(bitmap)
+            dailyTasksViewModel.updateProgressPicture(bitmap)
         }
     }
 
@@ -259,9 +255,9 @@ fun DailyPhotoSection(homeViewModel: HomeViewModel) {
                     }
                 }
         ) {
-            if (homeViewModel.state.imageBitmap != null) {
+            if (imageBitmap != null) {
                 Image(
-                    bitmap = homeViewModel.state.imageBitmap!!.asImageBitmap(),
+                    bitmap = imageBitmap!!.asImageBitmap(),
                     contentDescription = stringResource(id = R.string.captured_photo)
                 )
             } else {
@@ -269,16 +265,16 @@ fun DailyPhotoSection(homeViewModel: HomeViewModel) {
             }
         }
 
-        SaveButton(homeViewModel = homeViewModel, context = context)
+        SaveButton(dailyTasksViewModel = dailyTasksViewModel, context = context)
     }
 }
 
 @Composable
-private fun SaveButton(homeViewModel: HomeViewModel, context: Context) {
+private fun SaveButton(dailyTasksViewModel: DailyTasksViewModel, context: Context) {
     val toastText = stringResource(id = R.string.photo_saved_in_the_gallery)
     IconButton(
         onClick = {
-            homeViewModel.saveProgressPitureToGallery()?.let {
+            dailyTasksViewModel.saveProgressPitureToGallery()?.let {
                 Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
             }
         },

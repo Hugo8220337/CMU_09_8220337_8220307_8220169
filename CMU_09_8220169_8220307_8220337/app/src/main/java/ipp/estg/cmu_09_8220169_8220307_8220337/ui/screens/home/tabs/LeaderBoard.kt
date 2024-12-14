@@ -106,7 +106,7 @@ fun LeaderboardPage(
                 } else if (errorMessage?.isNotEmpty() == true) {
                     Text(text = errorMessage.toString())
                 } else {
-                    LeaderboardList(entries = leaderboardState)
+                    LeaderboardCaloriesList(entries = leaderboardState)
                 }
             }
             EnumLeaderboardEntries.EXERCISE_TIME -> {
@@ -132,7 +132,7 @@ fun LeaderboardPage(
 }
 
 @Composable
-fun LeaderboardList(entries: List<LeaderboardEntryCalories>) {
+private fun LeaderboardCaloriesList(entries: List<LeaderboardEntryCalories>) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -141,7 +141,7 @@ fun LeaderboardList(entries: List<LeaderboardEntryCalories>) {
             LeaderboardItem(
                 rank = index + 1,
                 userName = entry.name,
-                leaderboardData = entry.calories.toString()
+                leaderboardData = entry.calories.toString() + " cal"
             )
         }
     }
@@ -164,7 +164,7 @@ fun LeaderboardListExerciseTime(entries: List<LeaderboardEntryExerciseTime>) {
 }
 
 // Função para formatar a duração (em segundos) para horas, minutos e segundos
-fun formatDuration(exerciseTime: Double): String {
+private fun formatDuration(exerciseTime: Double): String {
     val hours = (exerciseTime / 3600).toInt()  // Calcula as horas (3600 segundos em uma hora)
     val minutes = ((exerciseTime % 3600) / 60).toInt()  // Calcula os minutos restantes
     val seconds = (exerciseTime % 60).toInt()  // Calcula os segundos restantes
@@ -180,7 +180,7 @@ fun formatDuration(exerciseTime: Double): String {
 }
 
 @Composable
-fun LeaderboardListSteps(entries: List<LeaderboardEntrySteps>) {
+private fun LeaderboardListSteps(entries: List<LeaderboardEntrySteps>) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -196,7 +196,7 @@ fun LeaderboardListSteps(entries: List<LeaderboardEntrySteps>) {
 }
 
 @Composable
-fun LeaderboardItem(
+private fun LeaderboardItem(
     rank: Int,
     userName: String,
     leaderboardData: String

@@ -51,6 +51,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.MainContent
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.RunningWorkoutStartScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.WorkoutGeneratorScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs.WorkoutHistoryPage
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.DailyTasksViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 import kotlinx.coroutines.launch
 
@@ -58,18 +59,22 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
-    navController: NavController,
-    homeViewModel: HomeViewModel = viewModel(),
+    navController: NavController
 ) {
+    val homeViewModel: HomeViewModel = viewModel()
+    val dailyTasksViewModel: DailyTasksViewModel = viewModel()
 
-    val startingNavItem = 0
+    val streak by dailyTasksViewModel.streak.collectAsState()
+
+    val startingNavItem by remember { mutableIntStateOf(0) }
+    
     val navItems = listOf(
         NavigationItem(
             title = stringResource(id = R.string.home),
             selectedIcon = Icons.Filled.Home,
             unselectedIcon = Icons.Outlined.Home,
             content = {
-                MainContent(homeViewModel)
+                MainContent(homeViewModel, dailyTasksViewModel)
             }
         ),
         NavigationItem(
@@ -77,7 +82,7 @@ fun HomeScreen(
             selectedIcon = Icons.Filled.DateRange,
             unselectedIcon = Icons.Outlined.DateRange,
             content = {
-                ProgressScreen(homeViewModel.state.streak)
+                ProgressScreen(streak)
             }
         ),
         NavigationItem(
@@ -125,7 +130,7 @@ fun HomeScreen(
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings,
             content = {
-                SettingsScreen(navController)
+                SettingsScreen()
             }
         ),
         NavigationItem(

@@ -22,9 +22,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 
 @Composable
 fun SettingsScreen(
-    navController: NavController,
     homeViewModel: HomeViewModel = viewModel(),
-    authViewModel: AuthViewModel = viewModel()
 ) {
 
     val settingsPreferencesRepo = homeViewModel.settingsPreferencesRepository
@@ -109,12 +107,19 @@ fun SettingsScreen(
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
+        val languageMap = mapOf(
+            stringResource(id = R.string.portuguese) to "pt-rPT",
+            stringResource(id = R.string.english) to "en",
+            stringResource(id = R.string.german) to "de",
+            stringResource(id = R.string.french) to "fr"
+        )
         // Language dropdown menu
         SuperUsefulDropDownMenuBox(
             label = stringResource(id = R.string.language),
-            currentValue = selectedLanguage,
-            options = listOf("pt-rPT", "en", "de", "fr"),
-            onOptionSelected = { language ->
+            currentValue = languageMap.entries.find { it.value == selectedLanguage }?.key ?: "",
+            options = languageMap.keys.toList(),
+            onOptionSelected = { languageName ->
+                val language = languageMap[languageName] ?: return@SuperUsefulDropDownMenuBox
                 selectedLanguage = language
                 settingsPreferencesRepo.setLanguagePreference(language)
 

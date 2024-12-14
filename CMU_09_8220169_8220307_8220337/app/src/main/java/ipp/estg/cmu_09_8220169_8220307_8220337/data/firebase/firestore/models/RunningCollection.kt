@@ -6,7 +6,7 @@ class RunningCollection(
     val fieldDistance: Double = 0.0,
     val fieldDuration: String = "",
     val fieldSteps: Int = 0,
-    val fieldCalories: Double = 0.0,
+    val fieldCalories: Int = 0,
     val fieldDate: String = "",
 ) {
     companion object {

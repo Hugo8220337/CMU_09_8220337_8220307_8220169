@@ -1,15 +1,24 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.services
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import ipp.estg.cmu_09_8220169_8220307_8220337.R
 
 class StepCounterService : Service(), SensorEventListener {
+    private val CHANNEL_ID = "StepCounter"
+    private val CHANNEL_NAME = "Step Counter"
+    private val FOREGROUND_ID = 2
+
     companion object {
         var onStepDetected: ((Int) -> Unit)? = null // Callback para comunicação com o ViewModel
     }
@@ -18,9 +27,35 @@ class StepCounterService : Service(), SensorEventListener {
     private var stepCounterSensor: Sensor? = null
     private var initialStepCount: Int? = null
 
+    private val notificationManager: NotificationManager by lazy {
+        getSystemService(NotificationManager::class.java)
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun startServiceInForeground() {
+        val notification = Notification.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.mipmap.ic_launcher_75hard_challange_logo_foreground)
+            .setContentTitle("Serviço de contagem de passos em foreground")
+            .setContentText("Não perca o foco, continue a sua jornada.\nTu és uma alface do Lidl!")
+            .build()
+
+        startForeground(FOREGROUND_ID, notification)
+    }
 
     override fun onCreate() {
         super.onCreate()
+        createNotificationChannel()
+
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         stepCounterSensor?.let {
@@ -29,6 +64,8 @@ class StepCounterService : Service(), SensorEventListener {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        startServiceInForeground()
+
         return START_STICKY
     }
 

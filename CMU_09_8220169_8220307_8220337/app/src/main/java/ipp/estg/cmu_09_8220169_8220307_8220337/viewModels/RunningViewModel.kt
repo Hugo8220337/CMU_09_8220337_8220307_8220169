@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.location.Location
+import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Running
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.RunningRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.services.DailyRemeinderService
 import ipp.estg.cmu_09_8220169_8220307_8220337.services.StepCounterService
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Timer
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -158,13 +160,18 @@ class RunningViewModel(
     }
 
     private fun startStepCounterService() {
-        val intent = Intent(getApplication(), StepCounterService::class.java)
-        getApplication<Application>().startService(intent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val application = getApplication<Application>()
+            Intent(application, StepCounterService::class.java).also {
+                application.startService(it)
+            }
+        }
     }
 
     private fun stopStepCounterService() {
-        val intent = Intent(getApplication(), StepCounterService::class.java)
-        getApplication<Application>().stopService(intent)
+        Intent(getApplication(), StepCounterService::class.java).also {
+            getApplication<Application>().stopService(it)
+        }
     }
 
 

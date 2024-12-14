@@ -21,8 +21,8 @@ import androidx.navigation.NavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.ErrorScreen
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.LoadingScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.UserViewModel
+import ipp.estg.mobile.ui.components.utils.Loading
 
 @Composable
 fun EditProfileScreen(
@@ -51,13 +51,13 @@ fun EditProfileScreen(
             name = it.name
             email = it.email
             birthDate = it.birthDate
-            weight = it.weight.toDouble()
-            height = it.height.toDouble()
+            weight = it.weight
+            height = it.height
         }
     }
 
     if (isLoading) {
-        LoadingScreen()
+        Loading()
     } else if (error != null) {
         ErrorScreen(error)
     } else {

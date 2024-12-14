@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
@@ -45,15 +46,13 @@ class HomeViewModel(
 
 
 
-    var state: ScreenState by mutableStateOf(ScreenState())
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
 
-
-
-
-    var dailyTasks: LiveData<DailyTasks> = MutableLiveData()
 
     private var _allDailyTasks = MutableStateFlow<List<DailyTasks>>(emptyList())
     val allDailyTasks = _allDailyTasks.asStateFlow()
+
 
     init {
         // Configura o idioma baseado na preferência guardada
@@ -61,36 +60,13 @@ class HomeViewModel(
         settingsPreferencesRepository.updateLocale(application, savedLanguage)
     }
 
-    fun loadTodaysProgressPicture() {
-        viewModelScope.launch {
-            // Load da fotografia de hoje, se existir
-            val todayProgressPicturePath = dailyTasksRepository.getTodaysProgressPicture();
-            if (todayProgressPicturePath.isNotEmpty()) {
-                val image = getImageFromFile(todayProgressPicturePath)
-                state = state.copy(imageBitmap = image)
-            }
-        }
-    }
-
-    fun loadTodayTasks() {
-        viewModelScope.launch {
-            dailyTasks = dailyTasksRepository.getTodayTasksLiveData()
-        }
-    }
-
-    fun updateDailyStreak() {
-        viewModelScope.launch {
-            val streak = dailyTasksRepository.getStreak()
-            state = state.copy(streak = streak)
-        }
-    }
 
 
     fun loadAllTasks() {
         viewModelScope.launch {
-            state = state.copy(isLoading = true)
+            _isLoading.value = true
             _allDailyTasks.value = dailyTasksRepository.getAllTasks()
-            state = state.copy(isLoading = false)
+            _isLoading.value = false
         }
     }
 
@@ -112,53 +88,4 @@ class HomeViewModel(
         }
     }
 
-    fun setTasksValue(dailyTasks: DailyTasks) {
-        // insert on room
-        viewModelScope.launch {
-            dailyTasksRepository.insertTasks(
-                dailyTasks.gallonOfWater,
-                dailyTasks.twoWorkouts,
-                dailyTasks.followDiet,
-                dailyTasks.readTenPages,
-                dailyTasks.takeProgressPicture
-            )
-
-            // Atualizar streak sempre que houver alguma alteração nas tasks
-            updateDailyStreak()
-        }
-    }
-
-
-    // Função para atualizar a imagem
-    fun updateProgressPicture(bitmap: Bitmap) {
-        state = state.copy(imageBitmap = bitmap)
-
-        // Guardar a imagem num ficheiro
-        val fileAbsolutePath = saveImageToFile(getApplication(), bitmap)
-
-        // Atualizar a task
-        val dailyTasks = dailyTasks.value
-        if (dailyTasks != null) {
-            val newTasks = dailyTasks.copy(takeProgressPicture = fileAbsolutePath)
-            setTasksValue(newTasks)
-        }
-    }
-
-    fun saveProgressPitureToGallery(): String? {
-        val bitmap = state.imageBitmap ?: return null
-
-        val currentDate = LocalDate.now().toString()
-        val imageName = "progress_picture_${currentDate}.png"
-        val imageDescription = "Progress picture taken on $currentDate"
-
-        return saveImageToGallery(getApplication(), bitmap, imageName, imageDescription)
-    }
-
-    data class ScreenState(
-        val isLoading: Boolean = false,
-        val streak: Int = 0,
-        val error: String? = null,
-        val hasCameraPermission: Boolean = false,
-        val imageBitmap: Bitmap? = null,
-    )
 }

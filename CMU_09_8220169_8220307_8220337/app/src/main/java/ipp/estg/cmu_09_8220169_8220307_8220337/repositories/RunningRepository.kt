@@ -18,12 +18,15 @@ class RunningRepository(
         steps: Int
     ) {
         try {
+            val calories =
+                (distance * 0.05 + 0.02 * steps).toInt() // 0.05 calorias por metro + 1 caloria por passo
+
             // Inserir treino de corrida no Room
             val running = Running(
                 distance = distance,
                 duration = duration.toString(),
                 steps = steps,
-                calories = distance * 0.05 + 0.02 * steps // 0.05 calorias por metro + 1 caloria por passo
+                calories = calories // 0.05 calorias por metro + 1 caloria por passo
             )
             // Inserir na base de dados local
             runningDao.insertRunning(running)

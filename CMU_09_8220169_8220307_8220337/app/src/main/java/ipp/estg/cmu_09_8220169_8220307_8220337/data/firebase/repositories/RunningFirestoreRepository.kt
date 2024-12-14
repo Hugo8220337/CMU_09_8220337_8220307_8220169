@@ -64,7 +64,7 @@ class RunningFirestoreRepository(
                         distance = (document.getDouble(RunningCollection.FIELD_DISTANCE) ?: 0.0),
                         duration = document.getString(RunningCollection.FIELD_DURATION) ?: "",
                         steps = (document.getLong(RunningCollection.FIELD_STEPS)?.toInt() ?: 0),
-                        calories = (document.getDouble(RunningCollection.FIELD_CALORIES) ?: 0.0),
+                        calories = (document.getLong(RunningCollection.FIELD_CALORIES)?.toInt() ?: 0),
                         date = document.getString(RunningCollection.FIELD_DATE) ?: ""
                     )
                 }
@@ -94,7 +94,7 @@ class RunningFirestoreRepository(
                         distance = (document.getDouble(RunningCollection.FIELD_DISTANCE) ?: 0.0),
                         duration = document.getString(RunningCollection.FIELD_DURATION) ?: "",
                         steps = (document.getLong(RunningCollection.FIELD_STEPS)?.toInt() ?: 0),
-                        calories = (document.getDouble(RunningCollection.FIELD_CALORIES) ?: 0.0),
+                        calories = (document.getLong(RunningCollection.FIELD_CALORIES)?.toInt() ?: 0),
                         date = document.getString(RunningCollection.FIELD_DATE) ?: ""
                     )
                 }
@@ -114,7 +114,7 @@ class RunningFirestoreRepository(
     }
 
     // Get calories burned by user
-    suspend fun getHighestCaloriesBurnedByUser(userId: String): Double {
+    suspend fun getHighestCaloriesBurnedByUser(userId: String): Int {
         return try {
             // Obter os documentos da coleção 'runningCollection' para o usuário
             val result = firestore.collection(CollectionsNames.runningCollection)
@@ -124,16 +124,16 @@ class RunningFirestoreRepository(
 
             // Verificar se o resultado não está vazio e mapear as calorias
             if (result.isEmpty) {
-                0.0  // Se não houver documentos, retorna 0.0
+                0  // Se não houver documentos, retorna 0.0
             } else {
                 result.documents.mapNotNull { document ->
                     // Tenta pegar o campo 'calories' e garantir que seja um número
-                    (document[RunningCollection.FIELD_CALORIES] as? Number)?.toDouble()
-                }.maxOrNull() ?: 0.0  // Retorna o maior valor ou 0.0 se não encontrar
+                    (document[RunningCollection.FIELD_CALORIES] as Number).toInt()
+                }.maxOrNull() ?: 0  // Retorna o maior valor ou 0.0 se não encontrar
             }
         } catch (e: Exception) {
             Log.d("RunningFirestoreRepository", "Error getting highest calories burned by user from Firebase", e)
-            0.0  // Em caso de erro, retorna 0.0
+            0  // Em caso de erro, retorna 0.0
         }
     }
 

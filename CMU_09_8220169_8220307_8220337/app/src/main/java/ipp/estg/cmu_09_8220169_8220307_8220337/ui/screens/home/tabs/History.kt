@@ -109,7 +109,7 @@ private fun RunningHistoryScreenContentStatic(
 ) {
     if (runnings.isEmpty()) {
         Text(
-            text = "No running workouts yet",
+            text = stringResource(id = R.string.no_runnings_yet),
             modifier = Modifier.fillMaxSize(),
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center
@@ -135,7 +135,7 @@ private fun WorkoutHistory(
 ) {
     if (workouts.isEmpty()) {
         Text(
-            text = "No workouts yet",
+            text = stringResource(id =  R.string.no_workouts_yet),
             modifier = Modifier.fillMaxSize(),
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center

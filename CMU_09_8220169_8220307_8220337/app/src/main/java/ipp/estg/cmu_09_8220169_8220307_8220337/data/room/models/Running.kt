@@ -12,7 +12,7 @@ data class Running(
     val distance: Double,
     val duration: String,
     val steps: Int,
-    val calories: Double,
+    val calories: Int,
     val date: String
 ) {
     constructor(
@@ -20,7 +20,7 @@ data class Running(
         distance: Double,
         duration: String = "",
         steps: Int,
-        calories: Double
+        calories: Int
     ) : this(
         id = id,
         distance = distance,
