@@ -64,6 +64,9 @@ class DailyTasksRepository(
     fun areTodaysTasksDone(): Boolean {
         val dailyTasks = getTodayTasks()
 
+        if (dailyTasks == null || dailyTasks.followDiet == null || dailyTasks.twoWorkouts == null || dailyTasks.readTenPages == null || dailyTasks.gallonOfWater == null) {
+            return false
+        }
         val diet = dailyTasks.followDiet
         val workouts = dailyTasks.twoWorkouts
         val tenPages = dailyTasks.readTenPages
