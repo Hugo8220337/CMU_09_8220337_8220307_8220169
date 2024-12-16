@@ -1,6 +1,5 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -129,8 +128,6 @@ fun SettingsScreen(
         // Initialize current value with the key corresponding to the selected language
         val currentLanguage = languageMap.entries.find { it.value == selectedLanguage }?.key ?: ""
 
-
-        Log.d("SettingsScreen", "currentLanguage: $currentLanguage")
 
         // Language dropdown menu
         SuperUsefulDropDownMenuBox(

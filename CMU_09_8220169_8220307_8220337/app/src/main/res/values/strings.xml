@@ -103,4 +103,5 @@
     <string name="error">Error</string>
     <string name="confirm">Confirm</string>
     <string name="seconds">Seconds</string>
+    <string name="profile_image">Profile Image</string>
 </resources>

@@ -149,15 +149,13 @@ fun UserInfoCard(user: User) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            Text(text = user.name, fontSize = 16.sp, color = Color.Gray)
+            Text(text = stringResource(id = R.string.email) + ": " + user.email, fontSize = 16.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Email: " + user.email, fontSize = 16.sp, color = Color.Gray)
+            Text(text = stringResource(id = R.string.birth_date) + "Birthdate: " + user.birthDate, fontSize = 16.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Birthdate: " + user.birthDate, fontSize = 16.sp, color = Color.Gray)
+            Text(text = stringResource(id = R.string.height) + "Height: " + user.height, fontSize = 16.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Height: " + user.height, fontSize = 16.sp, color = Color.Gray)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Weight: " + user.weight, fontSize = 16.sp, color = Color.Gray)
+            Text(text = stringResource(id = R.string.weight) + "Weight: " + user.weight, fontSize = 16.sp, color = Color.Gray)
         }
     }
 }
@@ -166,7 +164,7 @@ fun UserInfoCard(user: User) {
 fun ProfileImage(image: Painter) {
     Image(
         painter = image,
-        contentDescription = "Imagem de Perfil",
+        contentDescription = stringResource(id = R.string.profile_image),
         contentScale = ContentScale.Crop, // Garante que a imagem seja cortada corretamente
         modifier = Modifier
             .size(120.dp) // Define o tamanho do círculo

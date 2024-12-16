@@ -33,10 +33,10 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Running
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.EmptyPicturesState
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.buttons.DropDownButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.DailyPictureCard
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.RunCardItem
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.WorkoutCardItem
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.DropDownButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.getImageFromFile
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel

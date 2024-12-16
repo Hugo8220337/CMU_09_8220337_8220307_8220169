@@ -40,8 +40,8 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.ControlButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.RunDetails
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.buttons.ControlButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.formatTime
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
@@ -77,25 +77,25 @@ fun RunningWorkoutScreen(
         }
     }
 
-    LaunchedEffect(fineLocationPermission.status.isGranted) {
+    LaunchedEffect(fineLocationPermission.status) {
         if (!fineLocationPermission.status.isGranted) {
             fineLocationPermission.launchPermissionRequest()
         }
     }
 
-    LaunchedEffect(coarseLocationPermission.status.isGranted) {
+    LaunchedEffect(coarseLocationPermission.status) {
         if (!coarseLocationPermission.status.isGranted) {
             coarseLocationPermission.launchPermissionRequest()
         }
     }
 
-    LaunchedEffect(foregroundLocationPermission.status.isGranted) {
+    LaunchedEffect(foregroundLocationPermission.status) {
         if (!foregroundLocationPermission.status.isGranted) {
             foregroundLocationPermission.launchPermissionRequest()
         }
     }
 
-    LaunchedEffect(foregroundServicePermission.status.isGranted){
+    LaunchedEffect(foregroundServicePermission.status){
         if (!foregroundServicePermission.status.isGranted) {
             foregroundServicePermission.launchPermissionRequest()
         }

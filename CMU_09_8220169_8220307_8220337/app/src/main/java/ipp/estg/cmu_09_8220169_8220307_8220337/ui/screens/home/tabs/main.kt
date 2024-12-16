@@ -1,7 +1,6 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs
 
 import android.Manifest
-import android.content.Context
 import android.widget.Toast
 import androidx.activity.result.launch
 import androidx.compose.foundation.Image
@@ -19,12 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,6 +45,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.StreakLinearProgressIndicator
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.buttons.SaveButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.MotivationalQuoteCard
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.TaskItemCard
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.checkCameraPermission
@@ -244,34 +240,19 @@ fun DailyPhotoSection(dailyTasksViewModel: DailyTasksViewModel) {
             if (imageBitmap != null) {
                 Image(
                     bitmap = imageBitmap!!.asImageBitmap(),
-                    contentDescription = stringResource(id = R.string.captured_photo)
+                    contentDescription = stringResource(id = R.string.captured_photo),
+                    modifier = Modifier.fillMaxSize()
                 )
             } else {
                 Text(text = stringResource(id = R.string.upload_photo), color = Color.White)
             }
         }
 
-        SaveButton(dailyTasksViewModel = dailyTasksViewModel, context = context)
-    }
-}
-
-@Composable
-private fun SaveButton(dailyTasksViewModel: DailyTasksViewModel, context: Context) {
-    val toastText = stringResource(id = R.string.photo_saved_in_the_gallery)
-    IconButton(
-        onClick = {
+        val toastText = stringResource(id = R.string.photo_saved_in_the_gallery)
+        SaveButton {
             dailyTasksViewModel.saveProgressPitureToGallery()?.let {
-                Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
-            }
-        },
-        modifier = Modifier
-            .padding(8.dp)
-            .size(36.dp),
-    ) {
-        Icon(
-            imageVector = Icons.Outlined.Save,
-            contentDescription = stringResource(id = R.string.save),
-            tint = MaterialTheme.colorScheme.onBackground
-        )
+            Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
+        }}
+
     }
 }

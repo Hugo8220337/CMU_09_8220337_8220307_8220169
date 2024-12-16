@@ -102,5 +102,6 @@
     <string name="streak_text">Tag %1$d von 75</string>
     <string name="error">Fehler</string>
     <string name="confirm">Bestätigen</string>
-    <string name="seconds">\nSekunden</string>
+    <string name="seconds">Sekunden</string>
+    <string name="profile_image">Profilbild</string>
 </resources>

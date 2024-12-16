@@ -60,7 +60,7 @@ private fun RunItem(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "${running.steps} seconds" + stringResource(id = R.string.steps),
+            text = "${running.steps}" + stringResource(id = R.string.steps),
             style = MaterialTheme.typography.bodySmall
         )
     }

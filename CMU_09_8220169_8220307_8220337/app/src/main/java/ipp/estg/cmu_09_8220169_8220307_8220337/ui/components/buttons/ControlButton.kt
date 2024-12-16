@@ -1,4 +1,4 @@
-package ipp.estg.cmu_09_8220169_8220307_8220337.ui.components
+package ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.buttons
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width

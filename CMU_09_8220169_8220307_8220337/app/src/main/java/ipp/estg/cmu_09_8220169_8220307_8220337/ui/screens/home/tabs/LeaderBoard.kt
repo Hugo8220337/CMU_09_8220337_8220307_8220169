@@ -43,7 +43,7 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderBoardEntries.LeaderboardEntryCalories
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderBoardEntries.LeaderboardEntryExerciseTime
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderBoardEntries.LeaderboardEntrySteps
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.LeaderboardDropDownButton
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.buttons.LeaderboardDropDownButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.LeaderboardViewModel
 import ipp.estg.mobile.ui.components.utils.Loading
 
