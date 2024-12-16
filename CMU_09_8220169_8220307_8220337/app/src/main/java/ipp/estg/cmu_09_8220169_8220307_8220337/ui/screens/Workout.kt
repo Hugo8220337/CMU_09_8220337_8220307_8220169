@@ -21,7 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -114,8 +114,8 @@ private fun TopAppBar(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Icon(
-            imageVector = Icons.Default.ArrowBack,
-            contentDescription = "Back",
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = stringResource(id = R.string.back),
             tint = Color.White,
             modifier = Modifier.clickable { onBackPressed() }
         )
@@ -187,7 +187,7 @@ private fun ExerciseCard(exercise: ExerciseItemDataResponse) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Instructions:",
+            text = stringResource(id = R.string.instructions) + ":",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -280,7 +280,7 @@ private fun Controls(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Check,
-                        contentDescription = "Finish",
+                        contentDescription = stringResource(id = R.string.finish),
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))

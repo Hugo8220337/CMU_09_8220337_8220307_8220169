@@ -1,9 +1,9 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.utils
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Suspends until the LiveData has a non-null value.

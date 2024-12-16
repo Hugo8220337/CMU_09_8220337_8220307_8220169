@@ -1,16 +1,34 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.profile
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -93,7 +111,7 @@ fun EditProfileScreen(
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
-                        label = { Text("Username") },
+                        label = { Text(stringResource(id = R.string.username)) },
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -101,7 +119,7 @@ fun EditProfileScreen(
                     OutlinedTextField(
                         value = email,
                         onValueChange = {}, // Não permite alterações
-                        label = { Text("Email") },
+                        label = { Text(stringResource(id = R.string.email)) },
                         modifier = Modifier.fillMaxWidth(),
                         enabled = false // Torna o campo somente leitura
                     )
@@ -110,7 +128,7 @@ fun EditProfileScreen(
                     OutlinedTextField(
                         value = birthDate,
                         onValueChange = { birthDate = it },
-                        label = { Text("Birth Date") },
+                        label = { Text(stringResource(id = R.string.birth_date)) },
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -120,7 +138,7 @@ fun EditProfileScreen(
                         onValueChange = {
                             weight = it.toDoubleOrNull() ?: 0.0
                         },
-                        label = { Text("Weight") },
+                        label = { Text(stringResource(id = R.string.weight)) },
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                     )
@@ -131,7 +149,7 @@ fun EditProfileScreen(
                         onValueChange = {
                             height = it.toDoubleOrNull() ?: 0.0
                         },
-                        label = { Text("Height") },
+                        label = { Text(stringResource(id = R.string.height)) },
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                     )
@@ -157,7 +175,7 @@ fun EditProfileScreen(
                             .fillMaxWidth()
                             .height(50.dp)
                     ) {
-                        Text("Save Changes")
+                        Text(stringResource(id = R.string.save))
                     }
 
                     // Cancel Button
@@ -167,7 +185,7 @@ fun EditProfileScreen(
                             .fillMaxWidth()
                             .height(50.dp)
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(id = R.string.cancel))
                     }
 
                     // Add some space at the bottom

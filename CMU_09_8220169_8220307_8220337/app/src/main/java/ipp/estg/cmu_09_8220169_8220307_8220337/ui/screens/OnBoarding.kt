@@ -17,21 +17,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
-import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.UserViewModel
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun OnboardingScreen(
-    navController: NavController,
-    userViewModel: UserViewModel = viewModel()
+    navController: NavController
 ) {
     val pagerState = rememberPagerState(pageCount = { 3 })
     val coroutineScope = rememberCoroutineScope()
@@ -44,25 +42,24 @@ fun OnboardingScreen(
         ) {
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.weight(1f) // Let the pager take up available space
+                modifier = Modifier.weight(1f)
             ) { page ->
                 when (page) {
                     0 -> OnboardingScreen1()
                     1 -> OnboardingScreen2()
                     2 -> OnboardingScreen3()
-                    // Adicione mais telas de onboarding aqui se necessário
                 }
             }
 
             Button(
                 onClick = {
                     coroutineScope.launch {
-                        if (pagerState.currentPage < 2) { // Mude para 2 se houver 3 páginas no total
+                        if (pagerState.currentPage < 2) { // Mudar para 2 se houver 3 páginas no total
                             pagerState.scrollToPage(pagerState.currentPage + 1)
                         } else {
                             // Navega para a tela inicial ou principal do app após o onboarding
                             navController.navigate(Screen.Home.route) {
-                                // Remove a tela de onboarding da pilha para que o usuário não possa voltar
+                                // Remove a tela de onboarding da stack para que o usuário não possa voltar
                                 popUpTo(Screen.Onboarding.route) { inclusive = true }
                             }
                         }
@@ -72,8 +69,9 @@ fun OnboardingScreen(
                     .align(Alignment.CenterHorizontally)
                     .padding(16.dp)
             ) {
-                //OnboardingScreen3()
-                Text(text = if (pagerState.currentPage < 2) "Next" else "Get Started")
+                Text(text = if (pagerState.currentPage < 2) stringResource(id = R.string.next) else stringResource(
+                    id = R.string.get_started
+                ))
             }
         }
 
@@ -95,14 +93,14 @@ private fun OnboardingScreen1() {
             modifier = Modifier.size(250.dp)
         )
         Text(
-            text = "Welcome to MyApp!",
+            text = stringResource(id = R.string.wellcome_to_75hard),
             style = MaterialTheme.typography.labelMedium
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Hi there, seems like you're new around here.",
+            text = stringResource(id = R.string.seems_like_youre_new),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
@@ -126,14 +124,14 @@ private fun OnboardingScreen2() {
                 .padding(horizontal = 0.dp, vertical = 0.dp)
         )
         Text(
-            text = "Welcome to MyApp!",
+            text = stringResource(id = R.string.wellcome_to_75hard),
             style = MaterialTheme.typography.labelMedium
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Welcome to 75Heart, here we will guide you in different ways to put you in shape.",
+            text = stringResource(id = R.string.wellcome_to_75hard_description),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
@@ -157,14 +155,14 @@ private fun OnboardingScreen3() {
                 .padding(horizontal = 0.dp, vertical = 0.dp)
         )
         Text(
-            text = "Welcome to MyApp!",
+            text = stringResource(id = R.string.wellcome_to_75hard),
             style = MaterialTheme.typography.labelMedium
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "But looks like it is your first time here so first we need you to create a account for yourself.",
+            text = stringResource(id = R.string.lets_get_started),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )

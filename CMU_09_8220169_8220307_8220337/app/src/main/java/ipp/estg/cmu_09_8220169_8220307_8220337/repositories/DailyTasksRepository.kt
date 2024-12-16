@@ -3,11 +3,8 @@ package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 import android.util.Log
 import androidx.lifecycle.LiveData
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.DailyTasksFirestoreRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.DailyTasksDao
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import java.time.LocalDate
 
 class DailyTasksRepository(

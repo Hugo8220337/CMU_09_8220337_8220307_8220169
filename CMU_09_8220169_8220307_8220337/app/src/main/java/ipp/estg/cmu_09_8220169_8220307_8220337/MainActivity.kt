@@ -12,14 +12,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.SettingsPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.HomeScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.OnboardingScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.RunningWorkoutScreen
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.UserDataInput
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.WorkoutScreen
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.StartScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.LoginScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.RegisterScreen
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.StartScreen
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.HomeScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.profile.EditProfileScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Converter

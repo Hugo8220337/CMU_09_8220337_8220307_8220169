@@ -12,14 +12,17 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -29,7 +32,6 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Running
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.DropDownList
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.EmptyPicturesState
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.DailyPictureCard
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.RunCardItem
@@ -42,10 +44,10 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.WorkoutViewModel
 import java.time.LocalDate
 
 // Enum RunSortOrder separado
-enum class EnumEntries(val value: String) {
-    RUUNING("Running"),
-    WORKOUTS("Workouts"),
-    PHOTOS("Photos");
+enum class EnumEntries(val value: Int) {
+    RUUNING(R.string.running),
+    WORKOUTS(R.string.workouts),
+    PHOTOS(R.string.photos);
 }
 
 data class DailyPicture(
@@ -59,7 +61,6 @@ fun WorkoutHistoryPage(
     workoutViewModel: WorkoutViewModel = viewModel(),
     runningViewModel: RunningViewModel = viewModel()
 ) {
-
     var selectedTab by rememberSaveable { mutableStateOf(EnumEntries.RUUNING) }
 
     val workouts = workoutViewModel.state.storedWorkouts
@@ -84,7 +85,7 @@ fun WorkoutHistoryPage(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = selectedTab.value,
+                text = stringResource(id = selectedTab.value),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(start = 8.dp)
             )

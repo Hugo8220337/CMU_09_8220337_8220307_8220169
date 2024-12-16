@@ -6,14 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.WorkoutFirestoreRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.UserPreferencesRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.ExerciseItemDataResponse
-import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.WorkoutRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.RemoteApis
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.ExerciseItemDataResponse
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
+import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.WorkoutRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

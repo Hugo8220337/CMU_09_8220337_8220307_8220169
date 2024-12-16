@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.AuthFirebaseRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.UserFirestoreRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

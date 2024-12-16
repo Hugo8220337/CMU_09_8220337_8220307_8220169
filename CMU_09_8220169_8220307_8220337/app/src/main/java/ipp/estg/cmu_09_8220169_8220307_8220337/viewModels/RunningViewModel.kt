@@ -1,8 +1,6 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.viewModels
 
 import android.app.Application
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Build
@@ -23,7 +21,6 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.UserPreferencesR
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Running
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.RunningRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.services.DailyRemeinderService
 import ipp.estg.cmu_09_8220169_8220307_8220337.services.StepCounterService
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Timer
 import kotlinx.coroutines.flow.MutableStateFlow

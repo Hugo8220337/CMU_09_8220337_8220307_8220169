@@ -33,11 +33,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderBoardEntries.LeaderboardEntryCalories
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderBoardEntries.LeaderboardEntryExerciseTime
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.leaderBoardEntries.LeaderboardEntrySteps
@@ -46,10 +48,10 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.LeaderboardViewModel
 import ipp.estg.mobile.ui.components.utils.Loading
 
 
-enum class EnumLeaderboardEntries(val value: String) {
-    CALORIES("Calorias Queimadas"),
-    EXERCISE_TIME("Tempo de Exercício"),
-    STEPS("Números de passos");
+enum class EnumLeaderboardEntries(val value: Int) {
+    CALORIES(R.string.burned_calories),
+    EXERCISE_TIME(R.string.exercice_time),
+    STEPS(R.string.number_of_steps);
 }
 
 @Composable
@@ -91,7 +93,7 @@ fun LeaderboardPage(
         }
 
         Text(
-            text = selectedTab.value,
+            text = stringResource(id = selectedTab.value),
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .fillMaxWidth()

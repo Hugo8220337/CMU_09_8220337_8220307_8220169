@@ -1,7 +1,7 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.utils
 
 import com.google.gson.Gson
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ConverterTest{

@@ -1,36 +1,19 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.viewModels
 
 import android.app.Application
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import coil3.Bitmap
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.SettingsPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.UserPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.DailyTasksRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.QuotesRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.RemoteApis
 import ipp.estg.cmu_09_8220169_8220307_8220337.services.DailyRemeinderService
-import ipp.estg.cmu_09_8220169_8220307_8220337.utils.getImageFromFile
-import ipp.estg.cmu_09_8220169_8220307_8220337.utils.saveImageToFile
-import ipp.estg.cmu_09_8220169_8220307_8220337.utils.saveImageToGallery
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class HomeViewModel(
     application: Application

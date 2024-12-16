@@ -6,7 +6,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.CollectionsNames
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models.DailyTasksCollection
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.firestore.models.RunningCollection
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDate

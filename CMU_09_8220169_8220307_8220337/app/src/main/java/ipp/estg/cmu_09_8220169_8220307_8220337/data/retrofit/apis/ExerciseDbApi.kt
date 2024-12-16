@@ -4,7 +4,6 @@ import ipp.estg.cmu_09_8220169_8220307_8220337.BuildConfig
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.BodyPartsRetrofitResponse
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.ExercisesRetrofitResponse
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path

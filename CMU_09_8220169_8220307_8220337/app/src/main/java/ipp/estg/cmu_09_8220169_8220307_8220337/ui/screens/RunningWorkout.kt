@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import com.google.maps.android.compose.Polyline
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,13 +37,14 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
-import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.ControlButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.RunDetails
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.formatTime
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 
 
 @SuppressLint("InlinedApi")
@@ -196,12 +196,14 @@ private fun MapSection(runningViewModel: RunningViewModel, fineLocationPermissio
                         state = MarkerState(
                             position = LatLng(it.latitude, it.longitude)
                         ),
-                        title = "You are here"
+                        title = stringResource(id = R.string.you_are_here)
                     )
                 }
             }
         } else {
-            Text("Location permission not granted")
+            Text(
+                text = stringResource(id = R.string.location_permission_required),
+            )
         }
 
     }

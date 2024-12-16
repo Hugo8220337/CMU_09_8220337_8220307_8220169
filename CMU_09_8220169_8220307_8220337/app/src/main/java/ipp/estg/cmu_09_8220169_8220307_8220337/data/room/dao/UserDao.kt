@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.User
 
 @Dao

@@ -6,9 +6,10 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import ipp.estg.cmu_09_8220169_8220307_8220337.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,14 +36,14 @@ fun MyDatePickerDialog(
             }
 
             ) {
-                Text(text = "OK")
+                Text(text = stringResource(id = R.string.confirm))
             }
         },
         dismissButton = {
             Button(onClick = {
                 onDismiss()
             }) {
-                Text(text = "Cancel")
+                Text(text = stringResource(id = R.string.cancel))
             }
         }
     ) {

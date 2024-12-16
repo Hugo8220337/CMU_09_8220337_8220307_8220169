@@ -12,8 +12,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Running
 
 @Composable
@@ -42,7 +44,7 @@ private fun RunItem(
     modifier: Modifier = Modifier
 ) {
     val distance: Double = "%.2f".format(running.distance).toDouble()
-    val calories: Int = running.calories.toInt()
+    val calories: Int = running.calories
     Column(modifier = modifier) {
         Text(text = running.date, style = MaterialTheme.typography.bodySmall)
         Spacer(modifier = Modifier.height(4.dp))
@@ -53,12 +55,12 @@ private fun RunItem(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "$calories cal,  ${running.duration} segundos",
+            text = "$calories cal,  ${running.duration} " + stringResource(id = R.string.seconds),
             style = MaterialTheme.typography.bodySmall
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "${running.steps} passos",
+            text = "${running.steps} seconds" + stringResource(id = R.string.steps),
             style = MaterialTheme.typography.bodySmall
         )
     }
