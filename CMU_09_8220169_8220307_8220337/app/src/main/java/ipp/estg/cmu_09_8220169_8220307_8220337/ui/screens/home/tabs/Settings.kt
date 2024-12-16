@@ -68,6 +68,11 @@ fun SettingsScreen(
                 onCheckedChange = {
                     notificationsEnabled = it
                     settingsPreferencesRepo.setNotificationsPreference(it)
+
+                    // Force recreation of the activity to apply theme changes immediately
+                    if (context is androidx.activity.ComponentActivity) {
+                        context.recreate()  // Recreates the activity to apply the new theme
+                    }
                 },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White,

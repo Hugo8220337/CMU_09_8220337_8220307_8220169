@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.SettingsPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.DailyTasksRepository
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +24,12 @@ class DailyRemeinderService : Service() {
     private val NOTIFICATION_ID = 2
     private val NOTIFICATION_INTERVAL = 3600000L // 1 hora em milissegundos
 
+
     private lateinit var dailyTasksRepository: DailyTasksRepository
+    private val settingsRepository: SettingsPreferencesRepository by lazy {
+        SettingsPreferencesRepository(applicationContext)
+    }
+
     private val notificationManager: NotificationManager by lazy {
         getSystemService(NotificationManager::class.java)
     }
@@ -81,8 +87,9 @@ class DailyRemeinderService : Service() {
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
             override fun run() {
+                val notificationPreference = settingsRepository.getNotificationsPreference()
                 CoroutineScope(Dispatchers.IO).launch {
-                    if (!areTodaysTasksCompleted()) {
+                    if (!areTodaysTasksCompleted() && notificationPreference) {
                         showNotification()
                     }
                 }
