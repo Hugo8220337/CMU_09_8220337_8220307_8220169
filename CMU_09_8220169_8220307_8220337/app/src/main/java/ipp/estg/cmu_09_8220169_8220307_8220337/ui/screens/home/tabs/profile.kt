@@ -151,11 +151,11 @@ fun UserInfoCard(user: User) {
         ) {
             Text(text = stringResource(id = R.string.email) + ": " + user.email, fontSize = 16.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = stringResource(id = R.string.birth_date) + "Birthdate: " + user.birthDate, fontSize = 16.sp, color = Color.Gray)
+            Text(text = stringResource(id = R.string.birth_date) + ": " + user.birthDate, fontSize = 16.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = stringResource(id = R.string.height) + "Height: " + user.height, fontSize = 16.sp, color = Color.Gray)
+            Text(text = stringResource(id = R.string.height) + ": " + user.height, fontSize = 16.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = stringResource(id = R.string.weight) + "Weight: " + user.weight, fontSize = 16.sp, color = Color.Gray)
+            Text(text = stringResource(id = R.string.weight) + ": " + user.weight, fontSize = 16.sp, color = Color.Gray)
         }
     }
 }
