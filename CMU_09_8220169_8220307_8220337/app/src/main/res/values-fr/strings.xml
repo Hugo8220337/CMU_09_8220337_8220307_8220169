@@ -104,4 +104,8 @@
     <string name="confirm">Confirmer</string>
     <string name="seconds">Secondes</string>
     <string name="profile_image">Image de profil</string>
+    <string name="pedometer_permission_required">La permission du podomètre n\'est pas accordée</string>
+    <string name="foreground_service_permission_required">La permission du service en premier plan n\'est pas accordée</string>
+    <string name="step_counting_service_foreground_title">Service de comptage de pas en premier plan</string>
+    <string name="step_counting_service_foreground_text">Ne perdez pas de vue, continuez votre parcours.\\nVous êtes une laitue de Lidl !</string>
 </resources>

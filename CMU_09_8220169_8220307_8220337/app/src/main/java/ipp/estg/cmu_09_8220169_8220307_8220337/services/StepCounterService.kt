@@ -45,8 +45,8 @@ class StepCounterService : Service(), SensorEventListener {
     private fun startServiceInForeground() {
         val notification = Notification.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher_75hard_challange_logo_foreground)
-            .setContentTitle("Serviço de contagem de passos em foreground")
-            .setContentText("Não perca o foco, continue a sua jornada.\nTu és uma alface do Lidl!")
+            .setContentTitle(getString(R.string.step_counting_service_foreground_title))
+            .setContentText(getString(R.string.step_counting_service_foreground_text))
             .build()
 
         startForeground(FOREGROUND_ID, notification)

@@ -104,4 +104,8 @@
     <string name="confirm">Bestätigen</string>
     <string name="seconds">Sekunden</string>
     <string name="profile_image">Profilbild</string>
+    <string name="pedometer_permission_required">Die Erlaubnis für den Schrittzähler ist nicht erteilt</string>
+    <string name="foreground_service_permission_required">Die Erlaubnis für den Vordergrunddienst ist nicht erteilt</string>
+    <string name="step_counting_service_foreground_title">Vordergrund-Schrittzähldienst</string>
+    <string name="step_counting_service_foreground_text">Verlieren Sie nicht den Fokus, setzen Sie Ihre Reise fort.\\nSie sind ein Salat von Lidl!</string>
 </resources>

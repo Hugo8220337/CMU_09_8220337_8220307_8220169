@@ -105,4 +105,8 @@
     <string name="confirm">Confirmar</string>
     <string name="seconds">Segundos</string>
     <string name="profile_image">Imagem de Perfil</string>
+    <string name="pedometer_permission_required">A permissão do pedómetro não foi concedida</string>
+    <string name="foreground_service_permission_required">Permissão de serviço em primeiro plano não concedida</string>
+    <string name="step_counting_service_foreground_title">Serviço de contagem de passos em foreground</string>
+    <string name="step_counting_service_foreground_text">Não perca o foco, continue a sua jornada.\\nTu és uma alface do Lidl!</string>
 </resources>
