@@ -29,10 +29,10 @@ class RunningFirestoreRepository(
             val runningData = mapOf(
                 RunningCollection.FIELD_ID to documentId,
                 RunningCollection.FIELD_USER_ID to userId,
-                RunningCollection.FIELD_DISTANCE to running.distance + 1.0,
+                RunningCollection.FIELD_DISTANCE to running.distance,
                 RunningCollection.FIELD_DURATION to running.duration,
-                RunningCollection.FIELD_STEPS to running.steps + 1,
-                RunningCollection.FIELD_CALORIES to running.calories + 120.5,
+                RunningCollection.FIELD_STEPS to running.steps,
+                RunningCollection.FIELD_CALORIES to running.calories,
                 RunningCollection.FIELD_DATE to LocalDate.now().toString()
             )
 
