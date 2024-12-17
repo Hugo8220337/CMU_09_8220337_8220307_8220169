@@ -71,31 +71,26 @@ fun RunningWorkoutScreen(
         rememberPermissionState(android.Manifest.permission.FOREGROUND_SERVICE)
 
 
-    LaunchedEffect(pedometerPermission.status) {
+    // Reuqest permissions on first launch
+    LaunchedEffect(
+        pedometerPermission.status,
+        fineLocationPermission.status,
+        coarseLocationPermission.status,
+        foregroundLocationPermission.status,
+        foregroundServicePermission.status
+    ) {
         if (!pedometerPermission.status.isGranted) {
             pedometerPermission.launchPermissionRequest()
         }
-    }
-
-    LaunchedEffect(fineLocationPermission.status) {
         if (!fineLocationPermission.status.isGranted) {
             fineLocationPermission.launchPermissionRequest()
         }
-    }
-
-    LaunchedEffect(coarseLocationPermission.status) {
         if (!coarseLocationPermission.status.isGranted) {
             coarseLocationPermission.launchPermissionRequest()
         }
-    }
-
-    LaunchedEffect(foregroundLocationPermission.status) {
         if (!foregroundLocationPermission.status.isGranted) {
             foregroundLocationPermission.launchPermissionRequest()
         }
-    }
-
-    LaunchedEffect(foregroundServicePermission.status){
         if (!foregroundServicePermission.status.isGranted) {
             foregroundServicePermission.launchPermissionRequest()
         }
@@ -127,13 +122,37 @@ fun RunningWorkoutScreen(
                     steps = stepCount
                 )
 
-                ControlsSection(
-                    runningViewModel = runningViewModel,
-                    goBack = {
-                        navController.popBackStack()
-                        navController.navigate(Screen.Home.route)
-                    }
-                )
+                if (!fineLocationPermission.status.isGranted || !coarseLocationPermission.status.isGranted || !foregroundLocationPermission.status.isGranted) {
+                    Text(
+                        text = stringResource(id = R.string.location_permission_required),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+
+                } else if (!pedometerPermission.status.isGranted) {
+                    Text(
+                        text = stringResource(id = R.string.pedometer_permission_required),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                } else if(!foregroundServicePermission.status.isGranted) {
+                    Text(
+                        text = stringResource(id = R.string.foreground_service_permission_required),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                } else {
+                    ControlsSection(
+                        runningViewModel = runningViewModel,
+                        goBack = {
+                            navController.popBackStack()
+                            navController.navigate(Screen.Home.route)
+                        }
+                    )
+                }
             }
         }
 
@@ -142,12 +161,16 @@ fun RunningWorkoutScreen(
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun MapSection(runningViewModel: RunningViewModel, fineLocationPermission: PermissionState) {
+private fun MapSection(
+    runningViewModel: RunningViewModel,
+    fineLocationPermission: PermissionState
+) {
 
     val currentLocation by runningViewModel.currentLocation.collectAsState()
     val path by runningViewModel.path.collectAsState()
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), 14f) // Initial zoom level (default)
+        position =
+            CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), 14f) // Initial zoom level (default)
     }
 
     LaunchedEffect(currentLocation) {
@@ -178,7 +201,7 @@ private fun MapSection(runningViewModel: RunningViewModel, fineLocationPermissio
         contentAlignment = Alignment.Center
     ) {
 
-        if(fineLocationPermission.status.isGranted) {
+        if (fineLocationPermission.status.isGranted) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState
@@ -208,7 +231,6 @@ private fun MapSection(runningViewModel: RunningViewModel, fineLocationPermissio
 
     }
 }
-
 
 
 @Composable

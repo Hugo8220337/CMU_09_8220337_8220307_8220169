@@ -104,4 +104,6 @@
     <string name="confirm">Confirm</string>
     <string name="seconds">Seconds</string>
     <string name="profile_image">Profile Image</string>
+    <string name="pedometer_permission_required">Pedometer permission is not grated</string>
+    <string name="foreground_service_permission_required">Foreground service permission in not granted</string>
 </resources>
