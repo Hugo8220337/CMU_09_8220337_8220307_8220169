@@ -43,7 +43,7 @@ private fun RunItem(
     running: Running,
     modifier: Modifier = Modifier
 ) {
-    val distance: Double = "%.2f".format(running.distance).toDouble()
+    val distance: String = String.format("%.2f", running.distance)
     val calories: Int = running.calories
     Column(modifier = modifier) {
         Text(text = running.date, style = MaterialTheme.typography.bodySmall)
