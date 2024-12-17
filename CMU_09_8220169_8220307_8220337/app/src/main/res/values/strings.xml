@@ -104,4 +104,8 @@
     <string name="confirm">Confirm</string>
     <string name="seconds">Seconds</string>
     <string name="profile_image">Profile Image</string>
+    <string name="pedometer_permission_required">Pedometer permission is not grated</string>
+    <string name="foreground_service_permission_required">Foreground service permission in not granted</string>
+    <string name="step_counting_service_foreground_title">Foreground step counting service</string>
+    <string name="step_counting_service_foreground_text">Don\'t lose focus, continue your journey.\\nYou\'re a lettuce from Lidl!</string>
 </resources>
