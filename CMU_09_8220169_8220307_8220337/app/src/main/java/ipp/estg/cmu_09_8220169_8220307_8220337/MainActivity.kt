@@ -1,30 +1,27 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import ipp.estg.cmu_09_8220169_8220307_8220337.preferences.SettingsPreferencesRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.SettingsPreferencesRepository
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.HomeScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.OnboardingScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.RunningWorkoutScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.WorkoutScreen
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.StartScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.LoginScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.RegisterScreen
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.auth.StartScreen
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.HomeScreen
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.profile.EditProfileScreen
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Converter
-import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.AuthenticationViewModel
-import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -61,12 +58,10 @@ fun MyApp(navController: NavHostController) {
             StartScreen(navController)
         }
         composable(Screen.Login.route) {
-            val authViewModel: AuthenticationViewModel = viewModel()
-            LoginScreen(navController, authViewModel)
+            LoginScreen(navController)
         }
         composable(Screen.Register.route) {
-            val authViewModel: AuthenticationViewModel = viewModel()
-            RegisterScreen(navController, authViewModel)
+            RegisterScreen(navController)
         }
         composable(Screen.Onboarding.route) {
             OnboardingScreen(navController)
@@ -84,7 +79,10 @@ fun MyApp(navController: NavHostController) {
             WorkoutScreen(navController, bodyPartsList)
         }
         composable(Screen.RunningWorkout.route) {
-            RunningWorkoutScreen(navController, viewModel(modelClass = RunningViewModel::class.java))
+            RunningWorkoutScreen(navController)
+        }
+        composable(Screen.EditProfile.route) {
+            EditProfileScreen(navController)
         }
     }
 }

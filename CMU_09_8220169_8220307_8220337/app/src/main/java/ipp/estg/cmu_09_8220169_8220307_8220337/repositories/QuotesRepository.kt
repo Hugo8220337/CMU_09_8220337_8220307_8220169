@@ -1,25 +1,21 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
 import android.util.Log
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Quote
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.quotesApi.QuoteRetrofitResponse
-import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.apis.QuotesApi
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.QuoteDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.apis.QuotesApi
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.quotesApi.QuoteRetrofitResponse
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.QuoteDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Quote
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.time.LocalDate
 
-interface IQuotesRepository {
-    suspend fun getTodaysQuote(): Quote
-}
-
 class QuotesRepository(
     private val quotesApi: QuotesApi,
     private val quoteDao: QuoteDao
-) : IQuotesRepository {
+) {
 
-    override suspend fun getTodaysQuote(): Quote {
+    suspend fun getTodaysQuote(): Quote {
         val currentDate = LocalDate.now().toString()
 
         // Try to get the quote from cache

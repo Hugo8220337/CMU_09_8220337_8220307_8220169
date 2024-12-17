@@ -6,8 +6,8 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.INTERNET"/> <!-- Para poder ter acesso à NET e fazer pedidos HTTP -->
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/> <!-- Para poder aceder ao Activity Recognition -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Para poder ter acesso à NET e fazer pedidos HTTP -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" /> <!-- Para poder aceder ao Activity Recognition, neste caso o conta passos -->
 
     <!-- Permissões para aceder à galeria e à camara -->
     <uses-permission android:name="android.permission.CAMERA" />
@@ -20,9 +20,11 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <!-- Para poder aceder à localização do utilizador -->
-<!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/> &lt;!&ndash; Dúvidas quanto a este &ndash;&gt;-->
-<!--    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>-->
-<!--    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"  />-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Para localização mais detalhada,em conjunto com o Fine_Location -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
 
     <application
@@ -46,15 +48,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
+        <!--        <meta-data-->
+        <!--            android:name="com.google.android.gms.version"-->
+        <!--            android:value="@integer/google_play_services_version" />-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
         <!-- Foreground Services-->
         <service
             android:name=".services.DailyRemeinderService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="dataSync"
-        /> <!-- For Remeinder Notifications -->
-        <service android:name=".services.RunningWorkoutService" /> <!-- For the running workout -->
+            android:foregroundServiceType="dataSync" /> <!-- For Remeinder Notifications -->
+
+        <service
+            android:name=".services.StepCounterService"
+            android:foregroundServiceType="location" /> <!-- For the running workout -->
 
     </application>
 

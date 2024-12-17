@@ -1,26 +1,40 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs
 
-import android.content.Context
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.utils.SuperUsefulDropDownMenuBox
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
 
 @Composable
-fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
+fun SettingsScreen(
+    homeViewModel: HomeViewModel = viewModel(),
+) {
 
     val settingsPreferencesRepo = homeViewModel.settingsPreferencesRepository
 
@@ -54,6 +68,11 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
                 onCheckedChange = {
                     notificationsEnabled = it
                     settingsPreferencesRepo.setNotificationsPreference(it)
+
+                    // Force recreation of the activity to apply theme changes immediately
+                    if (context is androidx.activity.ComponentActivity) {
+                        context.recreate()  // Recreates the activity to apply the new theme
+                    }
                 },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White,
@@ -104,12 +123,24 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
+        val languageMap = mapOf(
+            stringResource(id = R.string.portuguese) to "pt",
+            stringResource(id = R.string.english) to "en",
+            stringResource(id = R.string.german) to "de",
+            stringResource(id = R.string.french) to "fr"
+        )
+
+        // Initialize current value with the key corresponding to the selected language
+        val currentLanguage = languageMap.entries.find { it.value == selectedLanguage }?.key ?: ""
+
+
         // Language dropdown menu
         SuperUsefulDropDownMenuBox(
             label = stringResource(id = R.string.language),
-            currentValue = selectedLanguage,
-            options = listOf("pt-rPT", "en", "de"),
-            onOptionSelected = {language ->
+            currentValue = currentLanguage,
+            options = languageMap.keys.toList(),
+            onOptionSelected = { languageName ->
+                val language = languageMap[languageName] ?: return@SuperUsefulDropDownMenuBox
                 selectedLanguage = language
                 settingsPreferencesRepo.setLanguagePreference(language)
 
@@ -122,21 +153,5 @@ fun SettingsScreen(navController: NavController, homeViewModel: HomeViewModel) {
                 }
             }
         )
-    }
-
-    // Log out button
-    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-        Button(
-            onClick = { navController.navigate(Screen.Start.route) },
-            modifier = Modifier
-                .fillMaxWidth(0.45f)
-                .padding(vertical = 10.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White
-            )
-        ) {
-            Text("Log out")
-        }
     }
 }

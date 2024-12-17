@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.org.jsoup.safety.Safelist.basic
+
 pluginManagement {
     repositories {
         google {
@@ -9,6 +11,7 @@ pluginManagement {
         }
         mavenCentral()
         mavenLocal()
+        google()
         gradlePluginPortal()
     }
 }

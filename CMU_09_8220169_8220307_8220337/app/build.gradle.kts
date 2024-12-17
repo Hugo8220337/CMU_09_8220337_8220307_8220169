@@ -6,6 +6,7 @@ plugins {
     id ("kotlin-kapt")
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -32,6 +33,7 @@ android {
         buildConfigField("String", "EXERCICEDB_API_KEY", "\"${properties.getProperty("EXERCICEDB_API_KEY")}\"")
         buildConfigField("String", "QUOTES_API_KEY", "\"${properties.getProperty("QUOTES_API_KEY")}\"")
         buildConfigField("String", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
+        buildConfigField("String", "MAPBOX_DOWNLOADS_TOKEN", "\"${properties.getProperty("MAPBOX_DOWNLOADS_TOKEN")}\"")
 
     }
 
@@ -78,6 +80,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.storage)
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -133,22 +137,36 @@ dependencies {
 
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
-
-
-    // TODO: Add the dependencies for Firebase products you want to use
-    // When using the BoM, don't specify versions in Firebase dependencies
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx:23.1.0")
 
+    // Google Maps
+    implementation("com.google.maps.android:maps-compose:2.7.3")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
 
-    // Open Steet Maps
-//    implementation("org.osmdroid:osmdroid-android:6.1.16")
-//    implementation("org.osmdroid:osmdroid-mapsforge:6.1.16")
-//    implementation("org.osmdroid:osmdroid-wms:6.1.16")
-//    implementation("org.osmdroid:osmdroid-geopackage:6.1.16")
+    // Fiused Location Provider (google play service) - para obter a localização do utilizador
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
-    // Open Street Maps with Compose (NOT WORKING)
-//    implementation("tech.utsmankece:osm-androd-compose:0.0.5")
+    // KTX library utility
+    // KTX for the Maps SDK for Android library
+    implementation("com.google.maps.android:maps-ktx:5.1.1")
 
+    // KTX for the Maps SDK for Android Utility Library
+    implementation("com.google.maps.android:maps-utils-ktx:5.1.1")
+}
 
+// Google Maps
+secrets {
+    // Optionally specify a different file name containing your secrets.
+    // The plugin defaults to "local.properties"
+    propertiesFileName = "secrets.properties"
+
+    // A properties file containing default secret values. This file can be
+    // checked in version control.
+    defaultPropertiesFileName = "local.properties"
+
+    // Configure which keys should be ignored by the plugin by providing regular expressions.
+    // "sdk.dir" is ignored by default.
+    ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+    ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
 }

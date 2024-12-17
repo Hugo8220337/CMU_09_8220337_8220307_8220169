@@ -6,26 +6,37 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Workout
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.remote.exerciceDbApi.ExerciseItemDataResponse
-import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.IWorkoutRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.preferences.UserPreferencesRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.RemoteApis
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.retrofit.models.exerciceDbApi.ExerciseItemDataResponse
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.LocalDatabase
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
 import ipp.estg.cmu_09_8220169_8220307_8220337.repositories.WorkoutRepository
-import ipp.estg.cmu_09_8220169_8220307_8220337.retrofit.RemoteApis
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.LocalDatabase
-import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Resource
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class WorkoutViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val workoutRepository: IWorkoutRepository = WorkoutRepository(
+    private val workoutRepository: WorkoutRepository = WorkoutRepository(
         exerciseDbApi = RemoteApis.getExerciseDbApi(),
         workoutDao = LocalDatabase.getDatabase(application).workoutDao
     )
+    private val userPreferencesRepository = UserPreferencesRepository(application)
 
+    // Estado de workout
+    private val _workout = MutableStateFlow<List<Workout?>>(emptyList())
+    val workout = _workout.asStateFlow()
+
+    // Estado de carregamento
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    // Estado de erro
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage = _errorMessage.asStateFlow()
 
     var state by mutableStateOf(ScreenState())
         private set
@@ -52,7 +63,7 @@ class WorkoutViewModel(
         viewModelScope.launch {
             state = state.copy(isLoading = true)
 
-            val storedWorkouts = workoutRepository.getWorkouts()
+            val storedWorkouts = workoutRepository.getAllWorkouts()
 
             if(storedWorkouts.isNotEmpty()) {
                 state = state.copy(storedWorkouts = storedWorkouts)
@@ -61,6 +72,25 @@ class WorkoutViewModel(
             state = state.copy(isLoading = false)
         }
     }
+
+    //get all workouts from Firebase by user ID
+    fun getWorkoutsByUserID() {
+        val userId = userPreferencesRepository.getCurrentUserId()
+        viewModelScope.launch {
+            state = state.copy(isLoading = true)
+
+            val workouts = workoutRepository.getWorkoutsByUserID(userId)
+
+            if(workouts.isNotEmpty()) {
+                state = state.copy(storedWorkouts = workouts)
+                _workout.value = workouts
+            }
+
+            state = state.copy(isLoading = false)
+        }
+    }
+
+
 
     data class ScreenState(
         val isLoading: Boolean = false,

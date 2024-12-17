@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,19 +12,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.DirectionsRun
 import androidx.compose.material.icons.filled.AirlineSeatLegroomExtra
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Backpack
-import androidx.compose.material.icons.filled.DirectionsRun
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Headset
@@ -38,46 +33,37 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import ipp.estg.cmu_09_8220169_8220307_8220337.BuildConfig
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.theme.CMU_09_8220169_8220307_8220337Theme
 import ipp.estg.cmu_09_8220169_8220307_8220337.utils.Converter
-import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.WorkoutViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun WorkoutGeneratorScreen(navController: NavController) {
     val selectedParts = remember { mutableStateListOf<String>() }
     val bodyParts = listOf(
-        "Back" to Icons.Default.Backpack,
-        "Cardio" to Icons.Default.DirectionsRun,
-        "Chest" to Icons.Default.FitnessCenter,
-        "Lower Arms" to Icons.Default.SettingsInputComponent,
-        "Lower Legs" to Icons.Default.AirlineSeatLegroomExtra,
-        "Neck" to Icons.Default.Headset,
-        "Shoulders" to Icons.Default.LegendToggle,
-        "Upper Arms" to Icons.Default.NearMe,
-        "Upper Legs" to Icons.Default.FolderOpen,
-        "Waist" to Icons.Default.Backpack
+        stringResource(id = R.string.back) to Icons.Default.Backpack,
+        stringResource(id = R.string.cardio) to Icons.AutoMirrored.Filled.DirectionsRun,
+        stringResource(id = R.string.chest) to Icons.Default.FitnessCenter,
+        stringResource(id = R.string.lower_arms) to Icons.Default.SettingsInputComponent,
+        stringResource(id = R.string.lower_legs) to Icons.Default.AirlineSeatLegroomExtra,
+        stringResource(id = R.string.neck) to Icons.Default.Headset,
+        stringResource(id = R.string.shoulders) to Icons.Default.LegendToggle,
+        stringResource(id = R.string.upper_arms) to Icons.Default.NearMe,
+        stringResource(id = R.string.upper_legs) to Icons.Default.FolderOpen,
+        stringResource(id = R.string.waist) to Icons.Default.Backpack
     )
 
     Box(

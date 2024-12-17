@@ -1,67 +1,109 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens
 
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Directions
-import androidx.compose.material.icons.filled.DirectionsRun
-import androidx.compose.material.icons.filled.Speed
-import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.Polyline
+import com.google.maps.android.compose.rememberCameraPositionState
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.RunDetails
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.buttons.ControlButton
 import ipp.estg.cmu_09_8220169_8220307_8220337.ui.navigation.Screen
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.formatTime
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 
+
+@SuppressLint("InlinedApi")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun RunningWorkoutScreen(
     navController: NavController,
-    runningViewModel: RunningViewModel
+    runningViewModel: RunningViewModel = viewModel()
 ) {
-    val distance = "5.2"
-    val time = "30:00"
-    val pace = "5:45"
-    val stepCount = runningViewModel.stepCounter.intValue
+    val distance by runningViewModel.distance.collectAsState()
+    val time by runningViewModel.time.collectAsState()
+    val stepCount by runningViewModel.stepCounter.collectAsState()
+
 
     val pedometerPermission =
         rememberPermissionState(android.Manifest.permission.ACTIVITY_RECOGNITION)
+    val fineLocationPermission =
+        rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+    val coarseLocationPermission =
+        rememberPermissionState(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+    val foregroundLocationPermission =
+        rememberPermissionState(android.Manifest.permission.FOREGROUND_SERVICE_LOCATION)
+    val foregroundServicePermission =
+        rememberPermissionState(android.Manifest.permission.FOREGROUND_SERVICE)
+
 
     LaunchedEffect(pedometerPermission.status) {
         if (!pedometerPermission.status.isGranted) {
             pedometerPermission.launchPermissionRequest()
+        }
+    }
+
+    LaunchedEffect(fineLocationPermission.status) {
+        if (!fineLocationPermission.status.isGranted) {
+            fineLocationPermission.launchPermissionRequest()
+        }
+    }
+
+    LaunchedEffect(coarseLocationPermission.status) {
+        if (!coarseLocationPermission.status.isGranted) {
+            coarseLocationPermission.launchPermissionRequest()
+        }
+    }
+
+    LaunchedEffect(foregroundLocationPermission.status) {
+        if (!foregroundLocationPermission.status.isGranted) {
+            foregroundLocationPermission.launchPermissionRequest()
+        }
+    }
+
+    LaunchedEffect(foregroundServicePermission.status){
+        if (!foregroundServicePermission.status.isGranted) {
+            foregroundServicePermission.launchPermissionRequest()
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            runningViewModel.stopRun() // Stop updates when the Composable is removed
         }
     }
 
@@ -77,14 +119,20 @@ fun RunningWorkoutScreen(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                MapSection()
+                MapSection(runningViewModel, fineLocationPermission)
 
-                RunDetailsSection(distance, time, pace, stepCount)
+                RunDetails(
+                    distance = String.format("%.2f", distance), // Format to 2 decimal places
+                    time = formatTime(time), // Format seconds to "mm:ss"
+                    steps = stepCount
+                )
 
                 ControlsSection(
                     runningViewModel = runningViewModel,
-                    pedometerPermission = pedometerPermission,
-                    navController = navController
+                    goBack = {
+                        navController.popBackStack()
+                        navController.navigate(Screen.Home.route)
+                    }
                 )
             }
         }
@@ -92,8 +140,28 @@ fun RunningWorkoutScreen(
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun MapSection() {
+private fun MapSection(runningViewModel: RunningViewModel, fineLocationPermission: PermissionState) {
+
+    val currentLocation by runningViewModel.currentLocation.collectAsState()
+    val path by runningViewModel.path.collectAsState()
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), 14f) // Initial zoom level (default)
+    }
+
+    LaunchedEffect(currentLocation) {
+        currentLocation?.let {
+            // Keep the zoom level as is, but update the position to the new location
+            cameraPositionState.position = CameraPosition(
+                LatLng(it.latitude, it.longitude), // target
+                cameraPositionState.position.zoom, // keep zoom
+                cameraPositionState.position.tilt, // keep tilt
+                cameraPositionState.position.bearing // keep bearing
+            )
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -109,59 +177,44 @@ private fun MapSection() {
             ),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            "Map View (Your Route)",
-            color = Color.White,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
 
-@Composable
-private fun RunDetailsSection(distance: String, time: String, pace: String, steps: Int) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp)
-            .background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(12.dp)),
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            RunDetailItem(
-                label = stringResource(id = R.string.distance),
-                value = "$distance Km",
-                icon = Icons.Filled.DirectionsRun
-            )
-            RunDetailItem(
-                label = stringResource(id = R.string.duration),
-                value = time,
-                icon = Icons.Filled.Timer
-            )
-            RunDetailItem(
-                label = stringResource(id = R.string.pace),
-                value = "$pace min/km",
-                icon = Icons.Filled.Speed
-            )
-            RunDetailItem(
-                label = stringResource(id = R.string.steps),
-                value = steps.toString(),
-                icon = Icons.Filled.Directions
+        if(fineLocationPermission.status.isGranted) {
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState
+            ) {
+                // Draw the user's path as a polyline
+                Polyline(
+                    points = path,
+                    color = Color.Blue,
+                    width = 5f
+                )
+
+                // Update Marker position dynamically
+                currentLocation?.let {
+                    Marker(
+                        state = MarkerState(
+                            position = LatLng(it.latitude, it.longitude)
+                        ),
+                        title = stringResource(id = R.string.you_are_here)
+                    )
+                }
+            }
+        } else {
+            Text(
+                text = stringResource(id = R.string.location_permission_required),
             )
         }
+
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
+
+
 @Composable
 private fun ControlsSection(
     runningViewModel: RunningViewModel,
-    pedometerPermission: PermissionState,
-    navController: NavController
+    goBack: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -171,64 +224,29 @@ private fun ControlsSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ControlButton(
-            text = if (runningViewModel.isRunning) stringResource(id = R.string.pause) else stringResource(id = R.string.start),
+            text = if (runningViewModel.isRunning) stringResource(id = R.string.pause) else stringResource(
+                id = R.string.start
+            ),
             color = if (runningViewModel.isRunning) Color(0xFFFF9800) else Color(0xFF4CAF50),
             onClick = {
                 runningViewModel.isRunning = !runningViewModel.isRunning
+                if (runningViewModel.isRunning) {
+                    runningViewModel.startRun() // Start the run
+                } else {
+                    runningViewModel.pauseRun() // Pause the run
+                }
             }
         )
         ControlButton(
             text = stringResource(id = R.string.stop),
             color = Color(0xFFE53935),
             onClick = {
-                runningViewModel.isRunning = false
-                runningViewModel.stepCounter.value = 0
-                navController.navigate(Screen.Home.route)
+                runningViewModel.stopRun()
+                goBack()
             }
         )
     }
 }
 
-@Composable
-private fun ControlButton(text: String, color: Color, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = color),
-        shape = RoundedCornerShape(50),
-        modifier = Modifier
-            .width(120.dp)
-            .padding(8.dp)
-    ) {
-        Text(text = text, color = Color.White, style = MaterialTheme.typography.titleMedium)
-    }
-}
 
-@Composable
-private fun RunDetailItem(label: String, value: String, icon: ImageVector) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = label,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
-        Text(
-            text = value,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-}
+

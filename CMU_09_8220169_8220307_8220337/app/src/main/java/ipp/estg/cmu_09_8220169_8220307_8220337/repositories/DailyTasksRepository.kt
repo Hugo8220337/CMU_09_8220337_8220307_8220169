@@ -1,28 +1,21 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.repositories
 
+import android.util.Log
 import androidx.lifecycle.LiveData
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.DailyTasks
-import ipp.estg.cmu_09_8220169_8220307_8220337.room.dao.DailyTasksDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.firebase.repositories.DailyTasksFirestoreRepository
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.dao.DailyTasksDao
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
 import java.time.LocalDate
 
-interface IDailyTasksRepository {
-    suspend fun insertTasks(
-        gallonOfWater: Boolean,
-        twoWorkouts: Boolean,
-        followDiet: Boolean,
-        readTenPages: Boolean,
-        takeProgressPicture: String = "",
-    )
-
-    fun getTodayTasks(): LiveData<DailyTasks>
-    fun areTodaysTasksDone(): Boolean
-    suspend fun getTodaysProgressPicture(): String
-    suspend fun getStreak(): Int
-}
 class DailyTasksRepository(
-    private val dailyTasksDao: DailyTasksDao,
-) : IDailyTasksRepository{
-    override suspend fun insertTasks(
+    private val dailyTasksDao: DailyTasksDao
+) {
+
+    private val dailyTasksFirestoreRepository: DailyTasksFirestoreRepository =
+        DailyTasksFirestoreRepository()
+
+    suspend fun insertTasks(
+        userId: String,
         gallonOfWater: Boolean,
         twoWorkouts: Boolean,
         followDiet: Boolean,
@@ -32,6 +25,7 @@ class DailyTasksRepository(
         try {
             // Inserir ou atualizar tarefas diárias
             val tasks = DailyTasks(
+                userId = userId,
                 gallonOfWater = gallonOfWater,
                 twoWorkouts = twoWorkouts,
                 followDiet = followDiet,
@@ -39,43 +33,59 @@ class DailyTasksRepository(
                 takeProgressPicture = takeProgressPicture
             )
 
+            // Inserir tarefas na base de dados local
             dailyTasksDao.insertTasks(tasks)
+
+            // Inserir tarefas na base de dados remota
+            dailyTasksFirestoreRepository.insertDailyTaskInFirebase(tasks)
         } catch (e: Exception) {
             throw e
         }
     }
 
-    override fun getTodayTasks(): LiveData<DailyTasks> {
+    suspend fun getTodayTasksLiveData(userId: String): LiveData<DailyTasks> {
+        // Sincronizar tarefas diárias do Firebase
+        syncDailyTasksFromFirebase()
+
+        // Obter tarefas diárias de hoje
+        val currentDate = LocalDate.now().toString()
+        return dailyTasksDao.getTasksByDateLiveData(currentDate, userId)
+    }
+
+    fun getTodayTasks(): DailyTasks {
         val currentDate = LocalDate.now().toString()
 
         return dailyTasksDao.getTasksByDate(currentDate)
     }
 
-    override fun areTodaysTasksDone(): Boolean {
+    fun areTodaysTasksDone(): Boolean {
         val dailyTasks = getTodayTasks()
 
-        val diet = dailyTasks.value?.followDiet
-        val workouts = dailyTasks.value?.twoWorkouts
-        val tenPages = dailyTasks.value?.readTenPages
-        val water = dailyTasks.value?.gallonOfWater
+        if (dailyTasks == null || dailyTasks.followDiet == null || dailyTasks.twoWorkouts == null || dailyTasks.readTenPages == null || dailyTasks.gallonOfWater == null) {
+            return false
+        }
+        val diet = dailyTasks.followDiet
+        val workouts = dailyTasks.twoWorkouts
+        val tenPages = dailyTasks.readTenPages
+        val water = dailyTasks.gallonOfWater
 
-        val condition = (diet == true && workouts == true && tenPages == true && water == true)
+        val condition = (diet && workouts && tenPages && water)
 
         return condition
     }
 
-    override suspend fun getTodaysProgressPicture(): String {
+    suspend fun getTodaysProgressPicture(): String {
         val currentDate = LocalDate.now().toString()
         val progressPicture = dailyTasksDao.getProgressPathPictureByDate(currentDate)
 
-        if(progressPicture == null) {
+        if (progressPicture == null) {
             return ""
         }
 
         return progressPicture
     }
 
-    override suspend fun getStreak(): Int {
+    suspend fun getStreak(): Int {
         val tasks = dailyTasksDao.getAllTasks()  // Busca todas as tarefas
         var streak = 0
         var previousDate: LocalDate? = null
@@ -84,7 +94,7 @@ class DailyTasksRepository(
             val taskDate = LocalDate.parse(task.date)
 
             // Verifica se todas as tarefas foram concluídas nesse dia
-            if (task.gallonOfWater && task.twoWorkouts && task.followDiet && task.readTenPages   ) {
+            if (task.gallonOfWater && task.twoWorkouts && task.followDiet && task.readTenPages) {
                 if (previousDate == null || taskDate == previousDate.minusDays(1)) {
                     streak++
                     previousDate = taskDate
@@ -99,5 +109,27 @@ class DailyTasksRepository(
         return streak
     }
 
+    suspend fun getAllTasks(): List<DailyTasks> {
+        syncDailyTasksFromFirebase()
+        return dailyTasksDao.getAllTasks()
+    }
 
+    suspend fun getAllUserTasks(userId: String): List<DailyTasks> {
+        syncDailyTasksFromFirebase()
+        return dailyTasksDao.getAllUserTasks(userId)
+    }
+
+    private suspend fun syncDailyTasksFromFirebase() {
+        try {
+            val firebaseDailyTasks =
+                dailyTasksFirestoreRepository.getAllUserDailyTasksFromFirebase()
+
+            // Save each workout from Firebase to Room if it doesn't already exist
+            if (firebaseDailyTasks != null) {
+                dailyTasksDao.insertTasks(firebaseDailyTasks)
+            }
+        } catch (e: Exception) {
+            Log.e("DailyTasksRepository", "Error syncing daily tasks from Firebase", e)
+        }
+    }
 }

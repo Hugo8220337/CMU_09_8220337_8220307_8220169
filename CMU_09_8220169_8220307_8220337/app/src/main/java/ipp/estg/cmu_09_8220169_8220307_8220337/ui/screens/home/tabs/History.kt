@@ -1,8 +1,6 @@
 package ipp.estg.cmu_09_8220169_8220307_8220337.ui.screens.home.tabs
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -10,72 +8,75 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.Bitmap
 import ipp.estg.cmu_09_8220169_8220307_8220337.R
-import ipp.estg.cmu_09_8220169_8220307_8220337.data.local.Workout
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.DropDownList
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.RunCardItem
-import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.WorkoutCardItem
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.DailyTasks
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Running
+import ipp.estg.cmu_09_8220169_8220307_8220337.data.room.models.Workout
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.EmptyPicturesState
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.buttons.DropDownButton
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.DailyPictureCard
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.RunCardItem
+import ipp.estg.cmu_09_8220169_8220307_8220337.ui.components.cards.WorkoutCardItem
+import ipp.estg.cmu_09_8220169_8220307_8220337.utils.getImageFromFile
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.HomeViewModel
+import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.RunningViewModel
 import ipp.estg.cmu_09_8220169_8220307_8220337.viewModels.WorkoutViewModel
+import java.time.LocalDate
 
 // Enum RunSortOrder separado
-enum class EnumEntries {
-    RUUNING,
-    WORKOUTS
+enum class EnumEntries(val value: Int) {
+    RUUNING(R.string.running),
+    WORKOUTS(R.string.workouts),
+    PHOTOS(R.string.photos);
 }
 
-// Dados de uma corrida
-data class Run(
-    val date: String,
-    val distance: String,
-    val calories: String,
-    val speed: String,
-    val img: Bitmap? = null
+data class DailyPicture(
+    val date: LocalDate,
+    val imageBitMap: Bitmap? = null
 )
 
 @Composable
-fun WorkoutHistoryPage(workoutViewModel: WorkoutViewModel) {
-    // Dados estáticos para visualização de corridas
-    val staticRunList = listOf(
-        Run(
-            date = "August 04, 2024",
-            distance = "0.849 km",
-            calories = "35 kcal",
-            speed = "24.45 km/hr"
-        ),
-        Run(
-            date = "August 04, 2024",
-            distance = "1.185 km",
-            calories = "49 kcal",
-            speed = "15.13 km/hr"
-        ),
-        Run(
-            date = "August 04, 2024",
-            distance = "1.56 km",
-            calories = "64 kcal",
-            speed = "73.89 km/hr"
-        )
-    )
-
-    // Obter os dados dos treinos
-    LaunchedEffect(Unit) {
-        workoutViewModel.getWorkouts()
-    }
-
-    val workouts = workoutViewModel.state.storedWorkouts
+fun WorkoutHistoryPage(
+    homeViewModel: HomeViewModel = viewModel(),
+    workoutViewModel: WorkoutViewModel = viewModel(),
+    runningViewModel: RunningViewModel = viewModel()
+) {
     var selectedTab by rememberSaveable { mutableStateOf(EnumEntries.RUUNING) }
 
+    val workouts = workoutViewModel.state.storedWorkouts
+    val allTasks by homeViewModel.allDailyTasks.collectAsState(emptyList())
+    val runnings by runningViewModel.runnings.collectAsState(emptyList())
+
+
+    LaunchedEffect(Unit) {
+        workoutViewModel.getWorkoutsByUserID()
+        runningViewModel.getRunningWorkoutsByUserID()
+        homeViewModel.loadAllUserTasks()
+    }
+
+
     Column {
-        // Título da página e botão de ordenação
+        // Título da página e botão para ordenação
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -84,7 +85,7 @@ fun WorkoutHistoryPage(workoutViewModel: WorkoutViewModel) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = if(selectedTab == EnumEntries.WORKOUTS) "Workouts" else "Running",
+                text = stringResource(id = selectedTab.value),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(start = 8.dp)
             )
@@ -93,8 +94,9 @@ fun WorkoutHistoryPage(workoutViewModel: WorkoutViewModel) {
 
         // Conteúdo da página
         when (selectedTab) {
-            EnumEntries.RUUNING -> RunningHistoryScreenContentStatic(runItems = staticRunList, onSortOrderSelected = {}, onItemClick = {})
-            EnumEntries.WORKOUTS -> WorkoutHistory(workouts = workouts, onItemClick = {})
+            EnumEntries.RUUNING -> RunningHistoryScreenContentStatic(runnings = runnings)
+            EnumEntries.WORKOUTS -> WorkoutHistory(workouts = workouts)
+            EnumEntries.PHOTOS -> DailyPicturesHistory(tasks = allTasks)
         }
     }
 }
@@ -102,28 +104,46 @@ fun WorkoutHistoryPage(workoutViewModel: WorkoutViewModel) {
 
 @Composable
 private fun RunningHistoryScreenContentStatic(
-    runItems: List<Run>,
-    onSortOrderSelected: (EnumEntries) -> Unit,
-    onItemClick: (Run) -> Unit,
+    runnings: List<Running?>,
+    onItemClick: (Running) -> Unit = {}
 ) {
-
-    Box {
-        RunningListStatic(
-            runItems = runItems,
-            onItemClick = onItemClick
+    if (runnings.isEmpty()) {
+        Text(
+            text = stringResource(id = R.string.no_runnings_yet),
+            modifier = Modifier.fillMaxSize(),
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center
         )
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            items(runnings) { running ->
+                if (running != null) {
+                    RunCardItem(running = running, onItemClick = onItemClick)
+                }
+            }
+        }
     }
 }
 
 @Composable
 private fun WorkoutHistory(
     workouts: List<Workout>,
-    onItemClick: (Workout) -> Unit
+    onItemClick: (Workout) -> Unit = {}
 ) {
-    Box {
+    if (workouts.isEmpty()) {
+        Text(
+            text = stringResource(id =  R.string.no_workouts_yet),
+            modifier = Modifier.fillMaxSize(),
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center
+        )
+    } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 8.dp)
+            contentPadding = PaddingValues(8.dp)
         ) {
             items(workouts) { workout ->
                 WorkoutCardItem(workout = workout, onItemClick = onItemClick)
@@ -133,43 +153,37 @@ private fun WorkoutHistory(
 }
 
 @Composable
-private fun RunningListStatic(
-    runItems: List<Run>,
-    onItemClick: (Run) -> Unit
+fun DailyPicturesHistory(
+    tasks: List<DailyTasks>
 ) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 8.dp)
-    ) {
-        items(runItems) { run ->
-            RunCardItem(run = run, onItemClick = onItemClick)
-        }
-    }
-}
-
-@Composable
-fun DropDownButton(onSortOrderSelected: (EnumEntries) -> Unit) {
-    var isDropDownExpanded by rememberSaveable { mutableStateOf(false) }
-    val sortOrderList = remember { EnumEntries.entries }
-
-    Column {
-        Button(
-            onClick = { isDropDownExpanded = !isDropDownExpanded },
-        ) {
-            Text(text = stringResource(id = R.string.sort_by), style = MaterialTheme.typography.labelLarge)
-            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = stringResource(id = R.string.sort_by))
-        }
-        DropDownList(
-            list = sortOrderList,
-            onItemSelected = {
-                onSortOrderSelected(it)
-                isDropDownExpanded = false
-            },
-            request = { isDropDownExpanded = it },
-            isOpened = isDropDownExpanded,
-            modifier = Modifier.padding(end = 8.dp)
+    val pictures = mutableListOf<DailyPicture>()
+    tasks.forEach { task ->
+        pictures.add(
+            DailyPicture(
+                date = LocalDate.parse(task.date),
+                imageBitMap = getImageFromFile(task.takeProgressPicture)
+            )
         )
+
+    }
+    if (pictures.isEmpty()) {
+        EmptyPicturesState()
+    } else {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(pictures) { picture ->
+                if (picture.imageBitMap != null) {
+                    DailyPictureCard(picture)
+                }
+            }
+        }
     }
 }
+
+
 
 
