@@ -94,10 +94,10 @@ fun RunningWorkoutStartScreen(
             if (isLoading) {
                 Loading()
             } else {
-                val distance: Double = lastRun?.distance ?: 0.0
+                val distance: String = String.format("%.2f", lastRun?.distance ?: 0.0)
                 val duration: String = lastRun?.duration ?: "00:00"
                 StatsSection(
-                    distance =  "%.2f".format(distance).toDouble(),
+                    distance =  distance,
                     duration = formatDuration(duration)
                 )
             }
@@ -139,7 +139,7 @@ fun RunningWorkoutStartScreen(
 
 @Composable
 private fun StatsSection(
-    distance: Double,
+    distance: String,
     duration: String
 ) {
     Column(
