@@ -122,7 +122,7 @@ fun RunningWorkoutScreen(
                     steps = stepCount
                 )
 
-                if (!fineLocationPermission.status.isGranted || !coarseLocationPermission.status.isGranted || !foregroundLocationPermission.status.isGranted) {
+                if (!fineLocationPermission.status.isGranted || !coarseLocationPermission.status.isGranted) {
                     Text(
                         text = stringResource(id = R.string.location_permission_required),
                         style = MaterialTheme.typography.bodyMedium,
